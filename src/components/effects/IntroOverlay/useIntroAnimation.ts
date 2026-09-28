@@ -9,11 +9,10 @@ interface UseIntroAnimationProps {
 
 export function useIntroAnimation({ onComplete }: UseIntroAnimationProps = {}) {
   const [isVisible, setIsVisible] = useState(true);
+  const [stage, setStage] = useState<"initial" | "line1" | "line2" | "cta" | "warp">("initial");
 
   const overlayRef = useRef<HTMLDivElement>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
-  const line1Ref = useRef<HTMLHeadingElement>(null);
-  const line2Ref = useRef<HTMLHeadingElement>(null);
   const ctaRef = useRef<HTMLButtonElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
 
@@ -23,6 +22,7 @@ export function useIntroAnimation({ onComplete }: UseIntroAnimationProps = {}) {
     if (overlayRef.current) {
       gsap.to(overlayRef.current, {
         opacity: 0,
+        scale: 1.05,
         duration: INTRO_TIMINGS.exitFadeDuration,
         ease: "power2.inOut",
         onComplete: () => {
@@ -56,105 +56,74 @@ export function useIntroAnimation({ onComplete }: UseIntroAnimationProps = {}) {
     window.scrollTo(0, 0);
     pauseScroll();
 
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const ctx = gsap.context(() => {
       if (prefersReduced) {
-        const tl = gsap.timeline({
-          onComplete: finishIntro,
-        });
-
-        tl.to(overlayRef.current, {
-          opacity: 1,
-          duration: 0.8,
-        }).to(overlayRef.current, {
-          opacity: 0,
-          duration: 0.6,
-          delay: 1.2,
-        });
-
+        const tl = gsap.timeline({ onComplete: finishIntro });
+        tl.to(overlayRef.current, { opacity: 1, duration: 0.5 })
+          .to(overlayRef.current, { opacity: 0, duration: 0.5, delay: 1.5 });
         timelineRef.current = tl;
         return;
       }
 
-      // Initial state
+      // Initial states
       gsap.set(overlayRef.current, { opacity: 1 });
-      gsap.set(".intro-telemetry", { opacity: 0 });
-      gsap.set(terminalRef.current, { opacity: 0, y: 15 });
-      gsap.set(".hook-word-1", { opacity: 0, y: 18, skewX: -6 });
-      gsap.set(".hook-word-2", { opacity: 0, y: 18, skewX: -6 });
-      gsap.set(ctaRef.current, { opacity: 0, y: 15 });
+      gsap.set(".intro-telemetry", { opacity: 0, y: -8 });
+      gsap.set(terminalRef.current, { opacity: 0, scale: 0.9, y: 12 });
+      gsap.set(ctaRef.current, { opacity: 0, y: 16, scale: 0.95 });
 
       const tl = gsap.timeline({
         defaults: { ease: "power3.out" },
       });
 
-      // 0.2s: Corner telemetry & reticles fade in
+      // 0.15s: Telemetry & HUD Aperture bars fade in
       tl.to(".intro-telemetry", {
         opacity: 1,
-        duration: 0.8,
-        stagger: 0.08,
+        y: 0,
+        duration: 0.6,
+        stagger: 0.06,
         ease: "power2.out",
-      }, INTRO_TIMINGS.pingStart);
+      }, 0.15);
 
-      // 0.4s: System initialization terminal badge
+      // 0.35s: System initialization badge
       tl.to(
         terminalRef.current,
         {
           opacity: 1,
           y: 0,
-          duration: 0.6,
-          ease: "power2.out",
+          scale: 1,
+          duration: 0.5,
+          ease: "back.out(1.4)",
         },
-        INTRO_TIMINGS.terminalStart
+        0.35
       );
 
-      // 1.0s: Suspense Line 1 word-by-word reveal
-      tl.to(
-        ".hook-word-1",
-        {
-          opacity: 1,
-          y: 0,
-          skewX: 0,
-          duration: 0.65,
-          stagger: 0.045,
-          ease: "power3.out",
-        },
-        INTRO_TIMINGS.hookLine1Start
-      );
+      // 0.6s: Trigger Line 1 decyphering
+      tl.add(() => setStage("line1"), 0.6);
 
-      // 2.0s: Suspense Line 2 word-by-word reveal with specular emphasis
-      tl.to(
-        ".hook-word-2",
-        {
-          opacity: 1,
-          y: 0,
-          skewX: 0,
-          duration: 0.7,
-          stagger: 0.045,
-          ease: "power3.out",
-        },
-        INTRO_TIMINGS.hookLine2Start
-      );
+      // 1.8s: Trigger Line 2 decyphering
+      tl.add(() => setStage("line2"), 1.8);
 
-      // 3.2s: CTA button reveals with glow
+      // 2.8s: CTA button entrance with bounce
       tl.to(
         ctaRef.current,
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
-          ease: "power2.out",
+          scale: 1,
+          duration: 0.7,
+          ease: "back.out(1.3)",
+          onStart: () => setStage("cta"),
         },
-        INTRO_TIMINGS.ctaStart
+        2.8
       );
 
-      // 5.4s: Auto-transition into Hero
+      // 5.2s: Auto-transition into Hero
       tl.add(() => {
+        setStage("warp");
         finishIntro();
-      }, INTRO_TIMINGS.autoExitAt);
+      }, 5.2);
 
       timelineRef.current = tl;
     }, overlayRef);
@@ -173,10 +142,9 @@ export function useIntroAnimation({ onComplete }: UseIntroAnimationProps = {}) {
 
   return {
     isVisible,
+    stage,
     overlayRef,
     terminalRef,
-    line1Ref,
-    line2Ref,
     ctaRef,
     handleExplore,
   };
