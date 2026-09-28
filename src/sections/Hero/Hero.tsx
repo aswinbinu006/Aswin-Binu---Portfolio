@@ -182,8 +182,8 @@ export default function Hero({ isIntroComplete }: { isIntroComplete?: boolean })
         </motion.div>
       </motion.div>
 
-      {/* ── KINETIC TEXT MARQUEE RIBBON 2 (Bottom Ambient Movement - Positioned safely above bottom HUD) ── */}
-      <div className="pointer-events-none absolute bottom-24 sm:bottom-28 left-0 w-full overflow-hidden opacity-40 select-none py-2.5 border-y border-white/[0.08] bg-white/[0.02] backdrop-blur-[1px]">
+      {/* ── KINETIC TEXT MARQUEE RIBBON 2 (Bottom Ambient Movement - Positioned comfortably above the bottom HUD & line) ── */}
+      <div className="pointer-events-none absolute bottom-32 sm:bottom-36 md:bottom-40 left-0 w-full overflow-hidden opacity-40 select-none py-2.5 border-y border-white/[0.08] bg-white/[0.02] backdrop-blur-[1px]">
         <motion.div
           className="flex whitespace-nowrap font-mono text-xs sm:text-sm tracking-[0.25em] uppercase text-white/90 font-medium"
           animate={{ x: ["-50%", "0%"] }}
