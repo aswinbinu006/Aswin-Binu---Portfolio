@@ -69,8 +69,8 @@ export default function Hero({ isIntroComplete }: { isIntroComplete?: boolean })
         </div>
       </div>
 
-      {/* ── KINETIC TEXT MARQUEE RIBBON 1 (Top Background Ambient - Positioned safely below the HUD line) ── */}
-      <div className="pointer-events-none absolute top-36 sm:top-40 md:top-44 left-0 w-full overflow-hidden opacity-40 select-none py-2.5 border-y border-white/[0.08] bg-white/[0.02] backdrop-blur-[1px]">
+      {/* ── KINETIC TEXT MARQUEE RIBBON 1 (Top Background Ambient - Positioned neatly beneath top HUD line) ── */}
+      <div className="pointer-events-none absolute top-20 sm:top-24 md:top-24 left-0 w-full overflow-hidden opacity-35 select-none py-2 border-y border-white/[0.08] bg-white/[0.02] backdrop-blur-[1px]">
         <motion.div
           className="flex whitespace-nowrap font-mono text-xs sm:text-sm tracking-[0.25em] uppercase text-white/90 font-medium"
           animate={{ x: ["0%", "-50%"] }}
@@ -87,14 +87,14 @@ export default function Hero({ isIntroComplete }: { isIntroComplete?: boolean })
 
       {/* ── MAIN CENTER HERO STAGE (Monumental Creative Typography & Command Matrix) ── */}
       <motion.div
-        className="relative z-10 my-auto flex w-full max-w-7xl mx-auto flex-col items-center justify-center text-center px-4 py-6 md:py-10"
+        className="relative z-10 my-auto flex w-full max-w-7xl mx-auto flex-col items-center justify-center text-center px-4 py-4 md:py-6"
         initial={{ opacity: 0, y: 20 }}
         animate={isIntroComplete ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
       >
         {/* Tactical Dossier Eyebrow Pill */}
         <motion.div
-          className="mb-4 sm:mb-6"
+          className="mb-3 sm:mb-4"
           initial={{ opacity: 0, y: 15 }}
           animate={isIntroComplete ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
@@ -111,7 +111,7 @@ export default function Hero({ isIntroComplete }: { isIntroComplete?: boolean })
         </motion.div>
 
         {/* Monumental Hero Display Title with Masked Letter Reveals & Spatial Reticles */}
-        <div className="relative w-full max-w-5xl my-2 sm:my-3">
+        <div className="relative w-full max-w-5xl my-1 sm:my-2">
           {/* Subtle Cyber Reticle Corner Ticks */}
           <div className="pointer-events-none absolute -left-2 -top-2 font-mono text-[9px] text-white/25 select-none hidden sm:block">
             + [01]
@@ -173,7 +173,7 @@ export default function Hero({ isIntroComplete }: { isIntroComplete?: boolean })
 
         {/* Narrative Mission Statement */}
         <motion.div
-          className="mt-4 sm:mt-6 flex flex-col items-center gap-3 font-mono text-center max-w-2xl px-2"
+          className="mt-3 sm:mt-4 flex flex-col items-center gap-3 font-mono text-center max-w-2xl px-2"
           initial={{ opacity: 0, y: 20 }}
           animate={isIntroComplete ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.55, ease: "easeOut" }}
@@ -186,7 +186,7 @@ export default function Hero({ isIntroComplete }: { isIntroComplete?: boolean })
 
         {/* Specialization Matrix Chips */}
         <motion.div
-          className="mt-5 sm:mt-6 flex flex-wrap justify-center gap-2 sm:gap-2.5 max-w-3xl"
+          className="mt-4 sm:mt-5 flex flex-wrap justify-center gap-2 sm:gap-2.5 max-w-3xl"
           initial={{ opacity: 0, y: 15 }}
           animate={isIntroComplete ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.65, ease: "easeOut" }}
@@ -204,7 +204,7 @@ export default function Hero({ isIntroComplete }: { isIntroComplete?: boolean })
         {/* Tactical Telemetry Strip — Silver Glass Pill */}
         <motion.div
           id="hero-telemetry"
-          className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4 rounded-full border border-white/15 bg-[#12151c]/80 px-5 sm:px-7 py-2 font-mono text-label text-white/75 backdrop-blur-md shadow-glass"
+          className="mt-5 sm:mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-4 rounded-full border border-white/15 bg-[#12151c]/80 px-5 sm:px-7 py-2 font-mono text-label text-white/75 backdrop-blur-md shadow-glass"
           initial={{ opacity: 0, y: 15 }}
           animate={isIntroComplete ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.75, ease: "easeOut" }}
@@ -220,8 +220,8 @@ export default function Hero({ isIntroComplete }: { isIntroComplete?: boolean })
         </motion.div>
       </motion.div>
 
-      {/* ── KINETIC TEXT MARQUEE RIBBON 2 (Bottom Ambient Movement - Positioned comfortably above the bottom HUD & line) ── */}
-      <div className="pointer-events-none absolute bottom-32 sm:bottom-36 md:bottom-40 left-0 w-full overflow-hidden opacity-40 select-none py-2.5 border-y border-white/[0.08] bg-white/[0.02] backdrop-blur-[1px]">
+      {/* ── KINETIC TEXT MARQUEE RIBBON 2 (Bottom Ambient Movement - Positioned neatly above footer line) ── */}
+      <div className="pointer-events-none absolute bottom-16 sm:bottom-20 md:bottom-20 left-0 w-full overflow-hidden opacity-35 select-none py-2 border-y border-white/[0.08] bg-white/[0.02] backdrop-blur-[1px]">
         <motion.div
           className="flex whitespace-nowrap font-mono text-xs sm:text-sm tracking-[0.25em] uppercase text-white/90 font-medium"
           animate={{ x: ["-50%", "0%"] }}
