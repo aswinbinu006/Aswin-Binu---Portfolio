@@ -779,8 +779,10 @@ export default function CinematicNebula({
       const { renderer, program, mesh } = uni;
       if (uni.ready && renderer && program && mesh && !uni.lost) {
         const u = program.uniforms;
+        const nebulaMouseX = reduced ? 0 : mouse.x * 0.016;
+        const nebulaMouseY = reduced ? 0 : mouse.y * 0.016;
         u.uTime.value = time;
-        u.uCenter.value = [0.5, 0.5 - parallaxY / cssH];
+        u.uCenter.value = [0.5 + nebulaMouseX, 0.5 - parallaxY / cssH + nebulaMouseY];
         u.uDim.value = dimRef.current;
         u.uVignette.value = vigRef.current;
         u.uPhoto.value = Math.max(0.1, 1.0 - 0.88 * dissolve);
