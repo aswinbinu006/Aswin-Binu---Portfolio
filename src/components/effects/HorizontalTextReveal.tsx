@@ -10,31 +10,28 @@ export interface HorizontalTextRevealProps {
   wordClassName?: string;
   /** Words that should receive special highlight coloring */
   highlightWords?: string[];
-  /** Highlight color for highlighted words (default: #F6C343) */
+  /** Highlight color for highlighted words (default: #ffffff) */
   highlightColor?: string;
-  /** Initial horizontal offset in pixels from the right (default: 70) */
+  /** Initial horizontal offset in pixels from the right (default: 60) */
   xOffset?: number;
-  /** Initial skew angle in degrees (default: -12) */
+  /** Initial skew angle in degrees (default: -10) */
   skewAngle?: number;
   /** Delay before animation starts in seconds (default: 0) */
   delay?: number;
-  /** Stagger between each word in seconds (default: 0.045) */
+  /** Stagger between each word in seconds (default: 0.035) */
   stagger?: number;
-  /** Animation duration per word in seconds (default: 0.75) */
+  /** Animation duration per word in seconds (default: 0.65) */
   duration?: number;
-  /** Whether animation should trigger only once (default: false for bidirectional scrolling) */
+  /** Whether animation should trigger only once (default: false for bidirectional reverse scrolling) */
   once?: boolean;
   /** Mode: 'viewport' (plays on scroll into view) or 'scrub' (tied to scroll position) */
   mode?: "viewport" | "scrub";
 }
 
 /**
- * Horizontal Text Reveal Component
- *
- * Horizontal text reveal animation with scroll-triggered word-by-word animations.
- * Features staggered word reveals with smooth transitions, opacity changes,
- * and skew effects as text moves from right to center.
- * Supports smooth bidirectional entry/exit on forward and backward scrolling.
+ * Bidirectional Horizontal Text Reveal Component
+ * - Staggered kinetic word reveal on forward and reverse scrolling
+ * - once: false ensures text re-animates smoothly when scrolling back
  */
 export default function HorizontalTextReveal({
   text,
@@ -42,16 +39,16 @@ export default function HorizontalTextReveal({
   wordClassName = "",
   highlightWords = [],
   highlightColor = "#ffffff",
-  xOffset = 70,
-  skewAngle = -12,
+  xOffset = 60,
+  skewAngle = -10,
   delay = 0,
-  stagger = 0.045,
-  duration = 0.75,
+  stagger = 0.035,
+  duration = 0.65,
   once = false,
   mode = "viewport",
 }: HorizontalTextRevealProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(containerRef, { once, margin: "-60px" });
+  const isInView = useInView(containerRef, { once, margin: "-40px" });
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -60,7 +57,6 @@ export default function HorizontalTextReveal({
 
   const words = text.split(" ");
 
-  // Normalization check for highlighted words
   const isHighlighted = (word: string) => {
     const cleanWord = word.replace(/[.,/#!$%^&*;:{}=\-_`~()?'"’]/g, "").toLowerCase();
     return highlightWords.some(
@@ -98,7 +94,7 @@ export default function HorizontalTextReveal({
     );
   }
 
-  // Viewport-triggered mode with staggered spring/cubic physics
+  // Viewport-triggered mode
   return (
     <div
       ref={containerRef}
@@ -115,9 +111,7 @@ export default function HorizontalTextReveal({
             style={{ transformStyle: "preserve-3d" }}
           >
             <motion.span
-              className={`inline-block ${wordClassName} ${
-                highlighted ? "" : ""
-              }`}
+              className={`inline-block ${wordClassName}`}
               style={{
                 color: highlighted ? highlightColor : undefined,
                 transformOrigin: "center left",
@@ -145,8 +139,8 @@ export default function HorizontalTextReveal({
               }
               transition={{
                 duration,
-                delay: delay + index * stagger,
-                ease: [0.22, 1, 0.36, 1], // Custom editorial cubic easing
+                delay: isInView ? delay + index * stagger : 0,
+                ease: [0.22, 1, 0.36, 1],
               }}
             >
               {word}
@@ -158,9 +152,6 @@ export default function HorizontalTextReveal({
   );
 }
 
-/**
- * Individual Word for scroll-scrubbed physics
- */
 function ScrubWord({
   word,
   progress,

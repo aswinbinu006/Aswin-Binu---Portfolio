@@ -44,7 +44,7 @@ export default function Hero({ isIntroComplete }: { isIntroComplete?: boolean })
           <div className="flex flex-col gap-0.5 text-left">
             <div className="flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-              <span className="font-semibold text-white">TACTICAL_SYS // NODE-01</span>
+              <span className="font-semibold text-white">TACTICAL_SYS // ONLINE</span>
             </div>
             <span className="text-white/60 tracking-wider text-[10px] sm:text-[11px]">
               SECTOR_COORD: 05:38:42 • LAT 21.14°N
@@ -61,7 +61,7 @@ export default function Hero({ isIntroComplete }: { isIntroComplete?: boolean })
           {/* Right Flank */}
           <div className="flex flex-col items-end gap-0.5 text-right">
             <div className="flex items-center gap-2">
-              <span className="text-white font-medium">CLEARANCE: LEVEL 04</span>
+              <span className="text-white font-medium">CLEARANCE: GRANTED</span>
               <span className="h-1.5 w-1.5 rounded-full bg-white/90 animate-ping" />
             </div>
             <span className="text-white/60 tracking-wider text-[10px] sm:text-[11px]">
@@ -116,10 +116,10 @@ export default function Hero({ isIntroComplete }: { isIntroComplete?: boolean })
         <div className="relative w-full max-w-5xl my-1 sm:my-2">
           {/* Subtle Cyber Reticle Corner Ticks */}
           <div className="pointer-events-none absolute -left-2 -top-2 font-mono text-[9px] text-white/25 select-none hidden sm:block">
-            + [01]
+            + [SEC]
           </div>
           <div className="pointer-events-none absolute -right-2 -top-2 font-mono text-[9px] text-white/25 select-none hidden sm:block">
-            [ACT I] +
+            [SYS] +
           </div>
 
           <h1

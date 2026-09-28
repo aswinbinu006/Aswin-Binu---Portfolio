@@ -122,17 +122,29 @@ export default function About({ isIntroComplete = true }: AboutProps) {
       >
         {/* Left Side: Story Layer (occupies left space cleanly) */}
         <div className="relative flex flex-col items-start w-full lg:w-[56%] xl:w-[58%]">
-          {/* Dossier Eyebrow Label */}
+          {/* Section Eyebrow Label */}
           <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.05}>
-            <div className="mb-5">
+            <div className="mb-3">
               <Label beacon beaconColor="bg-white/80">
-                INTRODUCTION // ACT II
+                ABOUT ME
               </Label>
             </div>
           </HorizontalReveal>
 
+          {/* Prominent Human-Understandable Section Title */}
+          <div className="mb-4">
+            <HorizontalTextReveal
+              text="About Me"
+              className="font-mono text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white uppercase"
+              wordClassName="text-white"
+              xOffset={60}
+              skewAngle={-8}
+              delay={0.1}
+            />
+          </div>
+
           {/* Headline with Horizontal Text Reveal */}
-          <div className="intro-headline flex flex-col gap-2.5 sm:gap-3.5 w-full">
+          <div className="intro-headline flex flex-col gap-2 sm:gap-3 w-full">
             {isIntroComplete ? (
               <>
                 <HorizontalTextReveal
@@ -142,9 +154,8 @@ export default function About({ isIntroComplete = true }: AboutProps) {
                   xOffset={50}
                   skewAngle={-6}
                   delay={0.15}
-                  stagger={0.045}
-                  duration={0.75}
-                  mode="viewport"
+                  stagger={0.03}
+                  duration={0.65}
                 />
                 <HorizontalTextReveal
                   text="and I build them for places where"
@@ -152,10 +163,9 @@ export default function About({ isIntroComplete = true }: AboutProps) {
                   wordClassName="text-white/70"
                   xOffset={50}
                   skewAngle={-6}
-                  delay={0.3}
-                  stagger={0.04}
-                  duration={0.75}
-                  mode="viewport"
+                  delay={0.2}
+                  stagger={0.03}
+                  duration={0.65}
                 />
                 <HorizontalTextReveal
                   text="getting it wrong isn't an option."
@@ -165,10 +175,9 @@ export default function About({ isIntroComplete = true }: AboutProps) {
                   wordClassName="text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
                   xOffset={50}
                   skewAngle={-6}
-                  delay={0.45}
-                  stagger={0.045}
-                  duration={0.75}
-                  mode="viewport"
+                  delay={0.25}
+                  stagger={0.03}
+                  duration={0.65}
                 />
               </>
             ) : (
@@ -187,7 +196,7 @@ export default function About({ isIntroComplete = true }: AboutProps) {
           </div>
 
           {/* Body Copy with Word-by-Word Horizontal Text Reveal */}
-          <div className="mt-7 max-w-[58ch]">
+          <div className="mt-6 max-w-[58ch]">
             <HorizontalTextReveal
               text="Third-year AI/ML engineering student, focused on applying machine learning to defense and critical-infrastructure problems. Operating out of Nagpur, architecting edge-quantized models, resilient telemetry pipelines, and mission-ready autonomy."
               className="font-mono text-body leading-relaxed"
@@ -195,26 +204,25 @@ export default function About({ isIntroComplete = true }: AboutProps) {
               highlightWords={["defense", "critical-infrastructure", "edge-quantized", "mission-ready"]}
               highlightColor="#ffffff"
               xOffset={50}
-              skewAngle={-5}
-              delay={0.4}
-              stagger={0.025}
+              skewAngle={-6}
+              delay={0.3}
+              stagger={0.02}
               duration={0.65}
-              mode="viewport"
             />
           </div>
 
           {/* Floating 2x2 Identity Matrix with Staggered Horizontal Reveal */}
           <div
             data-no-constellation
-            className="mt-8 grid w-full max-w-lg grid-cols-1 sm:grid-cols-2 gap-3.5"
+            className="mt-6 grid w-full max-w-lg grid-cols-1 sm:grid-cols-2 gap-3"
           >
             {IDENTITY_ITEMS.map((item, idx) => (
               <HorizontalReveal
                 key={item.label}
                 index={idx}
-                xOffset={50}
+                xOffset={45}
                 skewAngle={-5}
-                delay={0.5}
+                delay={0.35}
                 stagger={0.08}
               >
                 <div
@@ -243,7 +251,7 @@ export default function About({ isIntroComplete = true }: AboutProps) {
           data-no-constellation
           className="relative flex w-full lg:w-[44%] xl:w-[42%] items-center justify-center lg:justify-end"
         >
-          <HorizontalReveal xOffset={70} skewAngle={-6} delay={0.3} duration={0.85}>
+          <HorizontalReveal xOffset={60} skewAngle={-6} delay={0.2} duration={0.8}>
             <PortraitPlaceholder />
           </HorizontalReveal>
         </div>

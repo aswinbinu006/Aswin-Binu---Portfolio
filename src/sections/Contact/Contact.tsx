@@ -19,7 +19,7 @@ const CONTACT_LINKS = [
  */
 export default function Contact() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const isInView = useInView(sectionRef, { once: false, margin: "0px" });
   const [copied, setCopied] = useState(false);
 
   const handleCopyEmail = (e?: React.MouseEvent) => {
@@ -34,12 +34,12 @@ export default function Contact() {
       id="contact"
       className="flex min-h-[75vh] flex-col items-center justify-center text-center select-none py-28 md:py-36 overflow-x-clip"
     >
-      <div ref={sectionRef} className="relative z-10 max-w-3xl mx-auto flex flex-col items-center">
+      <div ref={sectionRef} className="relative z-10 max-w-4xl mx-auto flex flex-col items-center">
         {/* Eyebrow Label */}
-        <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.1}>
+        <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.05}>
           <div className="mb-4">
             <Label beacon beaconColor="bg-white/80">
-              Transmission // Act VIII
+              GET IN TOUCH
             </Label>
           </div>
         </HorizontalReveal>
@@ -47,18 +47,17 @@ export default function Contact() {
         {/* Main Statement with Horizontal Text Reveal */}
         <div className="w-full flex flex-col items-center">
           <HorizontalTextReveal
-            text="Let's build something memorable."
-            className="font-mono text-h1 font-bold tracking-tight text-white justify-center"
-            highlightWords={["build", "memorable."]}
+            text="Let's Build Something Memorable"
+            className="font-mono text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-white justify-center text-center"
+            highlightWords={["Build", "Memorable"]}
             highlightColor="#ffffff"
             wordClassName="text-white"
             xOffset={60}
-            skewAngle={-6}
-            delay={0.2}
-            stagger={0.06}
+            skewAngle={-8}
+            delay={0.1}
           />
 
-          <HorizontalReveal xOffset={50} skewAngle={-5} delay={0.4}>
+          <HorizontalReveal xOffset={50} skewAngle={-5} delay={0.2}>
             <p className="mt-4 max-w-[50ch] font-mono text-body text-white/70 leading-relaxed mx-auto">
               Open for high-impact AI/ML research collaborations, critical systems
               engineering, and architectural discussions.
@@ -75,10 +74,10 @@ export default function Contact() {
             <HorizontalReveal
               key={link.label}
               index={idx}
-              xOffset={60}
-              skewAngle={-6}
-              stagger={0.1}
-              delay={0.45}
+              xOffset={40}
+              skewAngle={-4}
+              stagger={0.08}
+              delay={0.25}
             >
               {link.isEmail ? (
                 <LiquidMetalButton
@@ -109,8 +108,8 @@ export default function Contact() {
           className="mt-20 font-mono text-label tracking-widest text-white/40 uppercase flex flex-col sm:flex-row items-center gap-2 sm:gap-4"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, delay: 0.8 }}
+          viewport={{ once: false }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
           <span>© 2026 ASWIN BINU</span>
           <span className="hidden sm:inline">•</span>

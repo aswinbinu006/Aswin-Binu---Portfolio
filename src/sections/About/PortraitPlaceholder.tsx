@@ -24,7 +24,7 @@ export default function PortraitPlaceholder() {
         <div className="absolute left-[-22px] top-1/3 flex flex-col items-center gap-1 font-mono text-[8px] text-white/20">
           <span>+</span>
           <div className="h-10 w-[1px] bg-white/20" />
-          <span>NODE-02</span>
+          <span>OPERATOR</span>
         </div>
         {/* Bottom Status Readout */}
         <div className="absolute -bottom-6 left-4 flex items-center gap-3 font-mono text-[9px] tracking-wider text-white/40">
@@ -150,7 +150,7 @@ export default function PortraitPlaceholder() {
         <div className="portrait-labels pointer-events-none absolute bottom-3 left-4 right-4 z-20 flex items-center justify-between pt-2 font-mono text-[9px] tracking-widest text-white/50">
           <div className="flex items-center gap-2">
             <span className="h-1 w-1 rounded-full bg-white animate-pulse" />
-            <span className="text-white/80">PORTRAIT // 01</span>
+            <span className="text-white/80">PORTRAIT // ACTIVE</span>
           </div>
           <span>SCAN READY</span>
           <span className="text-white/70">SUBJECT: ASWIN BINU</span>

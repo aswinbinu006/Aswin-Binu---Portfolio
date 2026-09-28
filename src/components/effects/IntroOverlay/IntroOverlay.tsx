@@ -1,5 +1,6 @@
 import React from "react";
 import { useIntroAnimation } from "./useIntroAnimation";
+import WarpSpeedCanvas from "./WarpSpeedCanvas";
 import type { IntroOverlayProps } from "./types";
 
 /**
@@ -7,13 +8,15 @@ import type { IntroOverlayProps } from "./types";
  * - Outer area: 100% Solid Pure Black (#000000) with zero bleed-through.
  * - Visor Viewport: Cutout window revealing the actual cosmic background with enhanced contrast and clarity.
  * - Content: 2 simple, meaningful lines inside the visor viewport (Zero user name).
- * - Smoothly fades away to reveal the main Hero portfolio.
+ * - Fast-Moving Effect: Hyperspace warp velocity forward plunge into the cosmos on exit.
  */
 export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
   const {
     isVisible,
+    isFastMoving,
     overlayRef,
     contentRef,
+    visorMaskRef,
     finishIntro,
   } = useIntroAnimation({ onComplete });
 
@@ -28,9 +31,13 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
       className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden select-none cursor-pointer"
       style={{ backgroundColor: "transparent" }}
     >
+      {/* Dynamic High-Speed Warp Velocity Starfield */}
+      <WarpSpeedCanvas isFastMoving={isFastMoving} />
+
       {/* 1. Outer Solid Black Frame with Astronaut Visor Viewport Cutout */}
       <svg
-        className="pointer-events-none absolute inset-0 h-full w-full z-10"
+        ref={visorMaskRef}
+        className="pointer-events-none absolute inset-0 h-full w-full z-10 origin-center"
         viewBox="0 0 1920 1080"
         preserveAspectRatio="none"
       >
@@ -59,7 +66,21 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
           mask="url(#astronaut-visor-cutout-mask)"
         />
 
-        {/* Visor Glass Outer Rim Bezel */}
+        {/* --- ASTRONAUT HELMET PHYSICAL STRUCTURE (NO TEXT) --- */}
+
+        {/* 1. Outer Gasket & Visor Sealing Channel */}
+        <path
+          d="M 160 120 
+             Q 960 45 1760 120 
+             Q 1870 540 1760 960 
+             Q 960 1035 160 960 
+             Q 50 540 160 120 Z"
+          fill="none"
+          stroke="rgba(255, 255, 255, 0.07)"
+          strokeWidth="3"
+        />
+
+        {/* 2. Visor Outer Rim Bezel (High-strength Polycarbonate Frame) */}
         <path
           d="M 200 160 
              Q 960 90 1720 160 
@@ -67,15 +88,190 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
              Q 960 990 200 920 
              Q 110 540 200 160 Z"
           fill="none"
-          stroke="rgba(255, 255, 255, 0.16)"
+          stroke="rgba(255, 255, 255, 0.22)"
           strokeWidth="4"
         />
 
-        {/* Subtle Specular Top Reflection on Visor Glass */}
+        {/* 3. Inner Seal Rubber O-Ring */}
+        <path
+          d="M 215 175 
+             Q 960 105 1705 175 
+             Q 1795 540 1705 905 
+             Q 960 975 215 905 
+             Q 125 540 215 175 Z"
+          fill="none"
+          stroke="rgba(255, 255, 255, 0.08)"
+          strokeWidth="1.5"
+          strokeDasharray="16 8"
+        />
+
+        {/* 4. Top Brow Helmet Shell Structure & Micro Vents */}
+        <path
+          d="M 380 75 Q 960 25 1540 75"
+          fill="none"
+          stroke="rgba(255, 255, 255, 0.14)"
+          strokeWidth="2.5"
+        />
+        <path
+          d="M 460 95 Q 960 48 1460 95"
+          fill="none"
+          stroke="rgba(255, 255, 255, 0.06)"
+          strokeWidth="1.5"
+        />
+
+        {/* Upper Brow Air Circulation / Defog Nozzles */}
+        {[-300, -200, -100, 0, 100, 200, 300].map((offset, i) => (
+          <rect
+            key={`top-vent-${i}`}
+            x={960 + offset - 24}
+            y={58 + Math.abs(offset) * 0.03}
+            width={48}
+            height={5}
+            rx={2.5}
+            fill="rgba(255, 255, 255, 0.12)"
+          />
+        ))}
+
+        {/* 5. Left Helmet Hinge & Seal Locking Assembly */}
+        <g opacity="0.85">
+          {/* Vertical Mounting Bracket */}
+          <rect
+            x="95"
+            y="430"
+            width="32"
+            height="220"
+            rx="6"
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.12)"
+            strokeWidth="2"
+          />
+          {/* Main Visor Pivot Hub */}
+          <circle
+            cx="111"
+            cy="540"
+            r="36"
+            fill="#06080c"
+            stroke="rgba(255, 255, 255, 0.22)"
+            strokeWidth="3"
+          />
+          <circle
+            cx="111"
+            cy="540"
+            r="20"
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.14)"
+            strokeWidth="2"
+          />
+          <circle
+            cx="111"
+            cy="540"
+            r="8"
+            fill="rgba(255, 255, 255, 0.25)"
+          />
+          {/* Locking Hex Pins */}
+          <circle cx="111" cy="455" r="4.5" fill="rgba(255, 255, 255, 0.3)" />
+          <circle cx="111" cy="485" r="3.5" fill="rgba(255, 255, 255, 0.2)" />
+          <circle cx="111" cy="595" r="3.5" fill="rgba(255, 255, 255, 0.2)" />
+          <circle cx="111" cy="625" r="4.5" fill="rgba(255, 255, 255, 0.3)" />
+        </g>
+
+        {/* 6. Right Helmet Hinge & Seal Locking Assembly */}
+        <g opacity="0.85">
+          {/* Vertical Mounting Bracket */}
+          <rect
+            x="1793"
+            y="430"
+            width="32"
+            height="220"
+            rx="6"
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.12)"
+            strokeWidth="2"
+          />
+          {/* Main Visor Pivot Hub */}
+          <circle
+            cx="1809"
+            cy="540"
+            r="36"
+            fill="#06080c"
+            stroke="rgba(255, 255, 255, 0.22)"
+            strokeWidth="3"
+          />
+          <circle
+            cx="1809"
+            cy="540"
+            r="20"
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.14)"
+            strokeWidth="2"
+          />
+          <circle
+            cx="1809"
+            cy="540"
+            r="8"
+            fill="rgba(255, 255, 255, 0.25)"
+          />
+          {/* Locking Hex Pins */}
+          <circle cx="1809" cy="455" r="4.5" fill="rgba(255, 255, 255, 0.3)" />
+          <circle cx="1809" cy="485" r="3.5" fill="rgba(255, 255, 255, 0.2)" />
+          <circle cx="1809" cy="595" r="3.5" fill="rgba(255, 255, 255, 0.2)" />
+          <circle cx="1809" cy="625" r="4.5" fill="rgba(255, 255, 255, 0.3)" />
+        </g>
+
+        {/* 7. Bottom Chin Guard & Space Suit Collar Neck-Ring Seam */}
+        <path
+          d="M 380 1005 Q 960 1055 1540 1005"
+          fill="none"
+          stroke="rgba(255, 255, 255, 0.15)"
+          strokeWidth="2.5"
+        />
+        <path
+          d="M 460 985 Q 960 1032 1460 985"
+          fill="none"
+          stroke="rgba(255, 255, 255, 0.07)"
+          strokeWidth="1.5"
+        />
+
+        {/* Lower Chin Airflow Intake Slits */}
+        {[-240, -120, 0, 120, 240].map((offset, i) => (
+          <rect
+            key={`bot-vent-${i}`}
+            x={960 + offset - 30}
+            y={1018 + (300 - Math.abs(offset)) * 0.03}
+            width={60}
+            height={6}
+            rx={3}
+            fill="rgba(255, 255, 255, 0.1)"
+          />
+        ))}
+
+        {/* 8. Four Corner Structural Reinforcement Clips */}
+        <g stroke="rgba(255, 255, 255, 0.2)" strokeWidth="2" fill="none">
+          {/* Top-Left */}
+          <path d="M 230 190 L 265 170" />
+          <circle cx="230" cy="190" r="3" fill="rgba(255, 255, 255, 0.3)" />
+          {/* Top-Right */}
+          <path d="M 1690 190 L 1655 170" />
+          <circle cx="1690" cy="190" r="3" fill="rgba(255, 255, 255, 0.3)" />
+          {/* Bottom-Left */}
+          <path d="M 230 890 L 265 910" />
+          <circle cx="230" cy="890" r="3" fill="rgba(255, 255, 255, 0.3)" />
+          {/* Bottom-Right */}
+          <path d="M 1690 890 L 1655 910" />
+          <circle cx="1690" cy="890" r="3" fill="rgba(255, 255, 255, 0.3)" />
+        </g>
+
+        {/* 9. Visor Polycarbonate Optical Glass Reflections (Curved Highlight Arcs) */}
         <path
           d="M 260 175 Q 960 115 1660 175"
           fill="none"
-          stroke="rgba(255, 255, 255, 0.28)"
+          stroke="rgba(255, 255, 255, 0.3)"
+          strokeWidth="1.5"
+        />
+        <path
+          d="M 320 905 Q 960 970 1600 905"
+          fill="none"
+          stroke="rgba(255, 255, 255, 0.12)"
           strokeWidth="1.5"
         />
       </svg>

@@ -38,33 +38,32 @@ export default function Gallery() {
     <section
       ref={sectionRef}
       id="events"
-      className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 md:px-8 py-24 md:py-36 overflow-x-clip"
+      className="relative z-10 mx-auto max-w-[1500px] px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-24 md:py-36 overflow-x-clip"
     >
       {/* Editorial Header with Horizontal Reveal */}
-      <div className="mb-12 md:mb-16 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
+      <div className="mb-10 md:mb-14 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
         <div>
           <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.05}>
             <div className="mb-3">
               <Label beacon beaconColor="bg-white/80">
-                Curated Records // Act V
+                EXHIBITIONS & EVENTS
               </Label>
             </div>
           </HorizontalReveal>
 
           <HorizontalTextReveal
-            text="Exhibition Wall"
-            className="font-mono text-h1 font-bold tracking-tight text-white"
-            highlightWords={["Exhibition", "Wall"]}
+            text="Exhibition Gallery"
+            className="font-mono text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-white"
+            highlightWords={["Exhibition", "Gallery"]}
             highlightColor="#ffffff"
             wordClassName="text-white"
             xOffset={60}
-            skewAngle={-6}
-            delay={0.15}
-            stagger={0.05}
+            skewAngle={-8}
+            delay={0.1}
           />
 
-          <HorizontalReveal xOffset={50} skewAngle={-5} delay={0.3}>
-            <p className="mt-3 max-w-[65ch] font-mono text-body leading-relaxed text-white/70">
+          <HorizontalReveal xOffset={50} skewAngle={-5} delay={0.2}>
+            <p className="mt-3 max-w-[70ch] font-mono text-body leading-relaxed text-white/70">
               Curated archive of technical hackathons, escape-room architectures,
               and engineering symposia orchestrated across collegiate and IEEE chapters.
               Select any poster to inspect archival records.
@@ -72,7 +71,7 @@ export default function Gallery() {
           </HorizontalReveal>
         </div>
 
-        <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.4}>
+        <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.25}>
           <div className="flex items-center gap-2 font-mono text-caption text-white/70">
             <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
             <span>{events.length} CURATED ARTIFACTS</span>
@@ -84,14 +83,14 @@ export default function Gallery() {
       <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         <ScrollColumn
           index={0}
-          delay={0.1}
+          delay={0.04}
           events={col1}
           onOpenEvent={handleOpenEvent}
           onKeyDown={handleKeyDown}
         />
         <ScrollColumn
           index={1}
-          delay={0.25}
+          delay={0.08}
           events={col2}
           onOpenEvent={handleOpenEvent}
           onKeyDown={handleKeyDown}
@@ -99,7 +98,7 @@ export default function Gallery() {
         />
         <ScrollColumn
           index={2}
-          delay={0.4}
+          delay={0.12}
           events={col3}
           onOpenEvent={handleOpenEvent}
           onKeyDown={handleKeyDown}

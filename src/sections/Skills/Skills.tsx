@@ -36,51 +36,51 @@ export default function Skills() {
   } = useConstellationGraph();
 
   const sectionRef = React.useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const isInView = useInView(sectionRef, { once: false, margin: "0px" });
 
   return (
     <section
       ref={sectionRef}
-      className="relative z-10 mx-auto max-w-6xl px-4 md:px-6 py-24 md:py-36 select-none"
+      id="skills"
+      className="relative z-10 mx-auto max-w-[1500px] px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-24 md:py-36 select-none"
       onClick={handleEmptyClick}
     >
       {/* Dynamic Background Elements */}
       <ScrollConstellationBackground isInView={isInView} />
 
       {/* Editorial Header - Horizontal Reveals */}
-      <div className="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
+      <div className="mb-10 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
         <div>
           <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.05}>
             <div className="mb-3 flex items-center gap-2">
               <Label beacon beaconColor="bg-white/80">
-                Constellation Topology // Act III
+                TECHNICAL EXPERTISE
               </Label>
             </div>
           </HorizontalReveal>
 
           <HorizontalTextReveal
-            text="Systems & Directives"
-            className="font-mono text-h1 font-bold tracking-tight text-white"
-            highlightWords={["Systems", "Directives"]}
+            text="Skills & Technologies"
+            className="font-mono text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-white"
+            highlightWords={["Skills", "Technologies"]}
             highlightColor="#ffffff"
             wordClassName="text-white"
             xOffset={60}
-            skewAngle={-6}
-            delay={0.15}
-            stagger={0.05}
+            skewAngle={-8}
+            delay={0.1}
           />
 
-          <HorizontalReveal xOffset={50} skewAngle={-5} delay={0.3}>
-            <p className="mt-3 max-w-[65ch] font-mono text-body leading-relaxed text-white/70">
-              An interconnected topology of ML frameworks, backend runtimes, and
-              organizational leadership. Hover, tap, or focus any star to trace
-              its neural pathways.
+          <HorizontalReveal xOffset={50} skewAngle={-5} delay={0.2}>
+            <p className="mt-3 max-w-[70ch] font-mono text-body leading-relaxed text-white/70">
+              An interconnected topology of ML frameworks, robotics runtimes, and
+              fault-tolerant systems. Hover, tap, or focus any node to trace its
+              connected pathways.
             </p>
           </HorizontalReveal>
         </div>
 
         {/* Active Node Indicator Readout - Dynamic */}
-        <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.4}>
+        <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.25}>
           <div className="flex items-center gap-2 font-mono text-caption text-white/70">
             <motion.span
               className={`inline-block h-2 w-2 rounded-full transition-colors duration-300 ${
@@ -106,10 +106,10 @@ export default function Skills() {
 
       {/* Constellation Canvas Frame - Wrapped in Horizontal Reveal */}
       <HorizontalReveal
-        xOffset={70}
-        skewAngle={-4}
-        delay={0.25}
-        duration={0.85}
+        xOffset={60}
+        skewAngle={-5}
+        delay={0.2}
+        duration={0.8}
         className="w-full"
       >
         <div
@@ -224,8 +224,8 @@ export default function Skills() {
                   fill="#F6C343"
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: isClusterActive ? 1 : 0.6 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
+                  viewport={{ once: false }}
+                  transition={{ duration: 0.3, delay: 0.05 }}
                 >
                   // {c.label}
                 </motion.text>
@@ -261,12 +261,12 @@ export default function Skills() {
                   strokeDasharray={isEdgeActive ? "none" : "3 3"}
                   initial={{ pathLength: 0, strokeDashoffset: isEdgeActive ? -40 : 0 }}
                   whileInView={{ pathLength: 1 }}
-                  viewport={{ once: true, margin: "-100px" }}
+                  viewport={{ once: false, margin: "-40px" }}
                   animate={{
                     strokeDashoffset: isEdgeActive ? [0, -40, 0] : 0,
                   }}
                   transition={{
-                    pathLength: { duration: 1.2, delay: 0.5, ease: "easeOut" },
+                    pathLength: { duration: 0.6, delay: 0.1, ease: "easeOut" },
                     strokeDashoffset: { duration: 1, repeat: Infinity, ease: "linear" },
                   }}
                 />
@@ -307,15 +307,15 @@ export default function Skills() {
                   className="cursor-pointer focus:outline-none"
                   style={{
                     opacity: isDimmed ? 0.25 : 1,
-                    transition: "opacity 0.3s ease",
+                    transition: "opacity 0.2s ease",
                   }}
                   initial={{ opacity: 0, scale: 0 }}
                   whileInView={{
                     opacity: isDimmed ? 0.25 : 1,
                     scale: 1,
                   }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.5, delay: 0.6 + skill.id.charCodeAt(0) * 0.01, ease: [0.34, 1.56, 0.64, 1] }}
+                  viewport={{ once: false, margin: "-40px" }}
+                  transition={{ duration: 0.35, delay: 0.05 + (skill.id.charCodeAt(0) % 10) * 0.015, ease: [0.16, 1, 0.3, 1] }}
                   whileHover={{ scale: 1 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -384,8 +384,8 @@ export default function Skills() {
                     }}
                     initial={{ opacity: 0, x: isNearRightEdge ? 10 : -10 }}
                     whileInView={{ opacity: isSelected ? 1 : isConnected ? 0.95 : 0.7, x: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.4, delay: 0.8 }}
+                    viewport={{ once: false, margin: "-40px" }}
+                    transition={{ duration: 0.4, delay: 0.1 }}
                   >
                     {skill.label}
                   </motion.text>

@@ -6,33 +6,31 @@ export interface HorizontalRevealProps {
   children: React.ReactNode;
   /** Additional CSS class names */
   className?: string;
-  /** Initial horizontal offset from the right in px (default: 60) */
+  /** Initial horizontal offset in px (default: 60) */
   xOffset?: number;
   /** Skew angle in degrees (default: -6) */
   skewAngle?: number;
   /** Delay before animation starts in seconds (default: 0) */
   delay?: number;
-  /** Stagger multiplier when used in a list (default: 0.1) */
+  /** Stagger multiplier when used in a list (default: 0.08) */
   stagger?: number;
   /** Item index in a list to automatically compute stagger delay */
   index?: number;
-  /** Animation duration in seconds (default: 0.75) */
+  /** Animation duration in seconds (default: 0.7) */
   duration?: number;
-  /** Margin for viewport trigger (default: "-60px") */
+  /** Margin for viewport trigger (default: "-40px") */
   viewMargin?: string;
-  /** Whether animation should trigger only once (default: false for bidirectional scrolling) */
+  /** Whether animation should trigger only once (default: false for full bidirectional reverse scrolling) */
   once?: boolean;
   /** Custom easing curve (default: [0.22, 1, 0.36, 1]) */
   ease?: [number, number, number, number] | any;
 }
 
 /**
- * HorizontalReveal Component
- *
- * Provides horizontal reveal animation with scroll-triggered animations.
- * Features smooth transitions, opacity changes, and skew effects as cards
- * and UI elements move from right to center.
- * Supports smooth bidirectional entry/exit on forward and backward scrolling.
+ * Responsive Bidirectional Horizontal Reveal Component:
+ * - Supports forward and reverse scrolling animations (once: false)
+ * - Kinetic skew, right-to-center horizontal slide, and depth blur
+ * - Smoothly resets and re-reveals when scrolling up or down
  */
 export default function HorizontalReveal({
   children,
@@ -40,10 +38,10 @@ export default function HorizontalReveal({
   xOffset = 60,
   skewAngle = -6,
   delay = 0,
-  stagger = 0.1,
+  stagger = 0.08,
   index = 0,
-  duration = 0.75,
-  viewMargin = "-60px",
+  duration = 0.7,
+  viewMargin = "-40px",
   once = false,
   ease = [0.22, 1, 0.36, 1],
 }: HorizontalRevealProps) {
@@ -90,7 +88,7 @@ export default function HorizontalReveal({
         }
         transition={{
           duration,
-          delay: totalDelay,
+          delay: isInView ? totalDelay : 0,
           ease,
         }}
       >

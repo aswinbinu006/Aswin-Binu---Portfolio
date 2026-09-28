@@ -1,21 +1,15 @@
 import React, { useRef, useEffect } from "react";
 import type { Project } from "@/data/projects";
-import { Tag, Button } from "@/components/ui";
 import { gsap } from "@/utils/gsap";
 
-/**
- * Editorial Project Card - Minimalist, data-driven, mockup-free.
- * Focuses on project narrative + GitHub/Live Demo links only.
- * - No wireframe mockups, no engineering specs, no tech stack tags
- * - Clean typographic hierarchy
- * - Easy to add new projects - just add to data/projects.ts
- * - Consistent with editorial theme across the site
- * - Strict palette: #020814 / #061A3A / #0F4C81 / #5FA8FF / #F7FBFF
- */
-export default function ProjectCard({ project }: { project: Project }) {
+interface ProjectCardProps {
+  project: Project;
+  onSelect: (project: Project) => void;
+}
+
+export default function ProjectCard({ project, onSelect }: ProjectCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // Magnetic hover with GSAP
   useEffect(() => {
     if (!cardRef.current || typeof window === "undefined") return;
 
@@ -34,105 +28,73 @@ export default function ProjectCard({ project }: { project: Project }) {
   }, []);
 
   const handleMouseEnter = () => {
-    gsap.to(cardRef.current, { y: -4, duration: 0.3, ease: "power3.out" });
+    gsap.to(cardRef.current, { y: -4, duration: 0.25, ease: "power2.out" });
   };
 
   const handleMouseLeave = () => {
-    gsap.to(cardRef.current, { y: 0, duration: 0.5, ease: "power3.out" });
+    gsap.to(cardRef.current, { y: 0, duration: 0.35, ease: "power2.out" });
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onSelect(project);
+    }
   };
 
   return (
     <div
       ref={cardRef}
-      className="project-card group relative w-full overflow-hidden rounded-2xl border border-white/10 bg-[#12151c]/85 p-6 sm:p-8 md:p-10 lg:p-12 backdrop-blur-xl transition-all duration-300 hover:border-white/30 hover:-translate-y-1 hover:shadow-silver select-none cursor-pointer"
+      id={`project-card-${project.id}`}
+      tabIndex={0}
+      role="button"
+      aria-label={`Inspect ${project.title}`}
+      onClick={() => onSelect(project)}
+      onKeyDown={handleKeyDown}
+      className="project-card group relative flex flex-col justify-between rounded-2xl border border-white/10 bg-[#0a0a0c]/90 p-5 backdrop-blur-xl transition-all duration-300 hover:border-white/30 hover:bg-[#121215]/95 hover:shadow-silver focus-ring select-none cursor-pointer h-full"
     >
-      {/* Project Header */}
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
-        <div>
-          <div className="flex items-center gap-2.5 mb-2">
-            <Tag variant="gold" size="sm">
+      <div>
+        {/* Top Visual Container */}
+        <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl border border-white/10 bg-[#111114] mb-5">
+          <img
+            src={project.image}
+            alt={project.title}
+            className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105 opacity-85 group-hover:opacity-100"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+
+          {/* Top Category Badge */}
+          <div className="absolute top-3 left-3">
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full font-mono text-[10px] font-semibold tracking-wider uppercase bg-black/60 text-white/90 border border-white/15 backdrop-blur-md">
               {project.category}
-            </Tag>
-            <span className="font-mono text-label text-white/40">
-              {project.duration}
             </span>
           </div>
-          <h3
-            className="font-mono text-h2 font-bold tracking-tight text-white transition-colors group-hover:text-accent-gold"
-          >
-            {project.title}
-          </h3>
-          <p className="mt-1 font-mono text-caption text-white/60 uppercase tracking-wider">
-            {project.role}
-          </p>
+
+          <div className="absolute bottom-3 left-3 right-3 font-mono text-[11px] text-white/70">
+            <span>{project.role}</span>
+          </div>
         </div>
 
-        <div className="sm:text-right">
-          <span className="font-mono text-label text-white/40 uppercase tracking-wider">
-            {project.year}
-          </span>
-        </div>
+        {/* Project Title */}
+        <h3 className="font-mono text-xl sm:text-2xl font-bold tracking-tight text-white transition-colors group-hover:text-accent-gold leading-snug">
+          {project.title}
+        </h3>
+
+        {/* Project Description */}
+        <p className="mt-2.5 font-mono text-xs sm:text-sm text-white/70 leading-relaxed line-clamp-2">
+          {project.description}
+        </p>
       </div>
 
-      {/* Project Description */}
-      <p
-        className="font-mono text-body leading-relaxed text-white/70 mt-3 mb-6 max-w-[70ch]"
-      >
-        {project.description}
-      </p>
-
-      {/* Action Buttons */}
-      <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-white/10">
-        {/* GitHub Repository */}
-        {project.githubUrl && (
-          <Button
-            href={project.githubUrl}
-            target="_blank"
-            variant="glass"
-            size="sm"
-            icon={
-              <svg
-                viewBox="0 0 24 24"
-                className="h-3.5 w-3.5 fill-current"
-              >
-                <path
-                  d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"
-                />
-              </svg>
-            }
-            iconPosition="left"
-          >
-            Repository
-          </Button>
-        )}
-
-        {/* Live Demo / Telemetry */}
-        {project.demoUrl ? (
-          <Button
-            href={project.demoUrl}
-            target="_blank"
-            variant="secondary"
-            size="sm"
-            icon={
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
-              </span>
-            }
-            iconPosition="left"
-          >
-            Live Demo
-          </Button>
-        ) : project.caseStudyUrl ? (
-          <Button
-            href={project.caseStudyUrl}
-            target="_blank"
-            variant="ghost"
-            size="sm"
-          >
-            Engineering Log →
-          </Button>
-        ) : null}
+      {/* Read More Link */}
+      <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between font-mono text-xs text-white/80 group-hover:text-white transition-colors">
+        <span className="font-semibold tracking-wider uppercase text-[11px]">
+          Read more
+        </span>
+        <span className="transform group-hover:translate-x-1.5 transition-transform text-accent-gold">
+          →
+        </span>
       </div>
     </div>
   );
