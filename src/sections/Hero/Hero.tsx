@@ -4,6 +4,23 @@ import { motion } from "framer-motion";
 const FIRST_NAME = "ASWIN";
 const LAST_NAME = "BINU";
 
+const TOP_MARQUEE_ITEMS = [
+  "MACHINE LEARNING FOR DEFENSE & AUTONOMOUS SYSTEMS",
+  "EDGE QUANTIZATION & LOW-LATENCY INFERENCE",
+  "REAL-TIME SENSOR FUSION & ROBOTICS (ROS2 / C++)",
+  "FAULT-TOLERANT EMBEDDED ARCHITECTURES",
+  "COMPUTER VISION & SPATIAL PERCEPTION",
+  "HIGH-THROUGHPUT TELEMETRY PIPELINES",
+];
+
+const BOTTOM_MARQUEE_ITEMS = [
+  "NAGPUR, INDIA [LAT 21.14°N • LON 79.08°E]",
+  "TENSORRT • PYTORCH • ROS2 • EMBEDDED C/C++ • LINUX",
+  "IEEE STUDENT BRANCH CHAIR // R&D DIRECTIVE",
+  "MISSION STATUS: CONTINUOUS TELEMETRY & SYSTEM BUILD",
+  "HARDWARE-LOCKED EDGE PLATFORMS & ON-DEVICE AI",
+];
+
 /**
  * Chapter 1 — The Cosmic Entrance & System Initialization
  *
@@ -52,39 +69,17 @@ export default function Hero({ isIntroComplete }: { isIntroComplete?: boolean })
         </div>
       </div>
 
-      {/* ── KINETIC TEXT MARQUEE RIBBON 1 (Top Background Ambient) ── */}
-      <div className="pointer-events-none absolute top-28 left-0 w-full overflow-hidden opacity-35 select-none py-2 border-y border-white/[0.08] bg-white/[0.02] backdrop-blur-[1px]">
+      {/* ── KINETIC TEXT MARQUEE RIBBON 1 (Top Background Ambient - Positioned safely below the HUD line) ── */}
+      <div className="pointer-events-none absolute top-36 sm:top-40 md:top-44 left-0 w-full overflow-hidden opacity-40 select-none py-2.5 border-y border-white/[0.08] bg-white/[0.02] backdrop-blur-[1px]">
         <motion.div
-          className="flex whitespace-nowrap font-mono text-xs sm:text-sm tracking-[0.3em] uppercase text-white/90 font-medium"
+          className="flex whitespace-nowrap font-mono text-xs sm:text-sm tracking-[0.25em] uppercase text-white/90 font-medium"
           animate={{ x: ["0%", "-50%"] }}
-          transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+          transition={{ duration: 45, repeat: Infinity, ease: "linear" }}
         >
-          {Array(4)
-            .fill("DETERMINISTIC EDGE RUNTIMES")
-            .flat()
-            .map((item, idx) => (
-              <span key={`ribbon-a-${idx}`} className="mx-6 flex items-center gap-3">
-                <span className="text-white/40">+</span> {item}
-              </span>
-            ))}
-          {Array(4).fill("TACTICAL AVIONICS TELEMETRY").flat().map((item, idx) => (
-            <span key={`ribbon-a-${idx + 4}`} className="mx-6 flex items-center gap-3">
-              <span className="text-white/40">+</span> {item}
-            </span>
-          ))}
-          {Array(4).fill("AUTONOMOUS THREAT MATRICES").flat().map((item, idx) => (
-            <span key={`ribbon-a-${idx + 8}`} className="mx-6 flex items-center gap-3">
-              <span className="text-white/40">+</span> {item}
-            </span>
-          ))}
-          {Array(4).fill("ZERO-LATENCY INFERENCE").flat().map((item, idx) => (
-            <span key={`ribbon-a-${idx + 12}`} className="mx-6 flex items-center gap-3">
-              <span className="text-white/40">+</span> {item}
-            </span>
-          ))}
-          {Array(4).fill("SELF-SUPERVISED SENSOR FUSION").flat().map((item, idx) => (
-            <span key={`ribbon-a-${idx + 16}`} className="mx-6 flex items-center gap-3">
-              <span className="text-white/40">+</span> {item}
+          {[...TOP_MARQUEE_ITEMS, ...TOP_MARQUEE_ITEMS].map((item, idx) => (
+            <span key={`top-marquee-${idx}`} className="mx-6 flex items-center gap-3">
+              <span className="text-white/40">✦</span>
+              <span>{item}</span>
             </span>
           ))}
         </motion.div>
@@ -187,39 +182,17 @@ export default function Hero({ isIntroComplete }: { isIntroComplete?: boolean })
         </motion.div>
       </motion.div>
 
-      {/* ── KINETIC TEXT MARQUEE RIBBON 2 (Bottom Ambient Movement) ── */}
-      <div className="pointer-events-none absolute bottom-20 left-0 w-full overflow-hidden opacity-35 select-none py-2 border-y border-white/[0.08] bg-white/[0.02] backdrop-blur-[1px]">
+      {/* ── KINETIC TEXT MARQUEE RIBBON 2 (Bottom Ambient Movement - Positioned safely above bottom HUD) ── */}
+      <div className="pointer-events-none absolute bottom-24 sm:bottom-28 left-0 w-full overflow-hidden opacity-40 select-none py-2.5 border-y border-white/[0.08] bg-white/[0.02] backdrop-blur-[1px]">
         <motion.div
-          className="flex whitespace-nowrap font-mono text-xs sm:text-sm tracking-[0.3em] uppercase text-white/90 font-medium"
+          className="flex whitespace-nowrap font-mono text-xs sm:text-sm tracking-[0.25em] uppercase text-white/90 font-medium"
           animate={{ x: ["-50%", "0%"] }}
-          transition={{ duration: 38, repeat: Infinity, ease: "linear" }}
+          transition={{ duration: 45, repeat: Infinity, ease: "linear" }}
         >
-          {Array(4)
-            .fill("NAGPUR [LAT 21.14°N]")
-            .flat()
-            .map((item, idx) => (
-              <span key={`ribbon-b-${idx}`} className="mx-6 flex items-center gap-3">
-                <span className="text-white/40">✦</span> {item}
-              </span>
-            ))}
-          {Array(4).fill("SYS_ARCH: TENSORRT / ROS2 / EMBEDDED C").flat().map((item, idx) => (
-            <span key={`ribbon-b-${idx + 4}`} className="mx-6 flex items-center gap-3">
-              <span className="text-white/40">✦</span> {item}
-            </span>
-          ))}
-          {Array(4).fill("MISSION EPOCH: 2026.09").flat().map((item, idx) => (
-            <span key={`ribbon-b-${idx + 8}`} className="mx-6 flex items-center gap-3">
-              <span className="text-white/40">✦</span> {item}
-            </span>
-          ))}
-          {Array(4).fill("IEEE DIRECTIVE // CRITICAL SYSTEMS").flat().map((item, idx) => (
-            <span key={`ribbon-b-${idx + 12}`} className="mx-6 flex items-center gap-3">
-              <span className="text-white/40">✦</span> {item}
-            </span>
-          ))}
-          {Array(4).fill("CRITICAL SYSTEMS BUILD").flat().map((item, idx) => (
-            <span key={`ribbon-b-${idx + 16}`} className="mx-6 flex items-center gap-3">
-              <span className="text-white/40">✦</span> {item}
+          {[...BOTTOM_MARQUEE_ITEMS, ...BOTTOM_MARQUEE_ITEMS].map((item, idx) => (
+            <span key={`bottom-marquee-${idx}`} className="mx-6 flex items-center gap-3">
+              <span className="text-white/40">◈</span>
+              <span>{item}</span>
             </span>
           ))}
         </motion.div>
