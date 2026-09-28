@@ -3,6 +3,8 @@ import { skills, clusterMetas } from "@/data/skills";
 import { useConstellationGraph } from "./useConstellationGraph";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { Label } from "@/components/ui";
+import HorizontalTextReveal from "@/components/effects/HorizontalTextReveal";
+import HorizontalReveal from "@/components/effects/HorizontalReveal";
 
 const SVG_WIDTH = 1000;
 const SVG_HEIGHT = 650;
@@ -45,84 +47,74 @@ export default function Skills() {
       {/* Dynamic Background Elements */}
       <ScrollConstellationBackground isInView={isInView} />
 
-      {/* Editorial Header - Scroll Reveal */}
-      <motion.div
-        className="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-50px" }}
-        transition={{ duration: 0.8, ease: [0.34, 1.56, 0.64, 1] }}
-      >
+      {/* Editorial Header - Horizontal Reveals */}
+      <div className="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
         <div>
-          <motion.div
-            className="mb-3 flex items-center gap-2"
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            <Label beacon beaconColor="bg-white/80">
-              Constellation Topology // Act III
-            </Label>
-          </motion.div>
-          <motion.h2
+          <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.05}>
+            <div className="mb-3 flex items-center gap-2">
+              <Label beacon beaconColor="bg-white/80">
+                Constellation Topology // Act III
+              </Label>
+            </div>
+          </HorizontalReveal>
+
+          <HorizontalTextReveal
+            text="Systems & Directives"
             className="font-mono text-h1 font-bold tracking-tight text-white"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-          >
-            Systems & Directives
-          </motion.h2>
-          <motion.p
-            className="mt-3 max-w-[65ch] font-mono text-body leading-relaxed text-white/70"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.4 }}
-          >
-            An interconnected topology of ML frameworks, backend runtimes, and
-            organizational leadership. Hover, tap, or focus any star to trace
-            its neural pathways.
-          </motion.p>
+            highlightWords={["Systems", "Directives"]}
+            highlightColor="#ffffff"
+            wordClassName="text-white"
+            xOffset={60}
+            skewAngle={-6}
+            delay={0.15}
+            stagger={0.05}
+          />
+
+          <HorizontalReveal xOffset={50} skewAngle={-5} delay={0.3}>
+            <p className="mt-3 max-w-[65ch] font-mono text-body leading-relaxed text-white/70">
+              An interconnected topology of ML frameworks, backend runtimes, and
+              organizational leadership. Hover, tap, or focus any star to trace
+              its neural pathways.
+            </p>
+          </HorizontalReveal>
         </div>
 
         {/* Active Node Indicator Readout - Dynamic */}
-        <motion.div
-          className="flex items-center gap-2 font-mono text-caption text-white/50"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-        >
-          <motion.span
-            className={`inline-block h-2 w-2 rounded-full transition-colors duration-300 ${
-              activeSkill ? "bg-white shadow-silver" : "bg-white/20"
-            }`}
-            animate={{
-              scale: activeSkill ? [1, 1.2, 1] : 1,
-            }}
-            transition={{
-              duration: 1.5,
-              repeat: activeSkill ? Infinity : 0,
-              ease: "easeInOut",
-            }}
-          />
-          <span className="text-[11px] uppercase tracking-wider">
-            {activeSkill
-              ? `${activeSkill.label} // ${activeSkill.cluster} (${activeSkill.connectedSkillIds.length} LINKS)`
-              : "TOPOLOGY RESTING // TAP STAR"}
-          </span>
-        </motion.div>
-      </motion.div>
+        <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.4}>
+          <div className="flex items-center gap-2 font-mono text-caption text-white/70">
+            <motion.span
+              className={`inline-block h-2 w-2 rounded-full transition-colors duration-300 ${
+                activeSkill ? "bg-white shadow-silver" : "bg-white/30"
+              }`}
+              animate={{
+                scale: activeSkill ? [1, 1.2, 1] : 1,
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: activeSkill ? Infinity : 0,
+                ease: "easeInOut",
+              }}
+            />
+            <span className="text-[11px] uppercase tracking-wider">
+              {activeSkill
+                ? `${activeSkill.label} // ${activeSkill.cluster} (${activeSkill.connectedSkillIds.length} LINKS)`
+                : "TOPOLOGY RESTING // TAP STAR"}
+            </span>
+          </div>
+        </HorizontalReveal>
+      </div>
 
-      {/* Constellation Canvas Frame - Clean Dark Grey Architectural Theme */}
-      <motion.div
-        className="relative w-full overflow-hidden rounded-2xl border border-white/10 bg-[#0d0f14]/90 p-2 md:p-6 backdrop-blur-xl shadow-[0_25px_60px_rgba(0,0,0,0.7)]"
-        initial={{ opacity: 0, scale: 0.98 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true, margin: "-50px" }}
-        transition={{ duration: 0.8, delay: 0.3 }}
+      {/* Constellation Canvas Frame - Wrapped in Horizontal Reveal */}
+      <HorizontalReveal
+        xOffset={70}
+        skewAngle={-4}
+        delay={0.25}
+        duration={0.85}
+        className="w-full"
       >
+        <div
+          className="relative w-full overflow-hidden rounded-2xl border border-white/10 bg-[#0d0f14]/90 p-2 md:p-6 backdrop-blur-xl shadow-[0_25px_60px_rgba(0,0,0,0.7)]"
+        >
         <svg
           viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
           className="h-auto w-full overflow-visible touch-manipulation"
@@ -462,17 +454,12 @@ export default function Skills() {
         )}
 
         {/* Footer Instruction & Metrics */}
-        <motion.div
-          className="mt-4 flex items-center justify-between border-t border-white/10 pt-3 font-mono text-[11px] text-white/40"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 1.2 }}
-        >
+        <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3 font-mono text-[11px] text-white/40">
           <span>TAP EMPTY SPACE TO DISMISS & TRIGGER COSMOS</span>
           <span>{skills.length} NODES MAPPED</span>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
+    </HorizontalReveal>
     </section>
   );
 }

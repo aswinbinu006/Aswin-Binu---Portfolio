@@ -1,6 +1,8 @@
 import React, { useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Section, Label, Button } from "@/components/ui";
+import HorizontalTextReveal from "@/components/effects/HorizontalTextReveal";
+import HorizontalReveal from "@/components/effects/HorizontalReveal";
 
 // PLACEHOLDER: Verify external links and resume asset before final deployment
 const CONTACT_LINKS = [
@@ -33,49 +35,52 @@ export default function Contact() {
     >
       <div ref={sectionRef} className="relative z-10 max-w-3xl mx-auto flex flex-col items-center">
         {/* Eyebrow Label */}
-        <motion.div
-          className="mb-4"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          <Label beacon beaconColor="bg-white/80">
-            Transmission // Act VIII
-          </Label>
-        </motion.div>
+        <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.1}>
+          <div className="mb-4">
+            <Label beacon beaconColor="bg-white/80">
+              Transmission // Act VIII
+            </Label>
+          </div>
+        </HorizontalReveal>
 
-        {/* Main Statement */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, delay: 0.3 }}
-        >
-          <h2 className="font-mono text-h1 font-bold tracking-tight text-white">
-            Let&apos;s build something memorable.
-          </h2>
+        {/* Main Statement with Horizontal Text Reveal */}
+        <div className="w-full flex flex-col items-center">
+          <HorizontalTextReveal
+            text="Let's build something memorable."
+            className="font-mono text-h1 font-bold tracking-tight text-white justify-center"
+            highlightWords={["build", "memorable."]}
+            highlightColor="#ffffff"
+            wordClassName="text-white"
+            xOffset={60}
+            skewAngle={-6}
+            delay={0.2}
+            stagger={0.06}
+          />
 
-          <p className="mt-4 max-w-[50ch] font-mono text-body text-white/70 leading-relaxed mx-auto">
-            Open for high-impact AI/ML research collaborations, critical systems
-            engineering, and architectural discussions.
-          </p>
-        </motion.div>
+          <HorizontalReveal xOffset={50} skewAngle={-5} delay={0.4}>
+            <p className="mt-4 max-w-[50ch] font-mono text-body text-white/70 leading-relaxed mx-auto">
+              Open for high-impact AI/ML research collaborations, critical systems
+              engineering, and architectural discussions.
+            </p>
+          </HorizontalReveal>
+        </div>
 
-        {/* Action Buttons */}
-        <motion.div
+        {/* Action Buttons with Horizontal Stagger */}
+        <div
           data-no-constellation
           className="mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4"
-          initial={{ opacity: 0, y: 25 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.5 }}
         >
-          {CONTACT_LINKS.map((link) => {
-            if (link.isEmail) {
-              return (
+          {CONTACT_LINKS.map((link, idx) => (
+            <HorizontalReveal
+              key={link.label}
+              index={idx}
+              xOffset={60}
+              skewAngle={-6}
+              stagger={0.1}
+              delay={0.45}
+            >
+              {link.isEmail ? (
                 <Button
-                  key={link.label}
                   variant="primary"
                   size="md"
                   onClick={handleCopyEmail}
@@ -90,23 +95,20 @@ export default function Contact() {
                 >
                   {copied ? "COPIED TO CLIPBOARD" : "aswinbinu@proton.me"}
                 </Button>
-              );
-            }
-
-            return (
-              <Button
-                key={link.label}
-                variant="glass"
-                size="md"
-                href={link.href}
-                target={link.isExternal ? "_blank" : undefined}
-                rel="noreferrer"
-              >
-                {link.label}
-              </Button>
-            );
-          })}
-        </motion.div>
+              ) : (
+                <Button
+                  variant="glass"
+                  size="md"
+                  href={link.href}
+                  target={link.isExternal ? "_blank" : undefined}
+                  rel="noreferrer"
+                >
+                  {link.label}
+                </Button>
+              )}
+            </HorizontalReveal>
+          ))}
+        </div>
 
         {/* Subtle HUD Transmission Telemetry Footer */}
         <motion.div

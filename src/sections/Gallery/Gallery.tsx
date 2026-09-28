@@ -2,8 +2,10 @@ import React, { useState, useRef } from "react";
 import { events, type EventItem } from "@/data/events";
 import EventPoster from "./EventPoster";
 import EventDetailModal from "./EventDetailModal";
-import { motion, useInView } from "framer-motion";
+import { useInView } from "framer-motion";
 import { Label } from "@/components/ui";
+import HorizontalTextReveal from "@/components/effects/HorizontalTextReveal";
+import HorizontalReveal from "@/components/effects/HorizontalReveal";
 
 /**
  * Chapter 5 — Event Archive / Exhibition Gallery
@@ -43,37 +45,47 @@ export default function Gallery() {
       {/* Dynamic Ambient Background */}
       <ScrollGalleryBackground isInView={isInView} />
 
-      {/* Editorial Header */}
-      <motion.div
-        className="mb-12 md:mb-16 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-50px" }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      >
+      {/* Editorial Header with Horizontal Reveal */}
+      <div className="mb-12 md:mb-16 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
         <div>
-          <div className="mb-3">
-            <Label beacon beaconColor="bg-white/80">
-              Curated Records // Act V
-            </Label>
+          <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.05}>
+            <div className="mb-3">
+              <Label beacon beaconColor="bg-white/80">
+                Curated Records // Act V
+              </Label>
+            </div>
+          </HorizontalReveal>
+
+          <HorizontalTextReveal
+            text="Exhibition Wall"
+            className="font-mono text-h1 font-bold tracking-tight text-white"
+            highlightWords={["Exhibition", "Wall"]}
+            highlightColor="#ffffff"
+            wordClassName="text-white"
+            xOffset={60}
+            skewAngle={-6}
+            delay={0.15}
+            stagger={0.05}
+          />
+
+          <HorizontalReveal xOffset={50} skewAngle={-5} delay={0.3}>
+            <p className="mt-3 max-w-[65ch] font-mono text-body leading-relaxed text-white/70">
+              Curated archive of technical hackathons, escape-room architectures,
+              and engineering symposia orchestrated across collegiate and IEEE chapters.
+              Select any poster to inspect archival records.
+            </p>
+          </HorizontalReveal>
+        </div>
+
+        <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.4}>
+          <div className="flex items-center gap-2 font-mono text-caption text-white/70">
+            <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+            <span>{events.length} CURATED ARTIFACTS</span>
           </div>
-          <h2 className="font-mono text-h1 font-bold tracking-tight text-white">
-            Exhibition Wall
-          </h2>
-          <p className="mt-3 max-w-[65ch] font-mono text-body leading-relaxed text-white/70">
-            Curated archive of technical hackathons, escape-room architectures,
-            and engineering symposia orchestrated across collegiate and IEEE chapters.
-            Select any poster to inspect archival records.
-          </p>
-        </div>
+        </HorizontalReveal>
+      </div>
 
-        <div className="flex items-center gap-2 font-mono text-caption text-white/50">
-          <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-          <span>{events.length} CURATED ARTIFACTS</span>
-        </div>
-      </motion.div>
-
-      {/* 3-Column Exhibition Poster Grid */}
+      {/* 3-Column Exhibition Poster Grid with Staggered Horizontal Reveal */}
       <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         <ScrollColumn
           index={0}
@@ -130,7 +142,7 @@ function ScrollGalleryBackground({ isInView }: { isInView: boolean }) {
 }
 
 /**
- * Individual column with staggered poster reveals
+ * Individual column with staggered horizontal poster reveals
  */
 interface ScrollColumnProps {
   index: number;
@@ -145,23 +157,21 @@ function ScrollColumn({ delay, events, onOpenEvent, onKeyDown, offset = "" }: Sc
   return (
     <div className={`flex flex-col gap-6 md:gap-8 ${offset}`}>
       {events.map((event, i) => (
-        <motion.div
+        <HorizontalReveal
           key={event.id}
-          initial={{ opacity: 0, y: 30, scale: 0.98 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{
-            duration: 0.6,
-            delay: delay + i * 0.12,
-            ease: [0.16, 1, 0.3, 1],
-          }}
+          index={i}
+          delay={delay}
+          stagger={0.15}
+          xOffset={70}
+          skewAngle={-5}
+          duration={0.75}
         >
           <EventPoster
             event={event}
             onClick={() => onOpenEvent(event)}
             onKeyDown={(e) => onKeyDown(event, e)}
           />
-        </motion.div>
+        </HorizontalReveal>
       ))}
     </div>
   );

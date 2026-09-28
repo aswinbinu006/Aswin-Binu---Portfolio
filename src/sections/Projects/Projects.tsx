@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
-import { motion, useInView } from "framer-motion";
 import { projects } from "@/data/projects";
 import ProjectCard from "./ProjectCard";
-import { Section, SectionHeading } from "@/components/ui";
+import HorizontalTextReveal from "@/components/effects/HorizontalTextReveal";
+import HorizontalReveal from "@/components/effects/HorizontalReveal";
 
 /**
  * Chapter 4 — Projects
@@ -11,44 +11,61 @@ import { Section, SectionHeading } from "@/components/ui";
  */
 export default function Projects() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   return (
-    <Section id="projects" className="py-24 md:py-36">
+    <section
+      id="projects"
+      className="relative z-10 mx-auto py-24 md:py-36 overflow-x-clip px-4 sm:px-6 lg:px-12"
+    >
       <div ref={sectionRef} className="max-w-5xl mx-auto">
-        {/* Editorial Section Heading */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <SectionHeading
-            label="Featured Works // Act IV"
-            title="Selected Systems & Architectures"
-            description="Production-grade autonomous frameworks, edge quantization models, and critical infrastructure telemetry engines."
-          />
-        </motion.div>
+        {/* Editorial Section Heading with Horizontal Text Reveal */}
+        <div className="mb-10">
+          <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.05}>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+              <span className="font-mono text-xs text-caption uppercase tracking-wider text-white/70">
+                Featured Works // Act IV
+              </span>
+            </div>
+          </HorizontalReveal>
 
-        {/* Project Cards Stack */}
-        <div className="flex flex-col gap-6 md:gap-8 mt-8">
+          <HorizontalTextReveal
+            text="Selected Systems & Architectures"
+            className="font-mono text-h1 font-bold tracking-tight text-white"
+            highlightWords={["Systems", "Architectures"]}
+            highlightColor="#ffffff"
+            wordClassName="text-white"
+            xOffset={60}
+            skewAngle={-6}
+            delay={0.15}
+            stagger={0.05}
+          />
+
+          <HorizontalReveal xOffset={50} skewAngle={-5} delay={0.35}>
+            <p className="mt-3 max-w-[65ch] font-mono text-caption sm:text-body leading-relaxed text-white/70">
+              Production-grade autonomous frameworks, edge quantization models, and
+              critical infrastructure telemetry engines.
+            </p>
+          </HorizontalReveal>
+        </div>
+
+        {/* Project Cards Stack - Staggered horizontal reveal with skew */}
+        <div className="flex flex-col gap-6 md:gap-8">
           {projects.map((project, idx) => (
-            <motion.div
+            <HorizontalReveal
               key={project.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{
-                duration: 0.7,
-                delay: idx * 0.15,
-                ease: [0.16, 1, 0.3, 1],
-              }}
+              index={idx}
+              xOffset={80}
+              skewAngle={-5}
+              stagger={0.12}
+              delay={0.1}
+              duration={0.8}
             >
               <ProjectCard project={project} />
-            </motion.div>
+            </HorizontalReveal>
           ))}
         </div>
       </div>
-    </Section>
+    </section>
   );
 }

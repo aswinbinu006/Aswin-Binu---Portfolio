@@ -67,12 +67,12 @@ export default function About({ isIntroComplete = true }: AboutProps) {
         return;
       }
 
-      // Initial state
+      // Initial state with horizontal offset and skew
       gsap.set(".console-beam", { opacity: 0 });
-      gsap.set(".console-eyebrow", { opacity: 0, y: 15 });
-      gsap.set(".console-body", { opacity: 0, y: 20 });
-      gsap.set(".identity-tag", { opacity: 0, y: 18 });
-      gsap.set(".portrait-card", { opacity: 0, scale: 0.96 });
+      gsap.set(".console-eyebrow", { opacity: 0, x: 40, skewX: -4 });
+      gsap.set(".console-body", { opacity: 0, x: 50, skewX: -5 });
+      gsap.set(".identity-tag", { opacity: 0, x: 60, skewX: -6 });
+      gsap.set(".portrait-card", { opacity: 0, x: 70, skewX: -6, scale: 0.98 });
       gsap.set(".portrait-rim", { opacity: 0 });
       gsap.set(".portrait-blueprint, .portrait-labels", { opacity: 0 });
 
@@ -88,47 +88,51 @@ export default function About({ isIntroComplete = true }: AboutProps) {
       // 0ms: Ambient lighting beam
       tl.to(".console-beam", { opacity: 1, duration: 1.2, ease: "power2.out" }, 0.1)
 
-        // 200ms: Eyebrow fades in
-        .to(".console-eyebrow", { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.2)
+        // 200ms: Eyebrow reveals from right with skew
+        .to(".console-eyebrow", { opacity: 1, x: 0, skewX: 0, duration: 0.6, ease: "power2.out" }, 0.2)
 
-        // 1000ms: Body copy appears
+        // 800ms: Body copy reveals from right with skew
         .to(
           ".console-body",
           {
             opacity: 1,
-            y: 0,
-            duration: 0.6,
+            x: 0,
+            skewX: 0,
+            duration: 0.7,
             ease: "power2.out",
           },
-          1.0
+          0.8
         )
 
-        // 1400ms: Identity matrix equipment tags settle
+        // 1100ms: Identity matrix equipment tags reveal from right with skew
         .to(
           ".identity-tag",
           {
             opacity: 1,
-            y: 0,
-            duration: 0.5,
-            stagger: 0.08,
+            x: 0,
+            skewX: 0,
+            duration: 0.6,
+            stagger: 0.09,
             ease: "power2.out",
           },
-          1.4
+          1.1
         )
 
-        // 1600ms: Portrait powers on
+        // 1300ms: Portrait reveals from right with skew
         .to(
           ".portrait-card",
           {
             opacity: 1,
+            x: 0,
+            skewX: 0,
             scale: 1,
-            duration: 0.75,
+            duration: 0.8,
             ease: "power3.out",
           },
-          1.6
+          1.3
         )
 
-        // 1850ms: Rim light sweeps
+        // 1550ms: Rim light sweeps
         .to(
           ".portrait-rim",
           {
@@ -136,10 +140,10 @@ export default function About({ isIntroComplete = true }: AboutProps) {
             duration: 0.8,
             ease: "power2.out",
           },
-          1.85
+          1.55
         )
 
-        // 2100ms: Blueprint overlay activates
+        // 1750ms: Blueprint overlay activates
         .to(
           ".portrait-blueprint, .portrait-labels",
           {
@@ -147,7 +151,7 @@ export default function About({ isIntroComplete = true }: AboutProps) {
             duration: 0.6,
             ease: "power2.out",
           },
-          2.1
+          1.75
         );
 
       // Scroll-driven smooth vertical parallax effect

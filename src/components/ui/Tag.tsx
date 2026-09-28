@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface TagProps extends React.HTMLAttributes<HTMLSpanElement> {
-  variant?: 'default' | 'cyan' | 'stellar' | 'outline';
+  variant?: 'default' | 'cyan' | 'stellar' | 'outline' | 'gold';
   size?: 'sm' | 'md';
   icon?: React.ReactNode;
   children: React.ReactNode;
@@ -30,6 +30,8 @@ export default function Tag({
       'bg-surface-panel border border-white/10 text-luminous',
     outline:
       'bg-transparent border border-white/10 text-luminous-dim',
+    gold:
+      'bg-[rgba(246,195,67,0.1)] border border-[rgba(246,195,67,0.3)] text-[var(--color-accent-gold)]',
   }[variant];
 
   return (

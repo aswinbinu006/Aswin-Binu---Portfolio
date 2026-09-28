@@ -2,35 +2,58 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Design Tokens: Refined Dark Grey & Silver Monochrome System */
+/* ==========================================================================
+   Design Tokens: Cosmic Obsidian & Warm Silver System
+   Strict palette: #020814 / #061A3A / #0F4C81 / #5FA8FF / #F7FBFF
+   ========================================================================== */
+
+/* -- Color System -- */
 :root {
   --color-void: #090a0f;
   --color-surface: #12151c;
   --color-panel: #161922;
   --color-navy: #12151c;
   --color-stellar: #334155;
-  --color-cyan: #e2e8f0;
+  --color-silver-soft: #e2e8f0;
   --color-silver: #e2e8f0;
+  --color-silver-5pct: rgba(226, 232, 240, 0.05);
+  --color-silver-15pct: rgba(226, 232, 240, 0.15);
+  --color-silver-30pct: rgba(226, 232, 240, 0.3);
+  --color-silver-50pct: rgba(226, 232, 240, 0.5);
   --color-white: #f8fafc;
+  --color-accent-gold: #F6C343;
+  --color-accent-amber: #FFAA00;
+  --color-caption: #98a2b3;
+  --color-muted: #64748b;
 
   --font-mono: 'Azeret Mono', ui-monospace, monospace;
 
-  /* Refined, comfortable typography clamp variables */
-  --type-display: clamp(1.75rem, 3.2vw, 3rem);
-  --type-h1: clamp(1.35rem, 2.2vw, 2.25rem);
-  --type-h2: clamp(1.15rem, 1.6vw, 1.5rem);
-  --type-h3: clamp(0.95rem, 1.2vw, 1.25rem);
-  --type-body: clamp(0.875rem, 0.3vw + 0.75rem, 0.95rem);
-  --type-caption: 0.8125rem;
-  --type-label: 0.6875rem;
+  /* -- Refined Fluid Typography Clamp Variables -- */
+  --type-display: clamp(1.875rem, 3.5vw, 2.875rem);  /* 30px */
+  --type-h1: clamp(1.5rem, 2.5vw, 2rem);            /* 32px */
+  --type-h2: clamp(1.25rem, 2vw, 1.5rem);           /* 24px */
+  --type-h3: clamp(1rem, 1.5vw, 1.25rem);           /* 20px */
+  --type-body: clamp(0.9375rem, 0.2vw + 0.8125rem, 1rem); /* 16px */
+  --type-caption: 0.75rem;
+  --type-label: 0.625rem;
 
-  /* Layout and spacing scale */
-  --max-content-width: 1440px;
+  /* -- Layout and Spacing Scale -- */
+  --max-content-width: 1560px;
+  --gutter-xs: 0.75rem;
   --gutter-sm: 1rem;
   --gutter-md: 1.5rem;
   --gutter-lg: 2rem;
+  --gutter-xl: 2.5rem;
+
+  /* -- Section vertical rhythm -- */
+  --section-padding: clamp(4rem, 5vw, 5.5rem);
+
+  /* -- Focus & Selection -- */
+  --focus-ring: 2px solid rgba(226, 232, 240, 0.6);
+  --focus-offset: 3px;
 }
 
+/* -- Base Styles -- */
 html,
 body {
   background-color: var(--color-void);
@@ -39,36 +62,62 @@ body {
   overflow-x: hidden;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: antialiased;
 }
 
-/* Prevent unwanted horizontal overflow page-wide */
+/* -- Fluid Container & Grid -- */
 #root {
   overflow-x: hidden;
   width: 100%;
 }
 
-/* 12-Column Responsive Grid System */
 .grid-12 {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--gutter-sm);
+  gap: var(--gutter-xs);
 }
 
 @media (min-width: 768px) {
   .grid-12 {
     grid-template-columns: repeat(8, minmax(0, 1fr));
-    gap: var(--gutter-md);
+    gap: var(--gutter-sm);
   }
 }
 
 @media (min-width: 1024px) {
   .grid-12 {
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: var(--gutter-lg);
+    gap: var(--gutter-md);
   }
 }
 
-/* Standard Fluid Container */
+.grid-6 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gutter-xs);
+}
+
+@media (min-width: 768px) {
+  .grid-6 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gutter-sm);
+  }
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gutter-xs);
+}
+
+@media (min-width: 1024px) {
+  .grid-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--gutter-sm);
+  }
+}
+
+/* -- Fluid Container -- */
 .container-custom {
   width: 100%;
   max-width: var(--max-content-width);
@@ -92,13 +141,13 @@ body {
   }
 }
 
-/* Section vertical rhythm */
+/* -- Section Vertical Rhythm -- */
 .section-padding {
-  padding-top: clamp(4rem, 6vw, 6.5rem);
-  padding-bottom: clamp(4rem, 6vw, 6.5rem);
+  padding-top: var(--section-padding);
+  padding-bottom: var(--section-padding);
 }
 
-/* Architectural Dark Grey Glass Material Tokens */
+/* -- Architectural Glass Material Tokens -- */
 .frosted-glass,
 .glass-panel {
   background: rgba(18, 21, 28, 0.72);
@@ -112,7 +161,7 @@ body {
 
 .frosted-glass:hover,
 .glass-panel:hover {
-  border-color: rgba(255, 255, 255, 0.22);
+  border-color: rgba(226, 232, 240, 0.22);
   background: rgba(24, 28, 38, 0.88);
   box-shadow: 0 0 25px rgba(0, 0, 0, 0.45);
 }
@@ -122,56 +171,13 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Tactical reticle corners */
-.corner-bracket {
-  position: relative;
-}
-
-.corner-bracket::before,
-.corner-bracket::after {
-  content: '';
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  border-color: rgba(226, 232, 240, 0.35);
-  pointer-events: none;
-}
-
-.corner-bracket::before {
-  top: 0;
-  left: 0;
-  border-top: 1px solid;
-  border-left: 1px solid;
-}
-
-.corner-bracket::after {
-  bottom: 0;
-  right: 0;
-  border-bottom: 1px solid;
-  border-right: 1px solid;
-}
-
-/* Subtle background vignette */
-.vignette-overlay {
-  pointer-events: none;
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  background: radial-gradient(
-    circle at center,
-    transparent 55%,
-    rgba(9, 10, 15, 0.6) 88%,
-    rgba(9, 10, 15, 0.96) 100%
-  );
-}
-
-/* Focus outline for keyboard navigation */
+/* -- Focus Outline -- */
 .focus-ring:focus-visible {
-  outline: 2px solid rgba(226, 232, 240, 0.6);
-  outline-offset: 3px;
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 
-/* Print mode fidelity */
+/* -- Print Mode -- */
 @media print {
   html, body, #root {
     background-color: #090a0f !important;
@@ -181,12 +187,12 @@ body {
   }
 }
 
-/* SVG responsiveness safe-net */
+/* -- SVG Responsiveness -- */
 svg {
   max-width: 100%;
 }
 
-/* prefers-reduced-motion fallback */
+/* -- Reduced Motion -- */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -195,5 +201,52 @@ svg {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   NEW: Component-Specific Tokens (imported per-component)
+   ========================================================================== */
+
+/* -- Color aliases for consistent theming -- */
+.bg-surface { background-color: var(--color-surface); }
+.bg-panel { background-color: var(--color-panel); }
+.bg-void { background-color: var(--color-void); }
+.bg-navy { background-color: var(--color-navy); }
+.bg-stellar { background-color: var(--color-stellar); }
+.bg-silver-10pct { background-color: rgba(226, 232, 240, 0.1); }
+.bg-silver-20pct { background-color: rgba(226, 232, 240, 0.2); }
+.bg-silver-5pct { background-color: rgba(226, 232, 240, 0.05); }
+.bg-gold { background-color: var(--color-accent-gold); }
+.bg-amber { background-color: var(--color-accent-amber); }
+
+.text-silver { color: var(--color-silver); }
+.text-silver-soft { color: var(--color-silver-soft); }
+.text-caption { color: var(--color-caption); }
+.text-muted { color: var(--color-muted); }
+.text-accent-gold { color: var(--color-accent-gold); }
+.text-accent-amber { color: var(--color-accent-amber); }
+.text-white { color: var(--color-white); }
+
+.border-silver { border-color: var(--color-silver); }
+.border-gold { border-color: var(--color-accent-gold); }
+.border-panel { border-color: var(--color-panel); }
+
+.shadow-glass { box-shadow: 0 0 30px rgba(0, 0, 0, 0.4); }
+.shadow-silver { box-shadow: 0 0 25px rgba(0, 0, 0, 0.3); }
+.shadow-panel { box-shadow: 0 0 20px rgba(0, 0, 0, 0.45); }
+
+/* -- Reduced Motion Fallback for Specific Elements -- */
+@media (prefers-reduced-motion: reduce) {
+  .no-animate *,
+  .no-animate *::before,
+  .no-animate *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  .no-transition *,
+  .no-transition *::before,
+  .no-transition *::after {
+    transition-duration: 0.01ms !important;
   }
 }
