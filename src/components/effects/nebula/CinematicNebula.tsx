@@ -202,21 +202,19 @@ export default function CinematicNebula({
       parallaxRange = Math.min(slackY * 0.9, cssH * 0.05);
     };
 
-    const toScreen = (nx: number, ny: number, layer: 1 | 2 | 3 = 2) => {
-      // 3 Depth layers with distinct scroll & subtle mouse parallax
-      let scrollFactor = 0.06;
-      let mouseFactor = 0.025;
+    const UNIFIED_MOUSE_FACTOR = 0.025;
 
+    const toScreen = (nx: number, ny: number, layer: 1 | 2 | 3 = 2) => {
+      // Unified mouse parallax speed across all layers (image, stars, dust)
+      let scrollFactor = 0.06;
       if (layer === 1) {
         scrollFactor = 0.02;
-        mouseFactor = 0.008;
       } else if (layer === 3) {
         scrollFactor = 0.12;
-        mouseFactor = 0.045;
       }
 
-      const mxOffset = reduced ? 0 : mouse.x * mouseFactor * cssW;
-      const myOffset = reduced ? 0 : mouse.y * mouseFactor * cssH;
+      const mxOffset = reduced ? 0 : mouse.x * UNIFIED_MOUSE_FACTOR * cssW;
+      const myOffset = reduced ? 0 : mouse.y * UNIFIED_MOUSE_FACTOR * cssH;
       const sOffset = reduced ? 0 : parallaxY * (scrollFactor / 0.06);
 
       return {
@@ -493,14 +491,17 @@ export default function CinematicNebula({
     };
     window.addEventListener('click', onClick);
 
-    // ── Drawing Dust & Glints
+    // ── Drawing Dust & Glints (Synchronized with unified mouse parallax)
     const drawDust = (from: number, to: number, dt: number, motion: number, sc: number) => {
+      const mxOffset = reduced ? 0 : mouse.x * UNIFIED_MOUSE_FACTOR * cssW;
+      const myOffset = reduced ? 0 : mouse.y * UNIFIED_MOUSE_FACTOR * cssH;
+
       for (let i = from; i < to; i++) {
         const d = dust[i];
         d.u = (d.u + d.vx * dt * motion + 1) % 1;
         d.v = (d.v + d.vy * dt * motion + 1) % 1;
-        const x = d.u * cssW;
-        const y = (((d.v * cssH - sc * d.depth) % cssH) + cssH) % cssH;
+        const x = d.u * cssW + mxOffset;
+        const y = (((d.v * cssH - sc * d.depth) % cssH) + cssH) % cssH + myOffset;
 
         let glintAlpha = 0;
         if (d.glintTime && !reduced) {
@@ -779,8 +780,8 @@ export default function CinematicNebula({
       const { renderer, program, mesh } = uni;
       if (uni.ready && renderer && program && mesh && !uni.lost) {
         const u = program.uniforms;
-        const nebulaMouseX = reduced ? 0 : mouse.x * 0.016;
-        const nebulaMouseY = reduced ? 0 : mouse.y * 0.016;
+        const nebulaMouseX = reduced ? 0 : mouse.x * UNIFIED_MOUSE_FACTOR;
+        const nebulaMouseY = reduced ? 0 : mouse.y * UNIFIED_MOUSE_FACTOR;
         u.uTime.value = time;
         u.uCenter.value = [0.5 + nebulaMouseX, 0.5 - parallaxY / cssH + nebulaMouseY];
         u.uDim.value = dimRef.current;
