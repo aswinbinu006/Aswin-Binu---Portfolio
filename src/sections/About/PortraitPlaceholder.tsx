@@ -1,5 +1,4 @@
-import React, { useRef } from "react";
-import { usePortraitTilt } from "./usePortraitTilt";
+import React from "react";
 
 /**
  * Command Console Technical Inspection Frame — Act II: The Operator
@@ -11,16 +10,9 @@ import { usePortraitTilt } from "./usePortraitTilt";
  * - Required tag: {/* PLACEHOLDER: Replace with real portrait *\/}
  */
 export default function PortraitPlaceholder() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  usePortraitTilt({ containerRef, cardRef });
-
   return (
     <div
-      ref={containerRef}
-      className="relative w-full max-w-[390px] select-none"
-      style={{ perspective: "1000px" }}
+      className="relative w-full max-w-[420px] select-none"
     >
       {/* Environmental Storytelling — Background Telemetry */}
       <div className="pointer-events-none absolute -inset-8 z-0 hidden select-none md:block">
@@ -53,10 +45,8 @@ export default function PortraitPlaceholder() {
 
       {/* Portrait frame — transparent, no card layer. SVG floats on nebula. */}
       <div
-        ref={cardRef}
         id="operator-portrait-frame"
         className="portrait-card relative z-10 aspect-[4/5] w-full overflow-visible transition-all duration-500"
-        style={{ transformStyle: "preserve-3d" }}
       >
         {/* Blueprint Engineering Overlay */}
         <div className="portrait-blueprint pointer-events-none absolute inset-0 z-20 overflow-hidden">

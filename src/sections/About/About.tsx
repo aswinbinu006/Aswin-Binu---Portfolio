@@ -150,7 +150,7 @@ export default function About({ isIntroComplete = true }: AboutProps) {
           2.1
         );
 
-      // Scroll-driven subtle environmental changes
+      // Scroll-driven smooth vertical parallax effect
       const scrollTl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -162,9 +162,14 @@ export default function About({ isIntroComplete = true }: AboutProps) {
       });
 
       scrollTl
-        .to("#operator-portrait-frame", { rotateY: 3, rotateX: -2, ease: "none" }, 0)
-        .to(".console-beam", { rotate: 5, x: 25, ease: "none" }, 0)
-        .to(".portrait-blueprint", { opacity: 0.8, ease: "none" }, 0);
+        .fromTo(
+          "#operator-portrait-frame",
+          { y: 30 },
+          { y: -30, ease: "none" },
+          0
+        )
+        .to(".console-beam", { y: 50, x: 20, ease: "none" }, 0)
+        .to(".portrait-blueprint", { opacity: 0.85, ease: "none" }, 0);
     }, sectionRef);
 
     return () => ctx.revert();
