@@ -20,8 +20,8 @@ export default function App() {
 
   return (
     <Providers>
-      <IntroOverlay onComplete={() => setIsIntroComplete(true)} />
       <Background />
+      <IntroOverlay onComplete={() => setIsIntroComplete(true)} />
       <main className="relative z-10 w-full overflow-x-clip">
         <Hero isIntroComplete={isIntroComplete} />
         <About isIntroComplete={isIntroComplete} />
