@@ -22,7 +22,11 @@ export default function App() {
     <Providers>
       <Background />
       <IntroOverlay onComplete={() => setIsIntroComplete(true)} />
-      <main className="relative z-10 w-full overflow-x-clip">
+      <main
+        className={`relative z-10 w-full overflow-x-clip transition-opacity duration-700 ${
+          isIntroComplete ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      >
         <Hero isIntroComplete={isIntroComplete} />
         <About isIntroComplete={isIntroComplete} />
         <Skills />
