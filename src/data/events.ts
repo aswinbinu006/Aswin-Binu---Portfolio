@@ -9,6 +9,8 @@ export interface EventItem {
   title: string;
   year: string;
   summary: string;
+  image: string;
+  tags: string[];
   posterAspect: 'portrait' | 'tall' | 'wide' | 'square';
   story: string;
   role: string;
@@ -24,6 +26,8 @@ export const events: EventItem[] = [
     title: 'Tech Escape',
     year: '2024',
     summary: 'Hardware-locked escape room challenge deciphering microcontroller payloads.',
+    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop',
+    tags: ['Hardware', 'Embedded C', 'Labyrinth'],
     posterAspect: 'portrait',
     story:
       'A timed technical labyrinth where participants solved embedded system puzzles, signal decoding challenges, and hardware faults to unlock progressive terminal locks.',
@@ -42,6 +46,8 @@ export const events: EventItem[] = [
     title: 'Stranger Tech',
     year: '2024',
     summary: '80s retro-futuristic hack event investigating mysterious corrupted datastreams.',
+    image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1000&auto=format&fit=crop',
+    tags: ['Reverse Eng', 'Synthwave', 'Cryptography'],
     posterAspect: 'tall',
     story:
       'Inspired by nostalgic synthwave aesthetics, teams worked through progressive reverse-engineering problems to decrypt simulated covert radio transmissions.',
@@ -59,6 +65,8 @@ export const events: EventItem[] = [
     title: 'SITNovate',
     year: '2023',
     summary: 'Flagship 36-hour technical innovation hackathon with enterprise mentors.',
+    image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1000&auto=format&fit=crop',
+    tags: ['Hackathon', 'AI/IoT', '36 Hours'],
     posterAspect: 'wide',
     story:
       'Inter-college flagship innovation forum hosting multi-track development across AI, IoT, and edge infrastructure with real-time judge scoring.',
@@ -77,6 +85,8 @@ export const events: EventItem[] = [
     title: 'IEEE Workshops',
     year: '2023 - 2024',
     summary: 'Hands-on engineering masterclasses on deep learning and edge deployment.',
+    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000&auto=format&fit=crop',
+    tags: ['TensorRT', 'Edge ML', 'Masterclass'],
     posterAspect: 'portrait',
     story:
       'Intensive practical laboratory sessions guiding undergraduate engineers from tensor math fundamentals to real-time inference on edge microcontrollers.',
@@ -94,6 +104,8 @@ export const events: EventItem[] = [
     title: 'Blockchain = Money',
     year: '2023',
     summary: 'Deep-dive consensus seminar exploring cryptographic security and smart contracts.',
+    image: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=1000&auto=format&fit=crop',
+    tags: ['Zero-Knowledge', 'EVM', 'Consensus'],
     posterAspect: 'square',
     story:
       'A pragmatic deconstruction of zero-knowledge rollups, EVM internals, and decentralized financial protocols beyond speculative market hype.',
@@ -111,6 +123,8 @@ export const events: EventItem[] = [
     title: 'Vibe to Reality',
     year: '2024',
     summary: 'Rapid ideation sprint transforming loose sketches into working prototypes in 8 hours.',
+    image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1000&auto=format&fit=crop',
+    tags: ['Rapid Sprint', '8 Hours', 'Prototyping'],
     posterAspect: 'wide',
     story:
       'Design-to-code sprint where multidisciplinary teams were paired with strict hardware constraints to build proof-of-concepts before sunset.',
@@ -128,6 +142,8 @@ export const events: EventItem[] = [
     title: 'Doomsday Protocol',
     year: '2024',
     summary: 'Cyber-defense red team simulation under simulated total network failure.',
+    image: 'https://images.unsplash.com/photo-1526374879895-57242f3cc9ce?q=80&w=1000&auto=format&fit=crop',
+    tags: ['Red Team', 'Mesh Radio', 'Defense'],
     posterAspect: 'tall',
     story:
       'Adversarial infrastructure resilience simulation testing offline command chains, encrypted radio mesh handshakes, and Byzantine fault tolerance.',

@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Section, Label, Button } from "@/components/ui";
+import { Section, Label } from "@/components/ui";
+import LiquidMetalButton from "@/components/ui/liquid-metal-button";
 import HorizontalTextReveal from "@/components/effects/HorizontalTextReveal";
 import HorizontalReveal from "@/components/effects/HorizontalReveal";
 
@@ -21,8 +22,8 @@ export default function Contact() {
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
   const [copied, setCopied] = useState(false);
 
-  const handleCopyEmail = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const handleCopyEmail = (e?: React.MouseEvent) => {
+    e?.preventDefault();
     navigator.clipboard.writeText("aswinbinu@proton.me");
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
@@ -65,10 +66,10 @@ export default function Contact() {
           </HorizontalReveal>
         </div>
 
-        {/* Action Buttons with Horizontal Stagger */}
+        {/* Action Buttons with Liquid Metal & Horizontal Stagger */}
         <div
           data-no-constellation
-          className="mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4"
+          className="mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-6"
         >
           {CONTACT_LINKS.map((link, idx) => (
             <HorizontalReveal
@@ -80,31 +81,24 @@ export default function Contact() {
               delay={0.45}
             >
               {link.isEmail ? (
-                <Button
-                  variant="primary"
-                  size="md"
+                <LiquidMetalButton
+                  label={copied ? "COPIED TO CLIPBOARD" : "aswinbinu@proton.me"}
                   onClick={handleCopyEmail}
                   icon={
                     copied ? (
-                      <span className="text-black font-bold">✓</span>
+                      <span className="text-white font-bold text-sm">✓</span>
                     ) : (
-                      <span className="text-black">✉</span>
+                      <span className="text-white text-sm">✉</span>
                     )
                   }
-                  iconPosition="left"
-                >
-                  {copied ? "COPIED TO CLIPBOARD" : "aswinbinu@proton.me"}
-                </Button>
+                />
               ) : (
-                <Button
-                  variant="glass"
-                  size="md"
+                <LiquidMetalButton
+                  label={link.label}
                   href={link.href}
                   target={link.isExternal ? "_blank" : undefined}
                   rel="noreferrer"
-                >
-                  {link.label}
-                </Button>
+                />
               )}
             </HorizontalReveal>
           ))}

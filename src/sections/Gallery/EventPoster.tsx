@@ -1,5 +1,6 @@
 import React from "react";
 import type { EventItem } from "@/data/events";
+import NotchedProjectCard from "@/components/ui/notched-project-card";
 
 interface EventPosterProps {
   event: EventItem;
@@ -8,134 +9,31 @@ interface EventPosterProps {
 }
 
 /**
- * Exhibition Poster Placeholder
+ * Exhibition Wall Card - Powered by NotchedProjectCard with concentric cutout & arrow disc
  * Strict Palette: #020814 / #061A3A / #0F4C81 / #5FA8FF / #F7FBFF
  */
 export default function EventPoster({ event, onClick, onKeyDown }: EventPosterProps) {
-  const getAspectClass = (aspect: EventItem["posterAspect"]) => {
-    switch (aspect) {
-      case "tall":
-        return "aspect-[3/4.2]";
-      case "wide":
-        return "aspect-[16/11]";
-      case "square":
-        return "aspect-square";
-      case "portrait":
-      default:
-        return "aspect-[3/4]";
-    }
-  };
-
   return (
     <div
-      tabIndex={0}
-      role="button"
       data-no-constellation
       id={`poster-${event.id}`}
-      aria-label={`${event.title}, ${event.year}. Click to view exhibition archive.`}
-      onClick={onClick}
-      onKeyDown={onKeyDown}
-      className={`focus-ring group relative flex w-full flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#12151c]/85 p-5 sm:p-6 shadow-glass backdrop-blur-md transition-all duration-300 hover:-translate-y-1.5 hover:border-white/30 hover:bg-[#161922] hover:shadow-silver cursor-pointer select-none ${getAspectClass(
-        event.posterAspect
-      )}`}
+      className="w-full"
     >
-      {/* Background Graphic Motif (Handcrafted SVG Art) */}
-      <div className="absolute inset-0 pointer-events-none opacity-30 transition-opacity duration-300 group-hover:opacity-70">
-        {event.motif === "escape" && (
-          <svg viewBox="0 0 200 240" className="h-full w-full stroke-white/50 group-hover:stroke-white/80 fill-none" strokeWidth="0.8">
-            <rect x="20" y="20" width="160" height="200" strokeDasharray="4 4" opacity="0.3" />
-            <circle cx="100" cy="100" r="50" strokeWidth="1.2" />
-            <circle cx="100" cy="100" r="30" strokeDasharray="2 4" />
-            <line x1="100" y1="30" x2="100" y2="170" strokeWidth="0.6" strokeDasharray="3 3" />
-            <line x1="30" y1="100" x2="170" y2="100" strokeWidth="0.6" strokeDasharray="3 3" />
-            <rect x="90" y="90" width="20" height="20" fill="#ffffff" fillOpacity="0.15" />
-          </svg>
-        )}
-
-        {event.motif === "stranger" && (
-          <svg viewBox="0 0 200 240" className="h-full w-full stroke-white/50 group-hover:stroke-white/80 fill-none" strokeWidth="0.7">
-            <line x1="0" y1="160" x2="200" y2="160" opacity="0.4" />
-            <line x1="0" y1="180" x2="200" y2="180" opacity="0.6" />
-            <line x1="0" y1="205" x2="200" y2="205" opacity="0.8" />
-            <line x1="100" y1="140" x2="0" y2="240" />
-            <line x1="100" y1="140" x2="50" y2="240" />
-            <line x1="100" y1="140" x2="100" y2="240" />
-            <line x1="100" y1="140" x2="150" y2="240" />
-            <line x1="100" y1="140" x2="200" y2="240" />
-            <circle cx="100" cy="90" r="45" strokeWidth="1" strokeDasharray="1 3" />
-          </svg>
-        )}
-
-        {event.motif === "hackathon" && (
-          <svg viewBox="0 0 200 240" className="h-full w-full stroke-white/50 group-hover:stroke-white/80 fill-none" strokeWidth="0.8">
-            <polyline points="20,40 70,40 100,70 170,70" />
-            <polyline points="30,120 90,120 120,150 180,150" />
-            <polyline points="40,200 110,200 140,170 180,170" />
-            <circle cx="20" cy="40" r="3" fill="#ffffff" />
-            <circle cx="170" cy="70" r="3" fill="#ffffff" />
-            <circle cx="180" cy="150" r="3" fill="#ffffff" />
-            <circle cx="40" cy="200" r="3" fill="#ffffff" />
-          </svg>
-        )}
-
-        {event.motif === "workshop" && (
-          <svg viewBox="0 0 200 240" className="h-full w-full stroke-white/50 group-hover:stroke-white/80 fill-none" strokeWidth="0.8">
-            <circle cx="50" cy="80" r="16" />
-            <circle cx="50" cy="160" r="16" />
-            <circle cx="150" cy="120" r="22" strokeWidth="1.2" />
-            <line x1="66" y1="80" x2="128" y2="120" strokeDasharray="2 3" />
-            <line x1="66" y1="160" x2="128" y2="120" strokeDasharray="2 3" />
-          </svg>
-        )}
-
-        {event.motif === "blockchain" && (
-          <svg viewBox="0 0 200 240" className="h-full w-full stroke-white/50 group-hover:stroke-white/80 fill-none" strokeWidth="0.9">
-            <rect x="40" y="50" width="45" height="45" rx="3" />
-            <rect x="115" y="145" width="45" height="45" rx="3" />
-            <polyline points="85,72 137,72 137,145" strokeDasharray="3 3" />
-            <circle cx="137" cy="72" r="3" fill="#ffffff" />
-          </svg>
-        )}
-
-        {event.motif === "creative" && (
-          <svg viewBox="0 0 200 240" className="h-full w-full stroke-white/50 group-hover:stroke-white/80 fill-none" strokeWidth="0.8">
-            <circle cx="100" cy="120" r="60" strokeDasharray="5 5" />
-            <polygon points="100,50 160,150 40,150" opacity="0.6" />
-            <line x1="20" y1="20" x2="180" y2="220" opacity="0.3" />
-          </svg>
-        )}
-
-        {event.motif === "defense" && (
-          <svg viewBox="0 0 200 240" className="h-full w-full stroke-white/50 group-hover:stroke-white/80 fill-none" strokeWidth="0.8">
-            <polygon points="100,30 170,80 170,160 100,210 30,160 30,80" strokeWidth="1.2" />
-            <circle cx="100" cy="120" r="30" strokeDasharray="3 3" />
-            <line x1="100" y1="90" x2="100" y2="150" />
-            <line x1="70" y1="120" x2="130" y2="120" />
-          </svg>
-        )}
-      </div>
-
-      {/* Top: Year Badge */}
-      <div className="relative z-10 flex items-center justify-between">
-        <span className="rounded-full border border-white/20 bg-white/10 px-2.5 py-0.5 font-mono text-label tracking-wider text-white uppercase">
-          {event.year}
-        </span>
-        <span className="font-mono text-label text-white/40 tracking-widest uppercase">
-          ARCHIVE // 0{event.id}
-        </span>
-      </div>
-
-      {/* Bottom: Poster Title */}
-      <div className="relative z-10 mt-auto pt-6">
-        <div className="flex items-end justify-between gap-2">
-          <h3 className="font-mono font-bold tracking-tight text-white text-h3 group-hover:text-silver-bright transition-colors duration-200">
-            {event.title}
-          </h3>
-          <span className="shrink-0 font-mono text-caption text-white/70 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-            ↗
-          </span>
-        </div>
-      </div>
+      <NotchedProjectCard
+        title={event.title}
+        description={event.summary}
+        image={event.image}
+        imageAlt={event.title}
+        badge={event.year}
+        tags={event.tags}
+        monochrome={true}
+        surface="#090a0f"
+        accent="#ffffff"
+        accentForeground="#000000"
+        onClick={onClick}
+        onKeyDown={onKeyDown}
+        className="w-full"
+      />
     </div>
   );
 }
