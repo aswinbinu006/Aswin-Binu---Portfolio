@@ -2,6 +2,7 @@ import React from "react";
 import { skills, clusterMetas } from "@/data/skills";
 import { useConstellationGraph } from "./useConstellationGraph";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { Label } from "@/components/ui";
 
 const SVG_WIDTH = 1000;
 const SVG_HEIGHT = 650;
@@ -60,17 +61,12 @@ export default function Skills() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <motion.span
-              className="h-1.5 w-1.5 rounded-full bg-[#F6C343]"
-              animate={{ scale: [1, 1.1, 1], opacity: [0.8, 1, 0.8] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            />
-            <span className="font-mono text-xs tracking-widest text-slate-400 uppercase">
-              Constellation Topology
-            </span>
+            <Label beacon beaconColor="bg-cyan">
+              Constellation Topology // Act III
+            </Label>
           </motion.div>
           <motion.h2
-            className="text-3xl font-bold tracking-tight text-white md:text-5xl"
+            className="font-mono text-h1 font-bold tracking-tight text-luminous"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -79,7 +75,7 @@ export default function Skills() {
             Systems & Directives
           </motion.h2>
           <motion.p
-            className="mt-3 max-w-[65ch] font-mono text-xs leading-relaxed text-white/60 md:text-sm"
+            className="mt-3 max-w-[65ch] font-mono text-body leading-relaxed text-luminous-muted"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -93,20 +89,17 @@ export default function Skills() {
 
         {/* Active Node Indicator Readout - Dynamic */}
         <motion.div
-          className="flex items-center gap-2 font-mono text-xs text-white/50"
+          className="flex items-center gap-2 font-mono text-caption text-luminous-dim"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
         >
           <motion.span
             className={`inline-block h-2 w-2 rounded-full transition-colors duration-300 ${
-              activeSkill ? "bg-[#F6C343] shadow-[0_0_8px_#F6C343]" : "bg-white/20"
+              activeSkill ? "bg-cyan shadow-cyan" : "bg-luminous-faint"
             }`}
             animate={{
               scale: activeSkill ? [1, 1.2, 1] : 1,
-              boxShadow: activeSkill
-                ? ["0 0 8px #F6C343", "0 0 16px #F6C343", "0 0 8px #F6C343"]
-                : "none",
             }}
             transition={{
               duration: 1.5,
@@ -429,7 +422,7 @@ export default function Skills() {
                   {activeSkill.label}
                 </motion.span>
                 <motion.span
-                  className="rounded-full border border-[#F6C343]/30 bg-[#F6C343]/15 px-2 py-0.5 font-mono text-[10px] text-[#F6C343] uppercase"
+                  className="rounded-full border border-cyan/40 bg-cyan-dim px-2.5 py-0.5 font-mono text-label text-cyan-bright uppercase"
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                 >
@@ -439,25 +432,25 @@ export default function Skills() {
               <button
                 type="button"
                 onClick={() => setActiveSkillId(null)}
-                className="font-mono text-[10px] text-white/50 hover:text-white"
+                className="font-mono text-label text-luminous-dim hover:text-white"
               >
                 DISMISS [ESC]
               </button>
             </div>
 
             <motion.div
-              className="mt-2 flex flex-wrap items-center gap-1.5 font-mono text-xs text-white/70"
+              className="mt-3 flex flex-wrap items-center gap-1.5 font-mono text-caption text-luminous-muted"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.1 }}
             >
-              <span className="text-[10px] text-white/40 uppercase">Connected to:</span>
+              <span className="text-label text-luminous-dim uppercase">Connected to:</span>
               {connectedSkills.map((cs) => (
                 <motion.button
                   key={cs.id}
                   type="button"
                   onClick={(e) => handleNodeSelect(cs.id, e)}
-                  className="rounded border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[10px] text-[#F6C343] hover:border-[#F6C343]/50 hover:bg-[#F6C343]/20"
+                  className="rounded-full border border-luminous-faint bg-navy-surface px-2.5 py-0.5 text-label text-cyan hover:border-cyan/50 hover:bg-cyan/10 transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -488,32 +481,16 @@ export default function Skills() {
  * Dynamic background with ambient particles and glow
  */
 function ScrollConstellationBackground({ isInView }: { isInView: boolean }) {
-  const { scrollY } = useScroll();
-  const opacity = useTransform(scrollY, [0, 500], [0.05, 0.02]);
-  const scale = useTransform(scrollY, [0, 1000], [1, 1.1]);
-
   return (
-    <motion.div
-      className="pointer-events-none fixed inset-0 z-[-1]"
-      style={{ opacity, scale }}
-      animate={{ opacity: isInView ? 1 : 0 }}
-      transition={{ duration: 1 }}
+    <div
+      className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+      aria-hidden="true"
     >
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-br from-[#F6C343]/3 via-transparent to-[#F6C343]/5"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 2 }}
+      <div
+        className="absolute inset-0 bg-gradient-to-b from-transparent via-stellar/10 to-transparent transition-opacity duration-1000"
+        style={{ opacity: isInView ? 1 : 0 }}
       />
-      {/* Floating particles */}
-      <motion.div
-        className="absolute inset-0 opacity-[0.02]"
-        style={{ backgroundImage: "radial-gradient(circle at 30% 70%, #F6C343 1px, transparent 1px), radial-gradient(circle at 70% 30%, #F6C343 1px, transparent 1px)" }}
-        initial={{ backgroundSize: "100px 100px" }}
-        animate={{ backgroundSize: ["100px 100px", "200px 200px", "100px 100px"] }}
-        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-      />
-    </motion.div>
+    </div>
   );
 }
 

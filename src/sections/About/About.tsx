@@ -1,7 +1,8 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import PortraitPlaceholder from "./PortraitPlaceholder";
 import HorizontalTextReveal from "@/components/effects/HorizontalTextReveal";
-import { gsap, ScrollTrigger } from "@/utils/gsap";
+import { gsap } from "@/utils/gsap";
+import { Label, Tag } from "@/components/ui";
 
 const IDENTITY_ITEMS = [
   {
@@ -26,36 +27,20 @@ const IDENTITY_ITEMS = [
   },
 ];
 
+interface AboutProps {
+  isIntroComplete?: boolean;
+}
+
 /**
  * Chapter 2 — Introduction
  * Act II: The Operator (Command Console)
  *
- * - Seamless radial vignette (no hard split)
- * - Warm gold palette throughout
- * - HorizontalTextReveal headline (deferred until intro overlay completes)
- * - Floating portrait with no card frame
- * - Coordinated GSAP timeline and scroll-scrubbed tilt
+ * Strict Palette: #020814 / #061A3A / #0F4C81 / #5FA8FF / #F7FBFF
+ * Fluid clamp typography, robust GSAP context, no DOM query polling.
  */
-export default function About() {
+export default function About({ isIntroComplete = true }: AboutProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // Defer HorizontalTextReveal until the intro overlay has unmounted.
-  // This prevents the animation from playing invisibly behind the intro.
-  const [introComplete, setIntroComplete] = useState(false);
-
-  useEffect(() => {
-    // Poll until the intro overlay (z-[100] fixed element) is gone from the DOM.
-    const check = () => {
-      const overlay = document.querySelector('[aria-label="Cinematic Universe Introduction"]');
-      if (!overlay) {
-        setIntroComplete(true);
-      } else {
-        requestAnimationFrame(check);
-      }
-    };
-    check();
-  }, []);
 
   useEffect(() => {
     if (!sectionRef.current || typeof window === "undefined") return;
@@ -112,7 +97,7 @@ export default function About() {
         .to(".console-eyebrow", { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.2)
         .to(".story-guide-line", { opacity: 1, scaleY: 1, duration: 0.8, ease: "power2.out" }, 0.25)
 
-        // 1000ms: Body copy appears after headline completes
+        // 1000ms: Body copy appears
         .to(
           ".console-body",
           {
@@ -195,68 +180,64 @@ export default function About() {
     <section
       ref={sectionRef}
       id="about"
-      className="relative z-10 mx-auto min-h-screen max-w-7xl overflow-hidden px-6 py-28 md:py-36 select-none"
+      className="relative z-10 mx-auto min-h-screen max-w-7xl overflow-x-clip px-4 sm:px-6 lg:px-12 py-24 md:py-36 select-none"
     >
-      {/* LAYER 1: Full-width seamless atmospheric scrim — no harsh vertical split */}
+      {/* LAYER 1: Seamless atmospheric radial vignette */}
       <div
         className="console-vignette pointer-events-none absolute inset-0 z-0"
         style={{
           background:
-            "radial-gradient(ellipse 120% 100% at 30% 50%, rgba(9, 10, 13, 0.92) 0%, rgba(9, 10, 13, 0.6) 45%, rgba(9, 10, 13, 0.2) 70%, transparent 100%)",
+            "radial-gradient(ellipse 120% 100% at 30% 50%, rgba(2, 8, 20, 0.94) 0%, rgba(6, 26, 58, 0.5) 45%, rgba(2, 8, 20, 0.2) 70%, transparent 100%)",
         }}
       />
 
-      {/* LAYER 2: Warm ambient light wash (connects text side to portrait side) */}
+      {/* LAYER 2: Ambient stellar cyan light wash */}
       <div
-        className="console-beam pointer-events-none absolute right-0 top-1/4 z-0 h-[650px] w-[750px] -translate-y-1/4 rotate-[-8deg] opacity-50 blur-3xl transition-transform duration-700"
+        className="console-beam pointer-events-none absolute right-0 top-1/4 z-0 h-[650px] w-[750px] -translate-y-1/4 rotate-[-8deg] opacity-40 blur-3xl transition-transform duration-700"
         style={{
           background:
-            "radial-gradient(ellipse 65% 55% at 75% 45%, rgba(246, 195, 67, 0.06) 0%, rgba(255, 170, 0, 0.02) 45%, transparent 80%)",
+            "radial-gradient(ellipse 65% 55% at 75% 45%, rgba(95, 168, 255, 0.08) 0%, rgba(15, 76, 129, 0.03) 45%, transparent 80%)",
         }}
       />
 
       {/* LAYER 3: Main Editorial Content & Technical Inspection Frame */}
       <div
         ref={containerRef}
-        className="relative z-10 flex flex-col items-start justify-between gap-16 lg:flex-row lg:items-center lg:gap-14"
+        className="relative z-10 flex flex-col items-start justify-between gap-12 lg:flex-row lg:items-center lg:gap-14"
       >
-        {/* Left Side: 55% Story Layer */}
+        {/* Left Side: Story Layer */}
         <div className="relative flex flex-col items-start lg:w-[55%] pl-0 sm:pl-7">
-          {/* Vertical Story Line (Warm gold guide line running down the left side) */}
+          {/* Vertical Story Guide Line */}
           <div
             className="story-guide-line pointer-events-none absolute left-0 top-1 bottom-4 hidden w-[1px] sm:block origin-top"
             style={{
               background:
-                "linear-gradient(180deg, rgba(246, 195, 67, 0.5) 0%, rgba(246, 195, 67, 0.2) 40%, rgba(255, 255, 255, 0.08) 75%, transparent 100%)",
+                "linear-gradient(180deg, rgba(95, 168, 255, 0.6) 0%, rgba(15, 76, 129, 0.3) 40%, rgba(247, 251, 255, 0.08) 75%, transparent 100%)",
             }}
           >
-            {/* Eyebrow marker node */}
-            <div className="absolute top-1 -left-[2.5px] h-1.5 w-1.5 rounded-full bg-soft-glow/90 shadow-[0_0_6px_rgba(246,195,67,0.7)]" />
-            {/* Headline alignment tick */}
-            <div className="absolute top-16 -left-[1px] h-2.5 w-[3px] bg-white/25" />
-            {/* Body alignment tick */}
-            <div className="absolute top-[52%] -left-[1px] h-2.5 w-[3px] bg-white/25" />
-            {/* Identity matrix alignment node */}
-            <div className="absolute bottom-6 -left-[2.5px] h-1.5 w-1.5 rounded-full bg-soft-glow/50" />
+            <div className="absolute top-1 -left-[2.5px] h-1.5 w-1.5 rounded-full bg-cyan shadow-[0_0_6px_rgba(95,168,255,0.8)]" />
+            <div className="absolute top-16 -left-[1px] h-2.5 w-[3px] bg-luminous-faint" />
+            <div className="absolute top-[52%] -left-[1px] h-2.5 w-[3px] bg-luminous-faint" />
+            <div className="absolute bottom-6 -left-[2.5px] h-1.5 w-1.5 rounded-full bg-cyan/50" />
           </div>
 
           {/* Dossier Eyebrow Label */}
-          <div className="console-eyebrow mb-6 flex items-center gap-2.5">
-            <span className="font-mono text-[10px] md:text-xs tracking-[0.25em] text-soft-glow uppercase">
-              INTRODUCTION // 02
-            </span>
+          <div className="console-eyebrow mb-6">
+            <Label beacon beaconColor="bg-cyan">
+              INTRODUCTION // ACT II
+            </Label>
           </div>
 
-          {/* Headline with Horizontal Text Reveal — deferred until intro overlay completes */}
-          <div className="intro-headline flex flex-col gap-4">
-            {introComplete ? (
+          {/* Headline with Horizontal Text Reveal */}
+          <div className="intro-headline flex flex-col gap-3 sm:gap-4 w-full">
+            {isIntroComplete ? (
               <>
                 <HorizontalTextReveal
                   text="I build systems that learn,"
-                  className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold leading-[1.12] tracking-tight"
-                  wordClassName="text-white"
-                  xOffset={75}
-                  skewAngle={-10}
+                  className="font-mono text-2xl sm:text-4xl md:text-5xl font-bold leading-[1.12] tracking-tight"
+                  wordClassName="text-luminous"
+                  xOffset={60}
+                  skewAngle={-8}
                   delay={0.15}
                   stagger={0.05}
                   duration={0.8}
@@ -264,54 +245,53 @@ export default function About() {
                 />
                 <HorizontalTextReveal
                   text="and I build them for places where"
-                  className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold leading-[1.12] tracking-tight"
-                  wordClassName="text-slate-100/90"
-                  xOffset={75}
-                  skewAngle={-10}
-                  delay={0.45}
+                  className="font-mono text-2xl sm:text-4xl md:text-5xl font-bold leading-[1.12] tracking-tight"
+                  wordClassName="text-luminous-muted"
+                  xOffset={60}
+                  skewAngle={-8}
+                  delay={0.4}
                   stagger={0.04}
                   duration={0.8}
                   mode="viewport"
                 />
                 <HorizontalTextReveal
                   text="getting it wrong isn't an option."
-                  className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold leading-[1.12] tracking-tight"
+                  className="font-mono text-2xl sm:text-4xl md:text-5xl font-bold leading-[1.12] tracking-tight"
                   highlightWords={["getting", "wrong", "isn't", "option."]}
-                  highlightColor="#FFAA00"
-                  wordClassName="text-white"
-                  xOffset={75}
-                  skewAngle={-10}
-                  delay={0.7}
+                  highlightColor="#5FA8FF"
+                  wordClassName="text-luminous"
+                  xOffset={60}
+                  skewAngle={-8}
+                  delay={0.65}
                   stagger={0.05}
                   duration={0.8}
                   mode="viewport"
                 />
               </>
             ) : (
-              /* Invisible placeholder preserves layout height while waiting */
               <div className="opacity-0 pointer-events-none select-none" aria-hidden>
-                <div className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold leading-[1.12] tracking-tight">
+                <div className="text-2xl sm:text-4xl md:text-5xl font-bold leading-[1.12] tracking-tight font-mono">
                   I build systems that learn,
                 </div>
-                <div className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold leading-[1.12] tracking-tight mt-4">
+                <div className="text-2xl sm:text-4xl md:text-5xl font-bold leading-[1.12] tracking-tight mt-4 font-mono">
                   and I build them for places where
                 </div>
-                <div className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold leading-[1.12] tracking-tight mt-4">
+                <div className="text-2xl sm:text-4xl md:text-5xl font-bold leading-[1.12] tracking-tight mt-4 font-mono">
                   getting it wrong isn&apos;t an option.
                 </div>
               </div>
             )}
           </div>
 
-          {/* Body Copy - Reduced Readable Width (45–55 chars/line) */}
-          <p className="console-body mt-8 max-w-[48ch] font-mono text-xs sm:text-sm leading-relaxed text-slate-300/90">
+          {/* Body Copy */}
+          <p className="console-body mt-8 max-w-[50ch] font-mono text-body leading-relaxed text-luminous-muted">
             Third-year AI/ML engineering student, focused on applying machine
             learning to defense and critical-infrastructure problems. Operating out
             of Nagpur, architecting edge-quantized models, resilient telemetry
             pipelines, and mission-ready autonomy.
           </p>
 
-          {/* Floating 2x2 Identity Matrix (Equipment Tags) */}
+          {/* Floating 2x2 Identity Matrix */}
           <div
             data-no-constellation
             className="mt-10 grid w-full max-w-md grid-cols-2 gap-3"
@@ -320,17 +300,17 @@ export default function About() {
               <div
                 key={item.label}
                 tabIndex={0}
-                className="identity-tag group relative flex items-center justify-between gap-3 rounded-lg border border-white/10 bg-[#12141a]/80 px-4 py-3 font-mono text-xs text-white/90 backdrop-blur-md transition-all duration-300 hover:border-soft-glow/40 hover:bg-[#181b24] hover:shadow-[0_0_15px_rgba(246,195,67,0.1)] focus:outline-none focus:border-soft-glow/60"
+                className="identity-tag group relative flex items-center justify-between gap-3 rounded-lg border border-luminous-faint bg-navy-surface px-4 py-3 font-mono text-caption text-luminous backdrop-blur-md transition-all duration-300 hover:border-cyan/40 hover:bg-navy/80 hover:shadow-cyan focus-ring"
               >
-                <div className="flex items-center gap-2.5">
-                  <span className="text-soft-glow text-[11px] group-hover:scale-110 transition-transform">
+                <div className="flex items-center gap-2">
+                  <span className="text-cyan text-caption group-hover:scale-110 transition-transform">
                     {item.icon}
                   </span>
-                  <span className="font-semibold text-white tracking-wide text-xs">
+                  <span className="font-semibold text-luminous tracking-wide text-caption">
                     {item.label}
                   </span>
                 </div>
-                <span className="text-[9px] text-white/40 tracking-wider uppercase font-normal">
+                <span className="text-label text-luminous-dim tracking-wider uppercase font-normal">
                   {item.spec}
                 </span>
               </div>
@@ -338,7 +318,7 @@ export default function About() {
           </div>
         </div>
 
-        {/* Right Side: 45% Command Console Portrait & Technical Inspection Zone */}
+        {/* Right Side: Command Console Portrait */}
         <div
           data-no-constellation
           className="relative flex w-full items-center justify-center lg:w-[45%]"

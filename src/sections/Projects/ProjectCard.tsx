@@ -1,122 +1,109 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import type { Project } from "@/data/projects";
-import { gsap } from "@/utils/gsap";
+import { Tag, Button } from "@/components/ui";
 
 /**
- * Editorial Project Card - Minimalist, data-driven, mockup-free.
- *
- * Focuses on project narrative + GitHub/Live Demo links only.
- * - No wireframe mockups, no engineering specs, no tech stack tags
- * - Clean typographic hierarchy
- * - Easy to add new projects - just add to data/projects.ts
- * - Consistent with editorial theme across the site
+ * Editorial Project Card
+ * Strict Palette: #020814 / #061A3A / #0F4C81 / #5FA8FF / #F7FBFF
+ * Focuses on project narrative + live links with glassmorphism styling.
  */
 export default function ProjectCard({ project }: { project: Project }) {
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // Magnetic hover with GSAP
-  useEffect(() => {
-    if (!cardRef.current || typeof window === "undefined") return;
-
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
-
-    const ctx = gsap.context(() => {
-      const card = cardRef.current;
-      if (card) {
-        card.addEventListener("mouseenter", handleMouseEnter);
-        card.addEventListener("mouseleave", handleMouseLeave);
-      }
-    }, cardRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  const handleMouseEnter = () => {
-    gsap.to(cardRef.current, { y: -4, duration: 0.3, ease: "power3.out" });
-  };
-
-  const handleMouseLeave = () => {
-    gsap.to(cardRef.current, { y: 0, duration: 0.5, ease: "power3.out" });
-  };
-
   return (
     <div
       ref={cardRef}
-      className="project-card group relative w-full overflow-hidden rounded-xl border border-white/10 bg-[#12141a]/90 p-6 md:p-8 backdrop-blur-md transition-all duration-300 hover:border-white/25 hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(0,0,0,0.6)] select-none cursor-pointer"
+      className="project-card group relative w-full overflow-hidden rounded-2xl border border-luminous-faint bg-navy-surface p-6 sm:p-8 md:p-10 backdrop-blur-xl transition-all duration-300 hover:border-cyan/40 hover:-translate-y-1 hover:shadow-stellar select-none"
     >
+      {/* Corner targeting reticles */}
+      <div className="corner-bracket pointer-events-none absolute inset-4 opacity-40 group-hover:opacity-100 transition-opacity" />
+
       {/* Project Header */}
-      <div className="flex items-center justify-between gap-3 mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
         <div>
-          <h3
-            className="text-xl md:text-2xl font-bold tracking-tight text-white transition-colors group-hover:text-[#F6C343]"
-          >
+          <div className="flex items-center gap-2.5 mb-2">
+            <Tag variant="cyan" size="sm">
+              {project.category}
+            </Tag>
+            <span className="font-mono text-label text-luminous-dim">
+              {project.duration}
+            </span>
+          </div>
+          <h3 className="font-mono text-h2 font-bold tracking-tight text-luminous transition-colors group-hover:text-cyan-bright">
             {project.title}
           </h3>
-          <p className="mt-1 text-sm text-slate-400 uppercase tracking-wider">
-            {project.category}
+          <p className="mt-1 font-mono text-caption text-cyan uppercase tracking-wider">
+            {project.role}
           </p>
         </div>
 
-        <div className="text-right">
-          <span className="text-xs text-slate-500 uppercase tracking-wider">
+        <div className="sm:text-right">
+          <span className="font-mono text-label text-luminous-dim uppercase tracking-wider">
             {project.year}
           </span>
         </div>
       </div>
 
-      {/* Project Description - Short Intro */}
-      <p
-        className="text-base sm:text-lg leading-relaxed text-slate-300 transition-colors hover:text-[#F6C343]"
-      >
+      {/* Project Description */}
+      <p className="font-mono text-body leading-relaxed text-luminous-muted mt-3 mb-6 max-w-[70ch]">
         {project.description}
       </p>
 
-      {/* Action Buttons - GitHub & Live Demo */}
-      <div className="mt-5 flex flex-wrap gap-3">
-        {/* GitHub Repository */}
+      {/* Tech Stack Chips */}
+      {project.stack && project.stack.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-6">
+          {project.stack.map((tech) => (
+            <Tag key={tech} variant="outline" size="sm">
+              {tech}
+            </Tag>
+          ))}
+        </div>
+      )}
+
+      {/* Action Buttons */}
+      <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-luminous-faint">
         {project.githubUrl && (
-          <a
+          <Button
             href={project.githubUrl}
             target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-2 rounded-lg border border-[#F6C343]/40 bg-[#F6C343]/10 px-4 py-2.5 font-mono text-xs font-medium text-[#F6C343] transition-all hover:bg-[#F6C343]/20 hover:text-white"
+            variant="glass"
+            size="sm"
+            icon={
+              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-current">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+              </svg>
+            }
+            iconPosition="left"
           >
-            <svg
-              viewBox="0 0 24 24"
-              className="h-4 w-4 fill-current"
-            >
-              <path
-                d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"
-              />
-            </svg>
             Repository
-          </a>
+          </Button>
         )}
 
-        {/* Live Demo / Telemetry */}
         {project.demoUrl ? (
-          <a
+          <Button
             href={project.demoUrl}
             target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-2 rounded-lg border border-[#F6C343]/40 bg-[#F6C343]/10 px-4 py-2.5 font-mono text-xs font-medium text-[#F6C343] transition-all hover:bg-[#F6C343]/20 hover:text-white"
+            variant="secondary"
+            size="sm"
+            icon={
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan" />
+              </span>
+            }
+            iconPosition="left"
           >
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#F6C343] opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-[#F6C343]" />
-            </span>
             Live Demo
-          </a>
+          </Button>
         ) : project.caseStudyUrl ? (
-          <a
+          <Button
             href={project.caseStudyUrl}
             target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-2 rounded-lg border border-[#F6C343]/40 bg-[#F6C343]/10 px-4 py-2.5 font-mono text-xs font-medium text-[#F6C343] transition-all hover:bg-[#F6C343]/20 hover:text-white"
+            variant="ghost"
+            size="sm"
           >
-            Engineering Log
-          </a>
+            Engineering Log →
+          </Button>
         ) : null}
       </div>
     </div>
