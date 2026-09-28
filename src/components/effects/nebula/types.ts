@@ -90,6 +90,11 @@ export const HERO_SEEDS = [
   { nx: 0.821, ny: 0.007, snap: 5, len: 0.035, strength: 0.75, rgb: [245, 248, 252], spikes: [0.9, 0.85, 0.72, 1, 0.8, 0.9] },
   { nx: 0.575, ny: 0.55, snap: 0, len: 0.028, strength: 0.6, rgb: [175, 185, 200], spikes: [0.85, 0.7, 0.8, 0.9, 0.66, 0.75] },
   { nx: 0.397, ny: 0.631, snap: 8, len: 0.022, strength: 0.7, rgb: [230, 235, 245], spikes: [1, 0.72, 0.84, 0.9, 0.7, 0.8] },
+  // Bottom-half hero stars ensuring rich cosmic energy in the lower screen
+  { nx: 0.22, ny: 0.78, snap: 0, len: 0.036, strength: 0.85, rgb: [245, 248, 255], spikes: [1, 0.85, 0.9, 0.75, 0.88, 0.8] },
+  { nx: 0.76, ny: 0.84, snap: 0, len: 0.032, strength: 0.8, rgb: [230, 238, 250], spikes: [0.9, 0.8, 1, 0.7, 0.85, 0.9] },
+  { nx: 0.48, ny: 0.92, snap: 0, len: 0.026, strength: 0.75, rgb: [255, 255, 255], spikes: [0.85, 0.9, 0.75, 0.95, 0.7, 0.8] },
+  { nx: 0.88, ny: 0.74, snap: 0, len: 0.028, strength: 0.7, rgb: [215, 225, 240], spikes: [0.8, 0.85, 0.9, 0.75, 0.7, 0.85] },
 ] as const;
 
 export const IMAGE_SOURCES = ['/nebula.webp', '/nebula.jpg'];
@@ -99,7 +104,7 @@ export const BREATH_HZ = 0.7;
 export const WARP_SPEED = 0.04;
 export const CONSTELLATION_LIFE = 2.5;
 
-// Pure dark grey space background adhering to user's grey/neutral theme
+// Full-bleed dark grey space background with upper and lower atmospheric cosmic glows
 export const NEBULA_BG =
-  'radial-gradient(1100px circle at 50% 45%, rgba(40, 45, 55, 0.25), rgba(18, 20, 26, 0.6) 60%, transparent 85%), #090a0d';
+  'radial-gradient(1300px circle at 50% 38%, rgba(45, 52, 65, 0.28) 0%, rgba(20, 24, 32, 0.6) 55%, transparent 85%), radial-gradient(1000px circle at 50% 88%, rgba(38, 46, 58, 0.24) 0%, rgba(16, 20, 28, 0.55) 60%, transparent 85%), #090a0f';
 

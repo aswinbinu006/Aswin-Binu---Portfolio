@@ -84,8 +84,8 @@ void main() {
   float phase = fbm(vec3(pa * 1.1, 3.0 + uTime * 0.015)) * 6.2831853;
   col *= 1.0 + uBreath * sin(uTime * ${BREATH_HZ.toFixed(2)} + phase) * gas;
 
-  float vig = smoothstep(0.35, 0.85, length(vUv - 0.5) * 1.4142);
-  col *= (1.0 - uDim) * (1.0 - uVignette * vig);
+  float vig = smoothstep(0.55, 1.15, length(vUv - 0.5) * 1.4142);
+  col *= (1.0 - uDim) * (1.0 - uVignette * 0.45 * vig);
   col *= uPhoto;
   gl_FragColor = vec4(col, 1.0);
 }`;

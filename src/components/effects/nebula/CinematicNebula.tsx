@@ -173,7 +173,7 @@ export default function CinematicNebula({
       const duration = rnd(0.7, 1.15);
 
       const spawnX = direction > 0 ? rnd(-100, cssW * 0.45) : rnd(cssW * 0.55, cssW + 100);
-      const spawnY = rnd(-50, cssH * 0.35);
+      const spawnY = rnd(-40, cssH * 0.7);
 
       meteors.push({
         active: true,
@@ -227,7 +227,7 @@ export default function CinematicNebula({
 
     const gainAt = (x: number, y: number) => {
       const d = Math.hypot(x / cssW - 0.5, y / cssH - 0.5) * 1.4142;
-      return (1 - dimRef.current) * (1 - vigRef.current * smooth(0.35, 0.85, d));
+      return (1 - dimRef.current * 0.4) * (1 - vigRef.current * 0.3 * smooth(0.55, 1.15, d));
     };
 
     const applySize = () => {
@@ -386,8 +386,8 @@ export default function CinematicNebula({
         imgH = img.naturalHeight;
         const a = analyzeImage(img, tier.stars);
         if (a) {
-          // Distribute stars across 3 depth layers
-          stars = a.stars.map((s, idx) => {
+          // Distribute extracted photo stars across 3 depth layers
+          const extractedStars: Star[] = a.stars.map((s, idx) => {
             const rand = (idx * 37) % 100;
             const layer: 1 | 2 | 3 = rand < 50 ? 1 : rand < 85 ? 2 : 3;
             return {
@@ -397,6 +397,23 @@ export default function CinematicNebula({
               twinkleOffset: idx * 1.618,
             };
           });
+
+          // Procedural supplement: ensures rich, dense starfield in the lower viewport (ny: 0.35 to 1.05)
+          const lowerFieldCount = Math.round(tier.stars * 0.75);
+          const lowerStars: Star[] = Array.from({ length: lowerFieldCount }, (_, idx) => {
+            const rand = (idx * 43) % 100;
+            const layer: 1 | 2 | 3 = rand < 45 ? 1 : rand < 80 ? 2 : 3;
+            return {
+              nx: Math.random(),
+              ny: 0.35 + Math.random() * 0.7,
+              s: 0.35 + Math.random() * 0.65,
+              layer,
+              twinkleSpeed: layer === 1 ? rnd(0.5, 0.9) : layer === 2 ? rnd(1.0, 1.6) : rnd(1.6, 2.4),
+              twinkleOffset: idx * 1.414,
+            };
+          });
+
+          stars = [...extractedStars, ...lowerStars];
           heroes = buildHeroes(a.cands, a.aw, a.ah);
         } else {
           heroes = buildHeroes([], 640, 370);
@@ -513,8 +530,7 @@ export default function CinematicNebula({
 
     // ── Drawing 3-Depth Starfield with Cursor Attraction
     const drawStars = (dissolve: number) => {
-      const baseAlpha = smooth(0.15, 0.85, dissolve);
-      if (baseAlpha <= 0.001) return;
+      const baseAlpha = 0.72 + 0.28 * smooth(0.05, 0.65, dissolve);
 
       const cursorScreenX = (mouse.x * 0.5 + 0.5) * cssW;
       const cursorScreenY = (mouse.y * 0.5 + 0.5) * cssH;
