@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --black-void: #020814;
+  --deep-navy: #061a3a;
+  --nebula-blue: #0f4c81;
+  --soft-glow: #5fa8ff;
+  --white: #f7fbff;
+  --off-white: #f7fbff;
+}
+
+html,
+body {
+  background-color: var(--black-void);
+  color: var(--white);
+  font-family: var(--font-azeret), ui-monospace, monospace;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Material System: Frosted Glass */
+.frosted-glass {
+  background: rgba(6, 26, 58, 0.25);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(247, 251, 255, 0.08);
+}
+
+.frosted-glass-subtle {
+  background: rgba(247, 251, 255, 0.02);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(95, 168, 255, 0.15);
+}
+
+/* Material System: Matte Metal */
+.matte-metal {
+  background: #040e20;
+  border-top: 1px solid rgba(247, 251, 255, 0.15);
+  border-bottom: 1px solid rgba(2, 8, 20, 0.8);
+  box-shadow: inset 0 1px 0 rgba(247, 251, 255, 0.05);
+}
+
+/* Material System: Light (Restrained soft rim light & reflection edge) */
+.rim-light-blue {
+  box-shadow: inset 0 0 40px 2px rgba(95, 168, 255, 0.12);
+}
+
+.reflection-edge {
+  position: relative;
+  overflow: hidden;
+}
+.reflection-edge::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(247, 251, 255, 0.3) 30%,
+    rgba(95, 168, 255, 0.4) 60%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+/* Shared film grain overlay */
+.grain-overlay {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  opacity: 0.045;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Vignette overlay */
+.vignette-overlay {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(
+    circle at center,
+    transparent 50%,
+    rgba(2, 8, 20, 0.6) 90%,
+    rgba(2, 8, 20, 0.95) 100%
+  );
+}
+
+/* Accessible focus ring */
+.focus-ring:focus-visible {
+  outline: 2px solid var(--soft-glow);
+  outline-offset: 3px;
+}
+
+/* Chapter 1 scroll prompt — let the hero breathe before the cue appears */
+.scroll-prompt {
+  animation: scroll-prompt-fade 1.2s ease 1.5s both;
+}
+
+@keyframes scroll-prompt-fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* SVG layout safeguard against unconstrained expansion */
+svg {
+  max-width: 100%;
+}
+
+@media print {
+  html,
+  body {
+    background-color: var(--black-void) !important;
+    color: var(--white) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+/* Accessible reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
