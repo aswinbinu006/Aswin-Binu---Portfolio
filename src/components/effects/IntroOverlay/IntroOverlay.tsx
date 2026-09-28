@@ -3,32 +3,21 @@ import StarCanvas from "./StarCanvas";
 import { useIntroAnimation } from "./useIntroAnimation";
 import type { IntroOverlayProps } from "./types";
 
-const FIRST_NAME = "ASWIN";
-const LAST_NAME = "BINU";
-
-const SUBTITLE_WORDS = [
-  "AI & ML Engineer / Creative Technologist",
-  "Architecting Autonomous Systems & Edge Intelligence",
-];
+const HOOK_LINE_1 = "We don't just teach machines to calculate.";
+const HOOK_LINE_2 = "We build systems that endure when failure isn't an option.";
 
 /**
- * Cinematic, scroll-free intro overlay inspired by Nakula Framer
- * Adapted for Space OS Portfolio - Warm Gold/Amber Palette.
- *
- * Sequence:
- * 0–0.8s: Pure darkness (#000000)
- * 0.8–2.2s: "ASWIN BINU" revealed letter-by-letter with 20px upward motion
- * 2.2–3.8s: Centered subtitle appears with upward drift and staggered opacity
- * 3.8–5.5s: JWST Tarantula Nebula & twinkling stars emerge behind text; glass CTA reveals
- * 5.5s: Smooth exit fade, scrolling restored, seamless transition into Hero.
+ * Cinematic, suspenseful intro overlay:
+ * - Matching cosmic deep space theme with ambient glass wash
+ * - Telemetry reticles and coordinates (LAT 21.14°N)
+ * - Suspenseful manifesto hook that builds anticipation for the operator reveal
+ * - Smooth camera aperture dissolve directly into the monumental ASWIN BINU hero
  */
 export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
   const {
     isVisible,
     overlayRef,
-    nebulaRef,
-    nameRef,
-    subtitleRef,
+    terminalRef,
     ctaRef,
     handleExplore,
   } = useIntroAnimation({ onComplete });
@@ -39,96 +28,94 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
     <div
       ref={overlayRef}
       role="region"
-      aria-label="Cinematic Universe Introduction"
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden bg-black text-white select-none"
+      aria-label="System Initialization Directive"
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden bg-[#090a0f]/92 backdrop-blur-md text-white select-none"
     >
-      {/* 3.8–5.5s: JWST Tarantula Nebula + Star Canvas Layer */}
-      <div
-        ref={nebulaRef}
-        className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
-      >
-        <img
-          src="/nebula.webp"
-          alt="JWST Tarantula Nebula"
-          className="h-full w-full object-cover object-center opacity-65 mix-blend-screen scale-105 transition-transform duration-1000"
-        />
+      {/* Dynamic Cosmic Star Particles Layer */}
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        <StarCanvas />
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(circle at 50% 50%, rgba(9,10,13,0.1) 0%, rgba(0,0,0,0.85) 75%, #000000 100%)",
+              "radial-gradient(ellipse 80% 65% at 50% 50%, rgba(18,21,28,0.3) 0%, rgba(9,10,15,0.85) 65%, #090a0f 100%)",
           }}
         />
-        {/* Delicate star twinkling particles */}
-        <StarCanvas />
       </div>
 
-      {/* Skip button for keyboard accessibility and instant bypass */}
+      {/* Cyber Reticles & Corner Telemetry */}
+      <div className="intro-telemetry pointer-events-none absolute top-6 left-6 z-20 font-mono text-[9px] sm:text-[10px] tracking-widest text-white/40 select-none flex items-center gap-2">
+        <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+        <span>NODE: 01 // LAT 21.14°N</span>
+      </div>
+
+      <div className="intro-telemetry pointer-events-none absolute bottom-6 left-6 z-20 font-mono text-[9px] sm:text-[10px] tracking-widest text-white/40 select-none hidden sm:block">
+        <span>DIRECTIVE // AUTONOMOUS_EDGE</span>
+      </div>
+
+      <div className="intro-telemetry pointer-events-none absolute bottom-6 right-6 z-20 font-mono text-[9px] sm:text-[10px] tracking-widest text-white/40 select-none hidden sm:block">
+        <span>SECURITY // TLS 1.3 • LEVEL 04</span>
+      </div>
+
+      {/* Skip Button */}
       <button
         type="button"
         onClick={handleExplore}
-        className="absolute top-6 right-6 z-20 font-mono text-[11px] tracking-widest text-white/40 hover:text-white transition-colors uppercase px-3 py-1 rounded border border-white/10 hover:border-white/30"
+        className="absolute top-6 right-6 z-20 font-mono text-[10px] sm:text-[11px] tracking-widest text-white/40 hover:text-white transition-colors uppercase px-3 py-1 rounded border border-white/10 hover:border-white/30 cursor-pointer backdrop-blur-md"
       >
         SKIP [ESC]
       </button>
 
-      {/* Main Content Container (keeps everything centered) */}
+      {/* Main Suspense Container */}
       <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center justify-center px-6 text-center">
-        {/* 0.8–2.2s: "ASWIN BINU" letter-by-letter reveal */}
-        <h1
-          ref={nameRef}
-          className="font-mono flex flex-wrap items-center justify-center text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-[0.2em] sm:tracking-[0.25em] text-white"
+        {/* Terminal Status Pill */}
+        <div
+          ref={terminalRef}
+          className="mb-8 sm:mb-10 inline-flex items-center gap-2.5 rounded-full border border-white/20 bg-white/[0.04] px-4 py-1.5 font-mono text-[10px] sm:text-xs text-white/80 tracking-widest uppercase backdrop-blur-md shadow-glass"
         >
-          {/* First Name */}
-          <span className="inline-flex mr-4 sm:mr-7">
-            {FIRST_NAME.split("").map((char, index) => (
-              <span
-                key={`first-${index}`}
-                className="intro-char inline-block"
-              >
-                {char}
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+          </span>
+          <span className="font-semibold text-white">SYSTEM PROTOCOL</span>
+          <span className="text-white/30">•</span>
+          <span className="text-white/60">INITIALIZING NEURAL TELEMETRY</span>
+        </div>
+
+        {/* Suspense Manifesto Headline */}
+        <div className="flex flex-col items-center gap-3 sm:gap-4 max-w-3xl">
+          {/* Line 1 */}
+          <h2 className="font-mono text-lg sm:text-2xl md:text-3xl lg:text-4xl font-medium tracking-tight text-white/70 leading-[1.3] flex flex-wrap justify-center gap-x-2.5 sm:gap-x-3">
+            {HOOK_LINE_1.split(" ").map((word, idx) => (
+              <span key={`w1-${idx}`} className="hook-word-1 inline-block overflow-visible">
+                {word}
               </span>
             ))}
-          </span>
+          </h2>
 
-          {/* Last Name */}
-          <span className="inline-flex">
-            {LAST_NAME.split("").map((char, index) => (
+          {/* Line 2 with Specular White Glow */}
+          <h2 className="font-mono text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-[1.3] flex flex-wrap justify-center gap-x-2.5 sm:gap-x-3">
+            {HOOK_LINE_2.split(" ").map((word, idx) => (
               <span
-                key={`last-${index}`}
-                className="intro-char inline-block"
+                key={`w2-${idx}`}
+                className="hook-word-2 inline-block overflow-visible text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.35)]"
               >
-                {char}
+                {word}
               </span>
             ))}
-          </span>
-        </h1>
+          </h2>
+        </div>
 
-        {/* 2.2–3.8s: Centered Subtitle */}
-        <p
-          ref={subtitleRef}
-          className="mt-6 sm:mt-8 max-w-xl font-mono text-xs sm:text-sm md:text-base leading-relaxed text-white/70 tracking-wider flex flex-col items-center gap-1"
-        >
-          {SUBTITLE_WORDS.map((phrase, idx) => (
-            <span
-              key={idx}
-              className="intro-sub-line inline-block"
-            >
-              {phrase}
-            </span>
-          ))}
-        </p>
-
-        {/* 3.8–5.5s: Glass CTA Button - Warm Gold/Amber */}
-        <div className="mt-8 sm:mt-10">
+        {/* Action Button */}
+        <div className="mt-10 sm:mt-12">
           <button
             ref={ctaRef}
             type="button"
             onClick={handleExplore}
-            className="frosted-glass group relative flex items-center gap-3 rounded-full border border-[#F6C343]/30 bg-[#F6C343]/10 px-6 py-3 font-mono text-xs tracking-widest text-white/90 backdrop-blur-xl transition-all duration-300 hover:border-[#F6C343]/60 hover:bg-[#F6C343]/20 hover:text-white hover:shadow-[0_0_30px_rgba(246,195,67,0.4)] cursor-pointer"
+            className="group relative flex items-center gap-3 rounded-full border border-white/25 bg-white/[0.08] px-6 sm:px-8 py-3 sm:py-3.5 font-mono text-xs sm:text-sm tracking-widest text-white backdrop-blur-xl transition-all duration-300 hover:border-white/60 hover:bg-white/[0.16] hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] cursor-pointer"
           >
-            <span>Explore My Universe</span>
-            <span className="text-[#F6C343] transition-transform duration-300 group-hover:translate-x-1">
+            <span>INITIALIZE OPERATOR</span>
+            <span className="text-white/80 transition-transform duration-300 group-hover:translate-x-1.5">
               →
             </span>
           </button>

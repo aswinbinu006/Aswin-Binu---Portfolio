@@ -3,20 +3,17 @@ import { gsap } from "@/utils/gsap";
 import { pauseScroll, resumeScroll } from "@/utils/lenis";
 import { INTRO_TIMINGS } from "./types";
 
-const SESSION_STORAGE_KEY = "space_os_intro_seen";
-
 interface UseIntroAnimationProps {
   onComplete?: () => void;
 }
 
 export function useIntroAnimation({ onComplete }: UseIntroAnimationProps = {}) {
-  // Always visible on page load so user can experience it on reload
   const [isVisible, setIsVisible] = useState(true);
 
   const overlayRef = useRef<HTMLDivElement>(null);
-  const nebulaRef = useRef<HTMLDivElement>(null);
-  const nameRef = useRef<HTMLHeadingElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const terminalRef = useRef<HTMLDivElement>(null);
+  const line1Ref = useRef<HTMLHeadingElement>(null);
+  const line2Ref = useRef<HTMLHeadingElement>(null);
   const ctaRef = useRef<HTMLButtonElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
 
@@ -53,9 +50,7 @@ export function useIntroAnimation({ onComplete }: UseIntroAnimationProps = {}) {
   }, [isVisible, finishIntro]);
 
   useEffect(() => {
-    if (!isVisible) {
-      return;
-    }
+    if (!isVisible) return;
 
     // Lock scrolling on entry and ensure at top of page
     window.scrollTo(0, 0);
@@ -67,86 +62,96 @@ export function useIntroAnimation({ onComplete }: UseIntroAnimationProps = {}) {
 
     const ctx = gsap.context(() => {
       if (prefersReduced) {
-        // Simple subtle fade for reduced motion
         const tl = gsap.timeline({
           onComplete: finishIntro,
         });
 
         tl.to(overlayRef.current, {
           opacity: 1,
-          duration: 1.2,
+          duration: 0.8,
         }).to(overlayRef.current, {
           opacity: 0,
-          duration: 0.8,
-          delay: 1.5,
+          duration: 0.6,
+          delay: 1.2,
         });
 
         timelineRef.current = tl;
         return;
       }
 
-      // Initial state: Pure black background (#000000), elements hidden
+      // Initial state
       gsap.set(overlayRef.current, { opacity: 1 });
-      gsap.set(nebulaRef.current, { opacity: 0 });
-      gsap.set(".intro-char", { opacity: 0, y: 22 });
-      gsap.set(".intro-sub-line", { opacity: 0, y: 14 });
-      gsap.set(ctaRef.current, { opacity: 0, y: 14 });
+      gsap.set(".intro-telemetry", { opacity: 0 });
+      gsap.set(terminalRef.current, { opacity: 0, y: 15 });
+      gsap.set(".hook-word-1", { opacity: 0, y: 18, skewX: -6 });
+      gsap.set(".hook-word-2", { opacity: 0, y: 18, skewX: -6 });
+      gsap.set(ctaRef.current, { opacity: 0, y: 15 });
 
       const tl = gsap.timeline({
         defaults: { ease: "power3.out" },
       });
 
-      // 0–0.8s: Pure darkness (nothing visible)
-      // 0.8–2.2s: Reveal "ASWIN BINU" letter-by-letter with ~20px upward motion
-      tl.to(
-        ".intro-char",
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.75,
-          stagger: 0.055,
-          ease: "power3.out",
-        },
-        INTRO_TIMINGS.nameStart
-      );
+      // 0.2s: Corner telemetry & reticles fade in
+      tl.to(".intro-telemetry", {
+        opacity: 1,
+        duration: 0.8,
+        stagger: 0.08,
+        ease: "power2.out",
+      }, INTRO_TIMINGS.pingStart);
 
-      // 2.2–3.8s: Keep name centered, fade in subtitle with slight upward motion
+      // 0.4s: System initialization terminal badge
       tl.to(
-        ".intro-sub-line",
+        terminalRef.current,
         {
           opacity: 1,
           y: 0,
-          duration: 1.0,
-          stagger: 0.12,
+          duration: 0.6,
           ease: "power2.out",
         },
-        INTRO_TIMINGS.subtitleStart
+        INTRO_TIMINGS.terminalStart
       );
 
-      // 3.8–5.5s: Fade in JWST Tarantula Nebula & Star background gradually behind text
+      // 1.0s: Suspense Line 1 word-by-word reveal
       tl.to(
-        nebulaRef.current,
+        ".hook-word-1",
         {
-          opacity: 0.85,
-          duration: INTRO_TIMINGS.nebulaDuration,
-          ease: "power2.inOut",
+          opacity: 1,
+          y: 0,
+          skewX: 0,
+          duration: 0.65,
+          stagger: 0.045,
+          ease: "power3.out",
         },
-        INTRO_TIMINGS.nebulaStart
+        INTRO_TIMINGS.hookLine1Start
       );
 
-      // 3.8–5.5s: Reveal glass CTA button
+      // 2.0s: Suspense Line 2 word-by-word reveal with specular emphasis
+      tl.to(
+        ".hook-word-2",
+        {
+          opacity: 1,
+          y: 0,
+          skewX: 0,
+          duration: 0.7,
+          stagger: 0.045,
+          ease: "power3.out",
+        },
+        INTRO_TIMINGS.hookLine2Start
+      );
+
+      // 3.2s: CTA button reveals with glow
       tl.to(
         ctaRef.current,
         {
           opacity: 1,
           y: 0,
-          duration: 0.9,
+          duration: 0.8,
           ease: "power2.out",
         },
-        INTRO_TIMINGS.nebulaStart + 0.3
+        INTRO_TIMINGS.ctaStart
       );
 
-      // 5.5s+: Seamless fade out and transition to Hero
+      // 5.4s: Auto-transition into Hero
       tl.add(() => {
         finishIntro();
       }, INTRO_TIMINGS.autoExitAt);
@@ -169,9 +174,9 @@ export function useIntroAnimation({ onComplete }: UseIntroAnimationProps = {}) {
   return {
     isVisible,
     overlayRef,
-    nebulaRef,
-    nameRef,
-    subtitleRef,
+    terminalRef,
+    line1Ref,
+    line2Ref,
     ctaRef,
     handleExplore,
   };
