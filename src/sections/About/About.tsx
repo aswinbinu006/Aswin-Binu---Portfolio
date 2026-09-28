@@ -81,7 +81,7 @@ export default function About({ isIntroComplete = true }: AboutProps) {
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top 75%",
-          toggleActions: "play none none reverse",
+          toggleActions: "play reverse play reverse",
         },
       });
 

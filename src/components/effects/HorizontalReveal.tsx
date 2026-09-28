@@ -20,6 +20,8 @@ export interface HorizontalRevealProps {
   duration?: number;
   /** Margin for viewport trigger (default: "-60px") */
   viewMargin?: string;
+  /** Whether animation should trigger only once (default: false for bidirectional scrolling) */
+  once?: boolean;
   /** Custom easing curve (default: [0.22, 1, 0.36, 1]) */
   ease?: [number, number, number, number] | any;
 }
@@ -30,6 +32,7 @@ export interface HorizontalRevealProps {
  * Provides horizontal reveal animation with scroll-triggered animations.
  * Features smooth transitions, opacity changes, and skew effects as cards
  * and UI elements move from right to center.
+ * Supports smooth bidirectional entry/exit on forward and backward scrolling.
  */
 export default function HorizontalReveal({
   children,
@@ -41,11 +44,12 @@ export default function HorizontalReveal({
   index = 0,
   duration = 0.75,
   viewMargin = "-60px",
+  once = false,
   ease = [0.22, 1, 0.36, 1],
 }: HorizontalRevealProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, {
-    once: true,
+    once,
     margin: viewMargin as any,
   });
 

@@ -22,6 +22,8 @@ export interface HorizontalTextRevealProps {
   stagger?: number;
   /** Animation duration per word in seconds (default: 0.75) */
   duration?: number;
+  /** Whether animation should trigger only once (default: false for bidirectional scrolling) */
+  once?: boolean;
   /** Mode: 'viewport' (plays on scroll into view) or 'scrub' (tied to scroll position) */
   mode?: "viewport" | "scrub";
 }
@@ -32,6 +34,7 @@ export interface HorizontalTextRevealProps {
  * Horizontal text reveal animation with scroll-triggered word-by-word animations.
  * Features staggered word reveals with smooth transitions, opacity changes,
  * and skew effects as text moves from right to center.
+ * Supports smooth bidirectional entry/exit on forward and backward scrolling.
  */
 export default function HorizontalTextReveal({
   text,
@@ -44,10 +47,11 @@ export default function HorizontalTextReveal({
   delay = 0,
   stagger = 0.045,
   duration = 0.75,
+  once = false,
   mode = "viewport",
 }: HorizontalTextRevealProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(containerRef, { once: true, margin: "-80px" });
+  const isInView = useInView(containerRef, { once, margin: "-60px" });
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
