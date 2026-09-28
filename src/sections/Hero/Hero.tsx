@@ -85,88 +85,126 @@ export default function Hero({ isIntroComplete }: { isIntroComplete?: boolean })
         </motion.div>
       </div>
 
-      {/* ── MAIN CENTER HERO STAGE (Balanced Left & Right) ── */}
+      {/* ── MAIN CENTER HERO STAGE (Monumental Creative Typography & Command Matrix) ── */}
       <motion.div
-        className="relative z-10 my-auto flex w-full max-w-7xl mx-auto flex-col items-center justify-center text-center px-2 py-8"
+        className="relative z-10 my-auto flex w-full max-w-7xl mx-auto flex-col items-center justify-center text-center px-4 py-6 md:py-10"
         initial={{ opacity: 0, y: 20 }}
         animate={isIntroComplete ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
       >
-        {/* Tactical HUD Eyebrow Badge */}
+        {/* Tactical Dossier Eyebrow Pill */}
         <motion.div
-          className="mb-5"
+          className="mb-4 sm:mb-6"
           initial={{ opacity: 0, y: 15 }}
           animate={isIntroComplete ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
         >
-          <span className="inline-flex items-center gap-2 font-mono text-xs text-white/80 uppercase tracking-wider">
-            <span className="relative h-2 w-2 rounded-full bg-white/80 animate-ping" />
-            <span>Tactical Avionics // Autonomous Systems</span>
-          </span>
+          <div className="inline-flex items-center gap-2.5 rounded-full border border-white/20 bg-white/[0.04] px-4 py-1.5 font-mono text-[10px] sm:text-xs text-white/85 tracking-widest uppercase backdrop-blur-md shadow-glass">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+            </span>
+            <span className="font-semibold text-white">AI & ML ENGINEER</span>
+            <span className="text-white/30">•</span>
+            <span className="text-white/70">DEFENSE & CRITICAL SYSTEMS</span>
+          </div>
         </motion.div>
 
-        {/* Dynamic Fluid Display Title with Masked Letter Reveals */}
-        <h1
-          id="hero-title"
-          className="relative font-mono font-extrabold text-display tracking-tight text-white uppercase flex flex-wrap justify-center items-center gap-x-3 sm:gap-x-5"
-        >
-          <span className="inline-block overflow-hidden">
-            {FIRST_NAME.split("").map((char, index) => (
-              <motion.span
-                key={`first-${index}`}
-                initial={{ y: isIntroComplete ? "0" : "110%", opacity: isIntroComplete ? 1 : 0 }}
-                animate={isIntroComplete ? { y: 0, opacity: 1 } : {}}
-                transition={{
-                  duration: 0.7,
-                  delay: 0.15 + index * 0.04,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
-                className="inline-block text-white"
-              >
-                {char}
-              </motion.span>
-            ))}
-          </span>
+        {/* Monumental Hero Display Title with Masked Letter Reveals & Spatial Reticles */}
+        <div className="relative w-full max-w-5xl my-2 sm:my-3">
+          {/* Subtle Cyber Reticle Corner Ticks */}
+          <div className="pointer-events-none absolute -left-2 -top-2 font-mono text-[9px] text-white/25 select-none hidden sm:block">
+            + [01]
+          </div>
+          <div className="pointer-events-none absolute -right-2 -top-2 font-mono text-[9px] text-white/25 select-none hidden sm:block">
+            [ACT I] +
+          </div>
 
-          <span className="inline-block overflow-hidden">
-            {LAST_NAME.split("").map((char, index) => (
-              <motion.span
-                key={`last-${index}`}
-                initial={{ y: isIntroComplete ? "0" : "110%", opacity: isIntroComplete ? 1 : 0 }}
-                animate={isIntroComplete ? { y: 0, opacity: 1 } : {}}
-                transition={{
-                  duration: 0.7,
-                  delay: 0.35 + index * 0.04,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
-                className="inline-block text-silver-bright"
-              >
-                {char}
-              </motion.span>
-            ))}
-          </span>
-        </h1>
+          <h1
+            id="hero-title"
+            className="relative font-mono font-extrabold tracking-[-0.03em] uppercase flex flex-wrap justify-center items-center gap-x-4 sm:gap-x-8 md:gap-x-10 text-5xl sm:text-7xl md:text-8xl lg:text-[7rem] xl:text-[8.5rem] leading-[0.92] text-white"
+          >
+            {/* First Name: ASWIN */}
+            <span className="inline-block overflow-hidden pb-1">
+              {FIRST_NAME.split("").map((char, index) => (
+                <motion.span
+                  key={`first-${index}`}
+                  initial={{ y: isIntroComplete ? "0" : "110%", opacity: isIntroComplete ? 1 : 0 }}
+                  animate={isIntroComplete ? { y: 0, opacity: 1 } : {}}
+                  transition={{
+                    duration: 0.75,
+                    delay: 0.15 + index * 0.04,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  className="inline-block text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.25)]"
+                >
+                  {char}
+                </motion.span>
+              ))}
+            </span>
 
-        {/* Subtitle / Role Narrative with Staggered Reveal */}
+            {/* Last Name: BINU */}
+            <span className="inline-block overflow-hidden pb-1">
+              {LAST_NAME.split("").map((char, index) => (
+                <motion.span
+                  key={`last-${index}`}
+                  initial={{ y: isIntroComplete ? "0" : "110%", opacity: isIntroComplete ? 1 : 0 }}
+                  animate={isIntroComplete ? { y: 0, opacity: 1 } : {}}
+                  transition={{
+                    duration: 0.75,
+                    delay: 0.35 + index * 0.04,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  className="inline-block text-silver-bright drop-shadow-[0_0_35px_rgba(226,232,240,0.35)]"
+                >
+                  {char}
+                </motion.span>
+              ))}
+            </span>
+          </h1>
+
+          <div className="pointer-events-none absolute -left-2 -bottom-2 font-mono text-[9px] text-white/25 select-none hidden sm:block">
+            LAT 21.14°N
+          </div>
+          <div className="pointer-events-none absolute -right-2 -bottom-2 font-mono text-[9px] text-white/25 select-none hidden sm:block">
+            SYS_ONLINE +
+          </div>
+        </div>
+
+        {/* Narrative Mission Statement */}
         <motion.div
-          className="mt-6 flex flex-col items-center gap-3 font-mono text-center max-w-2xl"
+          className="mt-4 sm:mt-6 flex flex-col items-center gap-3 font-mono text-center max-w-2xl px-2"
           initial={{ opacity: 0, y: 20 }}
           animate={isIntroComplete ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.55, ease: "easeOut" }}
         >
-          <span className="font-semibold text-white tracking-widest text-caption uppercase border-b border-white/10 pb-1">
-            AI & ML Engineer // Defense & Critical Systems
-          </span>
-          <p className="max-w-xl text-caption sm:text-body text-white/70 leading-relaxed pt-1">
+          <p className="max-w-xl font-mono text-xs sm:text-sm md:text-base text-white/80 leading-relaxed">
             Architecting deterministic edge runtimes, zero-latency avionics telemetry,
             and self-supervised anomaly matrices for mission-critical infrastructure.
           </p>
         </motion.div>
 
+        {/* Specialization Matrix Chips */}
+        <motion.div
+          className="mt-5 sm:mt-6 flex flex-wrap justify-center gap-2 sm:gap-2.5 max-w-3xl"
+          initial={{ opacity: 0, y: 15 }}
+          animate={isIntroComplete ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.65, ease: "easeOut" }}
+        >
+          {["EDGE TENSORRT", "ROS2 AUTONOMY", "SENSOR FUSION", "CRITICAL SYS", "IEEE CHAIR"].map((chip) => (
+            <span
+              key={chip}
+              className="rounded-md border border-white/15 bg-white/[0.03] px-3 py-1 font-mono text-[10px] sm:text-[11px] font-semibold tracking-wider text-white/90 backdrop-blur-md transition-all duration-300 hover:border-white/40 hover:bg-white/[0.08]"
+            >
+              {chip}
+            </span>
+          ))}
+        </motion.div>
+
         {/* Tactical Telemetry Strip — Silver Glass Pill */}
         <motion.div
           id="hero-telemetry"
-          className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4 rounded-full border border-white/15 bg-[#12151c]/80 px-5 sm:px-7 py-2 font-mono text-label text-white/70 backdrop-blur-md shadow-glass"
+          className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4 rounded-full border border-white/15 bg-[#12151c]/80 px-5 sm:px-7 py-2 font-mono text-label text-white/75 backdrop-blur-md shadow-glass"
           initial={{ opacity: 0, y: 15 }}
           animate={isIntroComplete ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.75, ease: "easeOut" }}

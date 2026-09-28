@@ -29,7 +29,7 @@
   --font-mono: 'Azeret Mono', ui-monospace, monospace;
 
   /* -- Refined Fluid Typography Clamp Variables -- */
-  --type-display: clamp(1.875rem, 3.5vw, 2.875rem);  /* 30px */
+  --type-display: clamp(3rem, 7.5vw, 7.5rem);  /* Monumental Hero Name */
   --type-h1: clamp(1.5rem, 2.5vw, 2rem);            /* 32px */
   --type-h2: clamp(1.25rem, 2vw, 1.5rem);           /* 24px */
   --type-h3: clamp(1rem, 1.5vw, 1.25rem);           /* 20px */
