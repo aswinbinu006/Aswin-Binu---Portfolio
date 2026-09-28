@@ -250,3 +250,17 @@ svg {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* -- Astronaut Observation Camera Drift (Natural human breathing oscillation) -- */
+@keyframes astronautDrift {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(0.18deg);
+  }
+}
+
+.animate-astronaut-drift {
+  animation: astronautDrift 7.5s ease-in-out infinite;
+}

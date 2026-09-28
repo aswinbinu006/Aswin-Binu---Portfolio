@@ -9,50 +9,90 @@ interface UseIntroAnimationProps {
 
 export function useIntroAnimation({ onComplete }: UseIntroAnimationProps = {}) {
   const [isVisible, setIsVisible] = useState(true);
-  const [stage, setStage] = useState<"initial" | "line1" | "line2" | "cta" | "warp">("initial");
+  const [isForwardMoving, setIsForwardMoving] = useState(false);
 
   const overlayRef = useRef<HTMLDivElement>(null);
-  const terminalRef = useRef<HTMLDivElement>(null);
-  const ctaRef = useRef<HTMLButtonElement>(null);
+  const darknessRef = useRef<HTMLDivElement>(null);
+  const cameraRef = useRef<HTMLDivElement>(null);
+  const introContentRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
 
-  const finishIntro = useCallback(() => {
-    if (!isVisible) return;
+  const startForwardTransition = useCallback(() => {
+    if (!isVisible || isForwardMoving) return;
+    setIsForwardMoving(true);
 
-    if (overlayRef.current) {
-      gsap.to(overlayRef.current, {
-        opacity: 0,
-        scale: 1.05,
-        duration: INTRO_TIMINGS.exitFadeDuration,
-        ease: "power2.inOut",
-        onComplete: () => {
-          setIsVisible(false);
-          resumeScroll();
-          onComplete?.();
-        },
-      });
-    } else {
+    if (timelineRef.current) {
+      timelineRef.current.kill();
+    }
+
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (prefersReduced) {
       setIsVisible(false);
       resumeScroll();
       onComplete?.();
+      return;
     }
-  }, [isVisible, onComplete]);
 
-  // Keyboard shortcut: ESC to skip
+    // Cinematic Forward Camera Rush & Universe Expansion
+    const tl = gsap.timeline({
+      onComplete: () => {
+        setIsVisible(false);
+        resumeScroll();
+        onComplete?.();
+      },
+    });
+
+    // 1. Text becomes quieter and dissolves
+    tl.to(introContentRef.current, {
+      opacity: 0,
+      scale: 1.08,
+      duration: 0.6,
+      ease: "power2.inOut",
+    }, 0);
+
+    // 2. Camera accelerates forward into the universe
+    tl.to(cameraRef.current, {
+      scale: 1.35,
+      opacity: 0,
+      duration: INTRO_TIMINGS.forwardTransitDuration,
+      ease: "power2.inOut",
+    }, 0.1);
+
+    // 3. Complete fade of the intro overlay
+    tl.to(overlayRef.current, {
+      opacity: 0,
+      duration: 0.6,
+      ease: "power2.inOut",
+    }, INTRO_TIMINGS.forwardTransitDuration - 0.4);
+
+  }, [isVisible, isForwardMoving, onComplete]);
+
+  // Keyboard shortcut & Click interactions
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isVisible) {
-        finishIntro();
+      if (isVisible && !isForwardMoving) {
+        startForwardTransition();
       }
     };
+
+    const handleClick = () => {
+      if (isVisible && !isForwardMoving) {
+        startForwardTransition();
+      }
+    };
+
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isVisible, finishIntro]);
+    window.addEventListener("click", handleClick);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("click", handleClick);
+    };
+  }, [isVisible, isForwardMoving, startForwardTransition]);
 
   useEffect(() => {
     if (!isVisible) return;
 
-    // Lock scrolling on entry and ensure at top of page
     window.scrollTo(0, 0);
     pauseScroll();
 
@@ -60,70 +100,91 @@ export function useIntroAnimation({ onComplete }: UseIntroAnimationProps = {}) {
 
     const ctx = gsap.context(() => {
       if (prefersReduced) {
-        const tl = gsap.timeline({ onComplete: finishIntro });
-        tl.to(overlayRef.current, { opacity: 1, duration: 0.5 })
-          .to(overlayRef.current, { opacity: 0, duration: 0.5, delay: 1.5 });
-        timelineRef.current = tl;
-        return;
+        gsap.set(darknessRef.current, { opacity: 0 });
+        gsap.set(introContentRef.current, { opacity: 1 });
+        const timer = setTimeout(() => {
+          startForwardTransition();
+        }, 3000);
+        return () => clearTimeout(timer);
       }
 
-      // Initial states
-      gsap.set(overlayRef.current, { opacity: 1 });
-      gsap.set(".intro-telemetry", { opacity: 0, y: -8 });
-      gsap.set(terminalRef.current, { opacity: 0, scale: 0.9, y: 12 });
-      gsap.set(ctaRef.current, { opacity: 0, y: 16, scale: 0.95 });
+      // Initial state: Pure blackness
+      gsap.set(darknessRef.current, { opacity: 1 });
+      gsap.set(cameraRef.current, { scale: 0.96, opacity: 1 });
+      gsap.set(".pov-intro-eyebrow", { opacity: 0, y: 12 });
+      gsap.set(".pov-intro-name", { opacity: 0, y: 16, scale: 0.98 });
+      gsap.set(".pov-intro-copy", { opacity: 0, y: 14 });
+      gsap.set(".pov-intro-portrait", { opacity: 0, scale: 0.95 });
+      gsap.set(".pov-intro-markers", { opacity: 0, y: 10 });
+      gsap.set(".pov-intro-prompt", { opacity: 0 });
 
       const tl = gsap.timeline({
-        defaults: { ease: "power3.out" },
+        defaults: { ease: "power2.out" },
       });
 
-      // 0.15s: Telemetry & HUD Aperture bars fade in
-      tl.to(".intro-telemetry", {
+      // 0ms -> 500ms: Complete pure blackness
+      // 500ms -> 1500ms: Vision comes online (eyes adjusting to darkness)
+      tl.to(darknessRef.current, {
+        opacity: 0,
+        duration: 1.5,
+        ease: "power1.inOut",
+      }, INTRO_TIMINGS.starsAdjustStart);
+
+      // 1.0s -> 2.0s: Camera reaches resting observation depth
+      tl.to(cameraRef.current, {
+        scale: 1.0,
+        duration: 1.5,
+        ease: "power1.out",
+      }, INTRO_TIMINGS.nebulaRevealStart);
+
+      // 2.3s: Introduction begins floating inside the astronaut's field of vision
+      tl.to(".pov-intro-eyebrow", {
         opacity: 1,
         y: 0,
-        duration: 0.6,
-        stagger: 0.06,
+        duration: 0.8,
         ease: "power2.out",
-      }, 0.15);
+      }, INTRO_TIMINGS.introContentStart);
 
-      // 0.35s: System initialization badge
-      tl.to(
-        terminalRef.current,
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.5,
-          ease: "back.out(1.4)",
-        },
-        0.35
-      );
+      tl.to(".pov-intro-name", {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.9,
+        ease: "power2.out",
+      }, INTRO_TIMINGS.introContentStart + 0.2);
 
-      // 0.6s: Trigger Line 1 decyphering
-      tl.add(() => setStage("line1"), 0.6);
+      tl.to(".pov-intro-copy", {
+        opacity: 1,
+        y: 0,
+        duration: 0.9,
+        ease: "power2.out",
+      }, INTRO_TIMINGS.introContentStart + 0.45);
 
-      // 1.8s: Trigger Line 2 decyphering
-      tl.add(() => setStage("line2"), 1.8);
+      tl.to(".pov-intro-portrait", {
+        opacity: 0.85,
+        scale: 1,
+        duration: 1.1,
+        ease: "power2.out",
+      }, INTRO_TIMINGS.introContentStart + 0.6);
 
-      // 2.8s: CTA button entrance with bounce
-      tl.to(
-        ctaRef.current,
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.7,
-          ease: "back.out(1.3)",
-          onStart: () => setStage("cta"),
-        },
-        2.8
-      );
+      tl.to(".pov-intro-markers", {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        stagger: 0.08,
+        ease: "power2.out",
+      }, INTRO_TIMINGS.introContentStart + 0.75);
 
-      // 5.2s: Auto-transition into Hero
+      tl.to(".pov-intro-prompt", {
+        opacity: 0.65,
+        duration: 1.0,
+        ease: "power1.out",
+      }, INTRO_TIMINGS.introContentStart + 1.2);
+
+      // 6.8s: Automatic forward movement into the universe
       tl.add(() => {
-        setStage("warp");
-        finishIntro();
-      }, 5.2);
+        startForwardTransition();
+      }, INTRO_TIMINGS.autoForwardAt);
 
       timelineRef.current = tl;
     }, overlayRef);
@@ -133,19 +194,15 @@ export function useIntroAnimation({ onComplete }: UseIntroAnimationProps = {}) {
       ctx.revert();
       resumeScroll();
     };
-  }, [isVisible, finishIntro]);
-
-  const handleExplore = () => {
-    timelineRef.current?.kill();
-    finishIntro();
-  };
+  }, [isVisible, startForwardTransition]);
 
   return {
     isVisible,
-    stage,
+    isForwardMoving,
     overlayRef,
-    terminalRef,
-    ctaRef,
-    handleExplore,
+    darknessRef,
+    cameraRef,
+    introContentRef,
+    startForwardTransition,
   };
 }

@@ -1,13 +1,15 @@
 export const INTRO_TIMINGS = {
-  pingStart: 0.2,
-  terminalStart: 0.4,
-  hookLine1Start: 1.0,
-  hookLine2Start: 2.0,
-  ctaStart: 3.2,
-  autoExitAt: 5.4,
-  exitFadeDuration: 0.8,
+  blacknessDuration: 0.5,
+  starsAdjustStart: 0.5,
+  nebulaRevealStart: 1.0,
+  depthReadableStart: 1.5,
+  envStabilizeStart: 2.0,
+  introContentStart: 2.3,
+  autoForwardAt: 6.8,
+  forwardTransitDuration: 1.4,
 } as const;
 
 export interface IntroOverlayProps {
   onComplete?: () => void;
 }
+
