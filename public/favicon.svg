@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#181A22"/>
+      <stop offset="100%" stop-color="#08090C"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF3C4"/>
+      <stop offset="50%" stop-color="#F6C343"/>
+      <stop offset="100%" stop-color="#D99B16"/>
+    </linearGradient>
+    <linearGradient id="silverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="60%" stop-color="#E2E8F0"/>
+      <stop offset="100%" stop-color="#94A3B8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Premium Obsidian Beveled Squircle -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bgGrad)" stroke="rgba(255,255,255,0.18)" stroke-width="2"/>
+  
+  <!-- Subtle Inner Starlight Glow Ring -->
+  <rect x="5" y="5" width="54" height="54" rx="11" fill="none" stroke="rgba(246,195,67,0.15)" stroke-width="1"/>
+
+  <!-- High-Precision Aerodynamic 'A' + Astronaut Delta Monogram -->
+  <path d="M32 11 L50 49 L42.5 49 L36.2 35 L27.8 35 L21.5 49 L14 49 Z" fill="url(#silverGrad)"/>
+  
+  <!-- Inner Cutout -->
+  <path d="M29.2 29.5 L34.8 29.5 L32 21.2 Z" fill="#0A0C10"/>
+
+  <!-- Radiant 4-Point Starlight Core at Vertex -->
+  <path d="M32 23.5 Q32 27.5 36 27.5 Q32 27.5 32 31.5 Q32 27.5 28 27.5 Q32 27.5 32 23.5 Z" fill="url(#goldGrad)"/>
+
+  <!-- Micro Orbit Arc Accents -->
+  <circle cx="45" cy="18" r="1.5" fill="#F6C343" opacity="0.8"/>
+  <circle cx="19" cy="44" r="1.2" fill="#FFFFFF" opacity="0.5"/>
+</svg>

@@ -18,6 +18,18 @@ import { Contact } from "@/sections/Contact";
 export default function App() {
   const [isIntroComplete, setIsIntroComplete] = useState(false);
 
+  React.useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        document.title = "✦ Systems Online • Aswin Binu";
+      } else {
+        document.title = "Aswin Binu • Portfolio";
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, []);
+
   return (
     <Providers>
       <Background />
