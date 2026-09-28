@@ -1,44 +1,95 @@
-# Aswin Binu — Portfolio (Phase 1 & Phase 2)
+# Aswin Binu — Engineering Portfolio
 
-Continuous scroll-driven story across chapters:
-- Chapter 1: The Statement (Spotlight + crack transition)
-- Chapter 2: Introduction (Editorial bio + portrait placeholder)
-- Chapter 3: Skill Constellation (Interactive SVG/GSAP neural skill graph)
-- Chapter 4: Project Gallery (Morph Pill Cards & Living Expansion Cards)
-- Chapter 5: Event Archive (Museum exhibition wall with accessible modal/sheet)
-- Chapter 8: Contact (Restrained signal CTA)
+High-fidelity, interactive engineering portfolio built with **Vite**, **React 19**, **TypeScript**, **Tailwind CSS**, and **GSAP**.
 
-Chapters 6 (Academic Dashboard) and 7 (Playground) belong to Phase 3.
+## Storyline Architecture
 
-## Run locally
+Continuous scroll-driven narrative across acts/chapters:
+- **Chapter 1: The Statement (Hero)** — Spotlight beam, title revelation, and crack universe transition.
+- **Chapter 2: The Operator (About / Intro)** — Command console narrative, editorial dossier, and interactive portrait.
+- **Chapter 3: Skill Constellation (Skills)** — 4-quadrant interactive SVG/GSAP neural graph with live radar ping telemetry.
+- **Chapter 4: Project Gallery (Projects)** — Asymmetrical editorial project cards with tech specs and live links.
+- **Chapter 5: Event Archive (Gallery)** — Museum exhibition posters with responsive detail inspection modals.
+- **Chapter 8: Contact** — Minimalist tactical uplink and communication channels.
+
+---
+
+## Tech Stack & Architecture
+
+- **Bundler / Dev Engine**: [Vite](https://vite.dev/) with `@vitejs/plugin-react`
+- **Frontend**: React 19 + TypeScript
+- **Styling**: Tailwind CSS + custom CSS design tokens (`src/styles/globals.css`)
+- **Animation & Transitions**: GSAP 3 (ScrollTrigger, Flip), Lenis (Smooth Scroll)
+- **Visuals / Shaders**: OGL WebGL runtime (`CinematicNebula`) for real-time background rendering
+
+### Directory Structure (`src/`)
+
+```text
+src/
+├── app/                  # Main application container and layout providers
+│   ├── App.tsx
+│   └── providers.tsx
+├── components/           # Reusable UI & layout components
+│   ├── effects/          # Shaders, animations (CinematicNebula, IntroOverlay)
+│   ├── hooks/            # Shared React & GSAP hooks
+│   └── layout/           # App shell, Background controller, SmoothScroll
+├── data/                 # Data collections (projects.ts, skills.ts, events.ts)
+├── sections/             # Section chapters
+│   ├── Hero/             # Chapter 1
+│   ├── About/            # Chapter 2
+│   ├── Skills/           # Chapter 3
+│   ├── Projects/         # Chapter 4
+│   ├── Gallery/          # Chapter 5
+│   └── Contact/          # Chapter 8
+├── styles/               # Global stylesheet and token definitions
+├── types/                # Core TypeScript definitions
+└── utils/                # GSAP registration and utility functions
+```
+
+---
+
+## Getting Started
+
+### Installation
 
 ```bash
 npm install
-npm i ogl
+```
+
+### Development Server
+
+```bash
 npm run dev
 ```
 
-Open http://localhost:5174 (or configured dev port).
+Server starts at `http://localhost:5174`.
 
-## Remaining Placeholders to Swap Before Final Production
+### Production Build & Type Checking
 
-Every placeholder is marked with `PLACEHOLDER` in the codebase:
+```bash
+npm run lint    # Type check via tsc --noEmit
+npm run build   # Production bundle with Vite
+npm run preview # Preview production build locally
+```
 
-0. **Nebula Photo Asset** (`public/nebula.webp` & `public/nebula.jpg`) — Currently a 1200 px crop placeholder. To be replaced with a high-resolution 2560 px export with identical framing.
+---
 
-1. **Additional Skills** (`lib/skills.ts`) — Current graph has 16 confirmed skills across Core, AI, Product, and Leadership. A data model slot is reserved for ~4 additional skills (e.g. PyTorch, CUDA, ROS 2, Docker) upon review.
-2. **Event Copy & Narratives** (`lib/events.ts`) — The 7 exhibition events (`Tech Escape`, `Stranger Tech`, `SITNovate`, `IEEE Workshops`, `Blockchain = Money`, `Vibe to Reality`, `Doomsday Protocol`) have placeholder stories, summaries, and dates.
-3. **Photos** (`lib/events.ts`, `components/events/EventDetailModal.tsx`) — All event gallery items are currently handcrafted SVG/CSS photo placeholder tiles.
-4. **Participant Information** (`lib/events.ts`) — Attendee and reach counts across all events are estimated placeholders.
-5. **Team Information** (`lib/events.ts`) — Organization committee counts and co-organizer credits are placeholders.
-6. **Portrait Photo** (`components/intro/PortraitPlaceholder.tsx`) — Silhouette SVG standing in for high-res editorial portrait.
-7. **Chip Labels** (`components/intro/Chapter2Intro.tsx`) — Four chips ("Nagpur", "AI/ML", "IEEE", "Builder") to be verified.
-8. **Project Data & URLs** (`data/projects.ts`) — GitHub, demo, and case study links are placeholders.
-9. **Contact Links** (`components/contact/Contact.tsx`) — Resume PDF and verified Proton email to be confirmed.
+## Next.js Legacy Cleanup Summary
 
-## Quality & Accessibility Guarantees
+The project previously contained two overlapping codebases (an older Next.js setup and a Vite setup). The codebase is now purely Vite + React:
 
-- **Single typeface**: Azeret Mono only.
-- **Strict palette**: `#020814`, `#061A3A`, `#0F4C81`, `#5FA8FF`, `#F7FBFF`.
-- **Background preservation**: Shared living universe background untouched. Constellation click interaction preserved.
-- **Accessible & Responsive**: Fully tested down to ~375px width, keyboard navigable, and respects `prefers-reduced-motion`.
+1. **Deleted Legacy Next.js Directories & Files**:
+   - `app/` (legacy Next.js root layout, page, and globals)
+   - `components/` (root-level legacy components)
+   - `lib/` (root-level legacy helper libraries)
+   - `data/` (root-level duplicate data directory)
+   - `next.config.js` & `next-env.d.ts`
+   - `skiper31.tsx` (legacy experimental component)
+   - `AUDIT_REPORT.md` (audit for old Next.js setup)
+   - `.next/` build artifact folder
+2. **Cleaned Dependencies & Configuration**:
+   - Removed `next` dependency from `package.json`
+   - Confirmed `tsconfig.json` paths point cleanly to `./src/*`
+   - Verified `vite.config.ts` alias `@` maps to `./src`
+   - Ensured `dist/` is ignored in `.gitignore`
+   - All components and assets in `src/` validated with 0 type errors and successful production builds.
