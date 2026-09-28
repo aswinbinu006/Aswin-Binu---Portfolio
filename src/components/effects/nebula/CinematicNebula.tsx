@@ -112,11 +112,11 @@ export default function CinematicNebula({
 
     // ── Sprites matching strict silver / slate / white palette
     const sprites = {
-      back: makeSoftSprite(32, 0.5, '180,195,215'),
-      mid: makeSoftSprite(64, 0.15, '120,135,155'),
-      front: makeSoftSprite(128, 0.0, '220,230,245'),
-      glow: makeSoftSprite(64, 0.12, '200,210,225'),
-      white: makeSoftSprite(48, 0.25, '248,250,252'),
+      back: makeSoftSprite(32, 0.3, '160,175,195'),
+      mid: makeSoftSprite(64, 0.1, '120,135,155'),
+      front: makeSoftSprite(128, 0.0, '190,205,220'),
+      glow: makeSoftSprite(64, 0.08, '180,195,210'),
+      white: makeSoftSprite(48, 0.15, '220,230,240'),
     };
 
     const rnd = (a: number, b: number) => a + Math.random() * (b - a);
@@ -151,10 +151,10 @@ export default function CinematicNebula({
       }
     };
 
-    addDust(nBack, sprites.back, [1.5, 3.0], [0.25, 0.5], [0.03, 0.08], 0.003);
-    addDust(nMid, sprites.mid, [4, 9], [0.08, 0.16], [0.1, 0.2], 0.005);
+    addDust(nBack, sprites.back, [1.5, 2.8], [0.14, 0.28], [0.03, 0.08], 0.003);
+    addDust(nMid, sprites.mid, [3.5, 8], [0.05, 0.10], [0.1, 0.2], 0.005);
     const backCount = dust.length;
-    addDust(nFront, sprites.front, [14, 32], [0.03, 0.07], [0.25, 0.45], 0.008);
+    addDust(nFront, sprites.front, [12, 28], [0.02, 0.04], [0.25, 0.45], 0.008);
 
     // ── Multi-meteor shooting stars system (every 3 to 8 seconds)
     const meteors: Meteor[] = [];
@@ -517,7 +517,7 @@ export default function CinematicNebula({
 
         // Draw sparkle glint crosshair if active
         if (glintAlpha > 0.3) {
-          octx.strokeStyle = `rgba(247, 251, 255, ${glintAlpha * 0.8})`;
+          octx.strokeStyle = `rgba(226, 232, 240, ${glintAlpha * 0.4})`;
           octx.lineWidth = 0.8;
           octx.beginPath();
           octx.moveTo(x - 5, y);
@@ -529,9 +529,9 @@ export default function CinematicNebula({
       }
     };
 
-    // ── Drawing 3-Depth Starfield with Cursor Attraction
+    // ── Drawing 3-Depth Starfield with Cursor Attraction (softened to match background photo stars)
     const drawStars = (dissolve: number) => {
-      const baseAlpha = 0.72 + 0.28 * smooth(0.05, 0.65, dissolve);
+      const baseAlpha = 0.48 + 0.24 * smooth(0.05, 0.65, dissolve);
 
       const cursorScreenX = (mouse.x * 0.5 + 0.5) * cssW;
       const cursorScreenY = (mouse.y * 0.5 + 0.5) * cssH;
@@ -553,7 +553,7 @@ export default function CinematicNebula({
             const angle = Math.atan2(cursorScreenY - p.y, cursorScreenX - p.x);
             drawX += Math.cos(angle) * pull;
             drawY += Math.sin(angle) * pull;
-            hoverBoost = (1 - distToCursor / 110) * 0.5;
+            hoverBoost = (1 - distToCursor / 110) * 0.25;
           }
         }
 
@@ -562,23 +562,23 @@ export default function CinematicNebula({
         const speed = s.twinkleSpeed ?? 1.2;
         const offset = s.twinkleOffset ?? (i * 1.618);
         const twinkle = 0.72 + 0.28 * Math.sin(time * speed + offset);
-        const alpha = Math.min(1, (baseAlpha * twinkle + hoverBoost) * gainAt(drawX, drawY));
+        const alpha = Math.min(0.85, (baseAlpha * twinkle + hoverBoost) * gainAt(drawX, drawY));
 
-        // Layer-based size
+        // Layer-based size and soft matching colors
         let size = 0.8;
         if (s.layer === 1) {
-          size = 0.7 + s.s * 0.6;
-          octx.fillStyle = 'rgba(180, 195, 215, 0.85)';
+          size = 0.7 + s.s * 0.5;
+          octx.fillStyle = 'rgba(160, 175, 195, 0.6)';
         } else if (s.layer === 2) {
-          size = 1.2 + s.s * 0.8;
-          octx.fillStyle = 'rgba(220, 230, 245, 0.95)';
+          size = 1.1 + s.s * 0.7;
+          octx.fillStyle = 'rgba(195, 210, 225, 0.7)';
         } else {
-          size = 2.0 + s.s * 1.2;
-          octx.fillStyle = 'rgba(255, 255, 255, 1.0)';
-          // Soft halo around hero/foreground stars
+          size = 1.8 + s.s * 0.9;
+          octx.fillStyle = 'rgba(230, 238, 248, 0.8)';
+          // Soft subtle halo around hero/foreground stars
           if (!reduced) {
-            octx.globalAlpha = alpha * 0.35;
-            octx.drawImage(sprites.glow, drawX - 10, drawY - 10, 20, 20);
+            octx.globalAlpha = alpha * 0.2;
+            octx.drawImage(sprites.glow, drawX - 8, drawY - 8, 16, 16);
           }
         }
 
