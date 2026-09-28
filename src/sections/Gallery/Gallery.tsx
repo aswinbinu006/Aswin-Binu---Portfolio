@@ -2,7 +2,6 @@ import React, { useState, useRef } from "react";
 import { events, type EventItem } from "@/data/events";
 import EventPoster from "./EventPoster";
 import EventDetailModal from "./EventDetailModal";
-import { useInView } from "framer-motion";
 import { Label } from "@/components/ui";
 import HorizontalTextReveal from "@/components/effects/HorizontalTextReveal";
 import HorizontalReveal from "@/components/effects/HorizontalReveal";
@@ -15,7 +14,6 @@ import HorizontalReveal from "@/components/effects/HorizontalReveal";
 export default function Gallery() {
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   const col1 = [events[0], events[1]]; // Tech Escape, Stranger Tech
   const col2 = [events[2], events[3], events[4]]; // SITNovate, IEEE Workshops, Blockchain = Money
@@ -42,9 +40,6 @@ export default function Gallery() {
       id="events"
       className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 md:px-8 py-24 md:py-36 overflow-x-clip"
     >
-      {/* Dynamic Ambient Background */}
-      <ScrollGalleryBackground isInView={isInView} />
-
       {/* Editorial Header with Horizontal Reveal */}
       <div className="mb-12 md:mb-16 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
         <div>
@@ -117,27 +112,6 @@ export default function Gallery() {
         onClose={handleCloseEvent}
       />
     </section>
-  );
-}
-
-/**
- * Ambient background for gallery section (constrained within section)
- */
-function ScrollGalleryBackground({ isInView }: { isInView: boolean }) {
-  return (
-    <div
-      className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
-      aria-hidden="true"
-    >
-      <div
-        className="absolute inset-0 bg-gradient-to-b from-transparent via-[#12151c]/40 to-transparent transition-opacity duration-1000"
-        style={{ opacity: isInView ? 1 : 0 }}
-      />
-      <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[350px] rounded-full bg-white/[0.03] blur-3xl transition-opacity duration-1000"
-        style={{ opacity: isInView ? 0.6 : 0 }}
-      />
-    </div>
   );
 }
 
