@@ -35,13 +35,13 @@ export default function Button({
 
   const variantStyles = {
     primary:
-      'bg-cyan text-void hover:bg-cyan-bright hover:shadow-cyan border border-cyan/40 font-semibold',
+      'bg-white text-void hover:bg-slate-200 hover:shadow-silver border border-white font-semibold',
     secondary:
-      'bg-navy-surface text-luminous border border-stellar/40 hover:border-cyan/50 hover:bg-navy/80 hover:shadow-stellar',
+      'bg-surface-subtle text-luminous border border-white/10 hover:border-white/30 hover:bg-surface-panel hover:shadow-glass',
     ghost:
-      'bg-transparent text-luminous-muted hover:text-luminous border border-transparent hover:border-luminous-faint',
+      'bg-transparent text-luminous-muted hover:text-luminous border border-transparent hover:border-white/10',
     glass:
-      'frosted-glass text-luminous border border-luminous-faint hover:border-cyan/40 hover:text-white',
+      'frosted-glass text-luminous border border-white/10 hover:border-white/30 hover:text-white',
   }[variant];
 
   const content = (

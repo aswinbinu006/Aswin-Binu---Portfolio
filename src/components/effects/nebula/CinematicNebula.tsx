@@ -31,14 +31,14 @@ export interface CinematicNebulaProps {
 }
 
 // Section-dependent ambient cosmic tint palette:
-// [r, g, b, alpha]
+// [r, g, b, alpha] - Refined Dark Grey & Silver Monochrome Atmosphere
 const SECTION_TINTS: [number, number, number, number][] = [
-  [15, 76, 129, 0.03],   // Hero: Deep Stellar Blue
-  [95, 168, 255, 0.04],  // About: Electric Cyan
-  [60, 130, 240, 0.035], // Skills: Neural Cobalt
-  [10, 50, 110, 0.04],   // Projects: Deep Technical Navy
-  [30, 90, 180, 0.035],  // Gallery: Curated Obsidian
-  [95, 168, 255, 0.045], // Contact: Cosmic Horizon
+  [180, 195, 215, 0.02],  // Hero: Silver Starlight
+  [148, 163, 184, 0.025], // About: Neutral Slate Grey
+  [160, 175, 195, 0.022], // Skills: Platinum Nebula
+  [120, 135, 155, 0.025], // Projects: Deep Technical Slate
+  [140, 155, 175, 0.02],  // Gallery: Curated Graphite
+  [180, 195, 215, 0.025], // Contact: Horizon Silver
 ];
 
 export default function CinematicNebula({
@@ -110,13 +110,13 @@ export default function CinematicNebula({
       shown: false,
     };
 
-    // ── Sprites matching strict palette: #5FA8FF / #0F4C81 / #F7FBFF
+    // ── Sprites matching strict silver / slate / white palette
     const sprites = {
-      back: makeSoftSprite(32, 0.5, '95,168,255'),
-      mid: makeSoftSprite(64, 0.15, '15,76,129'),
-      front: makeSoftSprite(128, 0.0, '123,186,255'),
-      glow: makeSoftSprite(64, 0.12, '95,168,255'),
-      white: makeSoftSprite(48, 0.25, '247,251,255'),
+      back: makeSoftSprite(32, 0.5, '180,195,215'),
+      mid: makeSoftSprite(64, 0.15, '120,135,155'),
+      front: makeSoftSprite(128, 0.0, '220,230,245'),
+      glow: makeSoftSprite(64, 0.12, '200,210,225'),
+      white: makeSoftSprite(48, 0.25, '248,250,252'),
     };
 
     const rnd = (a: number, b: number) => a + Math.random() * (b - a);
@@ -185,8 +185,8 @@ export default function CinematicNebula({
         len,
         age: 0,
         dur: duration,
-        headRgb: '247, 251, 255',
-        tailRgb: '95, 168, 255',
+        headRgb: '255, 255, 255',
+        tailRgb: '180, 195, 215',
       });
 
       // Next spawn scheduled in 3 to 8 seconds
@@ -551,10 +551,10 @@ export default function CinematicNebula({
         let size = 0.8;
         if (s.layer === 1) {
           size = 0.7 + s.s * 0.6;
-          octx.fillStyle = 'rgba(180, 215, 255, 0.9)';
+          octx.fillStyle = 'rgba(180, 195, 215, 0.85)';
         } else if (s.layer === 2) {
           size = 1.2 + s.s * 0.8;
-          octx.fillStyle = 'rgba(220, 238, 255, 0.95)';
+          octx.fillStyle = 'rgba(220, 230, 245, 0.95)';
         } else {
           size = 2.0 + s.s * 1.2;
           octx.fillStyle = 'rgba(255, 255, 255, 1.0)';
@@ -619,16 +619,16 @@ export default function CinematicNebula({
           }
         };
 
-        // Outer cyan aura
+        // Outer subtle slate-silver aura
         trace();
-        octx.lineWidth = 4;
-        octx.strokeStyle = `rgba(15, 76, 129, ${0.25 * a})`;
+        octx.lineWidth = 3.5;
+        octx.strokeStyle = `rgba(148, 163, 184, ${0.18 * a})`;
         octx.stroke();
 
-        // Core bright thread
+        // Core bright silver thread
         trace();
         octx.lineWidth = 1.2;
-        octx.strokeStyle = `rgba(95, 168, 255, ${0.85 * a})`;
+        octx.strokeStyle = `rgba(226, 232, 240, ${0.8 * a})`;
         octx.stroke();
 
         P.forEach((p, j) => {
@@ -636,7 +636,7 @@ export default function CinematicNebula({
           octx.globalAlpha = a * 0.9;
           octx.drawImage(sprites.glow, p.x - 14, p.y - 14, 28, 28);
           octx.globalAlpha = a;
-          octx.fillStyle = '#F7FBFF';
+          octx.fillStyle = '#f8fafc';
           octx.beginPath();
           octx.arc(p.x, p.y, 1.8, 0, Math.PI * 2);
           octx.fill();
@@ -680,7 +680,7 @@ export default function CinematicNebula({
         const trailGrad = octx.createLinearGradient(m.x, m.y, tailX, tailY);
         trailGrad.addColorStop(0, `rgba(${m.headRgb}, ${0.95 * alphaCurve})`);
         trailGrad.addColorStop(0.3, `rgba(${m.tailRgb}, ${0.65 * alphaCurve})`);
-        trailGrad.addColorStop(1, 'rgba(15, 76, 129, 0)');
+        trailGrad.addColorStop(1, 'rgba(100, 116, 139, 0)');
 
         octx.strokeStyle = trailGrad;
         octx.lineWidth = 3.5;
@@ -707,9 +707,9 @@ export default function CinematicNebula({
       const fade = Math.max(0, 1 - (wall - mouse.lastMove) / 3.0);
 
       const rad = octx.createRadialGradient(cx, cy, 0, cx, cy, 110);
-      rad.addColorStop(0, `rgba(95, 168, 255, ${0.07 * fade})`);
-      rad.addColorStop(0.5, `rgba(15, 76, 129, ${0.03 * fade})`);
-      rad.addColorStop(1, 'rgba(2, 8, 20, 0)');
+      rad.addColorStop(0, `rgba(226, 232, 240, ${0.05 * fade})`);
+      rad.addColorStop(0.5, `rgba(148, 163, 184, ${0.02 * fade})`);
+      rad.addColorStop(1, 'rgba(9, 10, 15, 0)');
 
       octx.fillStyle = rad;
       octx.beginPath();

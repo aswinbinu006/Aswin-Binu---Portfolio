@@ -61,12 +61,12 @@ export default function Skills() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <Label beacon beaconColor="bg-cyan">
+            <Label beacon beaconColor="bg-white/80">
               Constellation Topology // Act III
             </Label>
           </motion.div>
           <motion.h2
-            className="font-mono text-h1 font-bold tracking-tight text-luminous"
+            className="font-mono text-h1 font-bold tracking-tight text-white"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -75,7 +75,7 @@ export default function Skills() {
             Systems & Directives
           </motion.h2>
           <motion.p
-            className="mt-3 max-w-[65ch] font-mono text-body leading-relaxed text-luminous-muted"
+            className="mt-3 max-w-[65ch] font-mono text-body leading-relaxed text-white/70"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -89,14 +89,14 @@ export default function Skills() {
 
         {/* Active Node Indicator Readout - Dynamic */}
         <motion.div
-          className="flex items-center gap-2 font-mono text-caption text-luminous-dim"
+          className="flex items-center gap-2 font-mono text-caption text-white/50"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
         >
           <motion.span
             className={`inline-block h-2 w-2 rounded-full transition-colors duration-300 ${
-              activeSkill ? "bg-cyan shadow-cyan" : "bg-luminous-faint"
+              activeSkill ? "bg-white shadow-silver" : "bg-white/20"
             }`}
             animate={{
               scale: activeSkill ? [1, 1.2, 1] : 1,
@@ -422,7 +422,7 @@ export default function Skills() {
                   {activeSkill.label}
                 </motion.span>
                 <motion.span
-                  className="rounded-full border border-cyan/40 bg-cyan-dim px-2.5 py-0.5 font-mono text-label text-cyan-bright uppercase"
+                  className="rounded-full border border-white/20 bg-white/10 px-2.5 py-0.5 font-mono text-label text-white uppercase"
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                 >
@@ -432,25 +432,25 @@ export default function Skills() {
               <button
                 type="button"
                 onClick={() => setActiveSkillId(null)}
-                className="font-mono text-label text-luminous-dim hover:text-white"
+                className="font-mono text-label text-white/50 hover:text-white"
               >
                 DISMISS [ESC]
               </button>
             </div>
 
             <motion.div
-              className="mt-3 flex flex-wrap items-center gap-1.5 font-mono text-caption text-luminous-muted"
+              className="mt-3 flex flex-wrap items-center gap-1.5 font-mono text-caption text-white/70"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.1 }}
             >
-              <span className="text-label text-luminous-dim uppercase">Connected to:</span>
+              <span className="text-label text-white/40 uppercase">Connected to:</span>
               {connectedSkills.map((cs) => (
                 <motion.button
                   key={cs.id}
                   type="button"
                   onClick={(e) => handleNodeSelect(cs.id, e)}
-                  className="rounded-full border border-luminous-faint bg-navy-surface px-2.5 py-0.5 text-label text-cyan hover:border-cyan/50 hover:bg-cyan/10 transition-colors"
+                  className="rounded-full border border-white/10 bg-[#12151c] px-2.5 py-0.5 text-label text-white/80 hover:border-white/30 hover:bg-white/10 transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >

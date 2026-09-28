@@ -2,24 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Design Tokens: Dark Space Identity (#020814 / #061A3A / #0F4C81 / #5FA8FF / #F7FBFF) */
+/* Design Tokens: Refined Dark Grey & Silver Monochrome System */
 :root {
-  --color-void: #020814;
-  --color-navy: #061A3A;
-  --color-stellar: #0F4C81;
-  --color-cyan: #5FA8FF;
-  --color-white: #F7FBFF;
+  --color-void: #090a0f;
+  --color-surface: #12151c;
+  --color-panel: #161922;
+  --color-navy: #12151c;
+  --color-stellar: #334155;
+  --color-cyan: #e2e8f0;
+  --color-silver: #e2e8f0;
+  --color-white: #f8fafc;
 
   --font-mono: 'Azeret Mono', ui-monospace, monospace;
 
-  /* Fluid typography clamp variables */
-  --type-display: clamp(2.5rem, 6vw + 1rem, 5.5rem);
-  --type-h1: clamp(2rem, 4vw + 0.75rem, 3.75rem);
-  --type-h2: clamp(1.5rem, 2.5vw + 0.5rem, 2.5rem);
-  --type-h3: clamp(1.15rem, 1.5vw + 0.5rem, 1.75rem);
-  --type-body: clamp(0.875rem, 0.5vw + 0.75rem, 1rem);
-  --type-caption: clamp(0.75rem, 0.25vw + 0.65rem, 0.875rem);
-  --type-label: clamp(0.6875rem, 0.2vw + 0.6rem, 0.75rem);
+  /* Refined, comfortable typography clamp variables */
+  --type-display: clamp(1.75rem, 3.2vw, 3rem);
+  --type-h1: clamp(1.35rem, 2.2vw, 2.25rem);
+  --type-h2: clamp(1.15rem, 1.6vw, 1.5rem);
+  --type-h3: clamp(0.95rem, 1.2vw, 1.25rem);
+  --type-body: clamp(0.875rem, 0.3vw + 0.75rem, 0.95rem);
+  --type-caption: 0.8125rem;
+  --type-label: 0.6875rem;
 
   /* Layout and spacing scale */
   --max-content-width: 1440px;
@@ -91,17 +94,17 @@ body {
 
 /* Section vertical rhythm */
 .section-padding {
-  padding-top: clamp(4.5rem, 8vw, 8.5rem);
-  padding-bottom: clamp(4.5rem, 8vw, 8.5rem);
+  padding-top: clamp(4rem, 6vw, 6.5rem);
+  padding-bottom: clamp(4rem, 6vw, 6.5rem);
 }
 
-/* Architectural Glass Material Tokens */
+/* Architectural Dark Grey Glass Material Tokens */
 .frosted-glass,
 .glass-panel {
-  background: rgba(6, 26, 58, 0.45);
+  background: rgba(18, 21, 28, 0.72);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(247, 251, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   transition: border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
               background 0.3s cubic-bezier(0.16, 1, 0.3, 1),
               box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -109,14 +112,14 @@ body {
 
 .frosted-glass:hover,
 .glass-panel:hover {
-  border-color: rgba(95, 168, 255, 0.35);
-  background: rgba(6, 26, 58, 0.65);
-  box-shadow: 0 0 25px rgba(15, 76, 129, 0.25);
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(24, 28, 38, 0.88);
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.45);
 }
 
 .frosted-glass-subtle {
-  background: rgba(6, 26, 58, 0.2);
-  border: 1px solid rgba(247, 251, 255, 0.05);
+  background: rgba(18, 21, 28, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* Tactical reticle corners */
@@ -130,8 +133,7 @@ body {
   position: absolute;
   width: 6px;
   height: 6px;
-  border-color: var(--color-cyan);
-  opacity: 0.5;
+  border-color: rgba(226, 232, 240, 0.35);
   pointer-events: none;
 }
 
@@ -158,15 +160,25 @@ body {
   background: radial-gradient(
     circle at center,
     transparent 55%,
-    rgba(2, 8, 20, 0.6) 88%,
-    rgba(2, 8, 20, 0.96) 100%
+    rgba(9, 10, 15, 0.6) 88%,
+    rgba(9, 10, 15, 0.96) 100%
   );
 }
 
 /* Focus outline for keyboard navigation */
 .focus-ring:focus-visible {
-  outline: 2px solid var(--color-cyan);
+  outline: 2px solid rgba(226, 232, 240, 0.6);
   outline-offset: 3px;
+}
+
+/* Print mode fidelity */
+@media print {
+  html, body, #root {
+    background-color: #090a0f !important;
+    color: #f8fafc !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 }
 
 /* SVG responsiveness safe-net */

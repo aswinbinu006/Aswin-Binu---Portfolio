@@ -77,7 +77,7 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
         {/* 0.8–2.2s: "ASWIN BINU" letter-by-letter reveal */}
         <h1
           ref={nameRef}
-          className="font-space flex flex-wrap items-center justify-center text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-[0.22em] sm:tracking-[0.25em] text-white"
+          className="font-mono flex flex-wrap items-center justify-center text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-[0.2em] sm:tracking-[0.25em] text-white"
         >
           {/* First Name */}
           <span className="inline-flex mr-4 sm:mr-7">

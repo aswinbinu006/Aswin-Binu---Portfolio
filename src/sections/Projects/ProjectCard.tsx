@@ -13,10 +13,10 @@ export default function ProjectCard({ project }: { project: Project }) {
   return (
     <div
       ref={cardRef}
-      className="project-card group relative w-full overflow-hidden rounded-2xl border border-luminous-faint bg-navy-surface p-6 sm:p-8 md:p-10 backdrop-blur-xl transition-all duration-300 hover:border-cyan/40 hover:-translate-y-1 hover:shadow-stellar select-none"
+      className="project-card group relative w-full overflow-hidden rounded-2xl border border-white/10 bg-[#12151c]/85 p-6 sm:p-8 md:p-10 backdrop-blur-xl transition-all duration-300 hover:border-white/30 hover:-translate-y-1 hover:shadow-silver select-none"
     >
       {/* Corner targeting reticles */}
-      <div className="corner-bracket pointer-events-none absolute inset-4 opacity-40 group-hover:opacity-100 transition-opacity" />
+      <div className="corner-bracket pointer-events-none absolute inset-4 opacity-30 group-hover:opacity-100 transition-opacity" />
 
       {/* Project Header */}
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
@@ -25,27 +25,27 @@ export default function ProjectCard({ project }: { project: Project }) {
             <Tag variant="cyan" size="sm">
               {project.category}
             </Tag>
-            <span className="font-mono text-label text-luminous-dim">
+            <span className="font-mono text-label text-white/40">
               {project.duration}
             </span>
           </div>
-          <h3 className="font-mono text-h2 font-bold tracking-tight text-luminous transition-colors group-hover:text-cyan-bright">
+          <h3 className="font-mono text-h2 font-bold tracking-tight text-white transition-colors group-hover:text-silver-bright">
             {project.title}
           </h3>
-          <p className="mt-1 font-mono text-caption text-cyan uppercase tracking-wider">
+          <p className="mt-1 font-mono text-caption text-white/60 uppercase tracking-wider">
             {project.role}
           </p>
         </div>
 
         <div className="sm:text-right">
-          <span className="font-mono text-label text-luminous-dim uppercase tracking-wider">
+          <span className="font-mono text-label text-white/40 uppercase tracking-wider">
             {project.year}
           </span>
         </div>
       </div>
 
       {/* Project Description */}
-      <p className="font-mono text-body leading-relaxed text-luminous-muted mt-3 mb-6 max-w-[70ch]">
+      <p className="font-mono text-body leading-relaxed text-white/70 mt-3 mb-6 max-w-[70ch]">
         {project.description}
       </p>
 
@@ -61,7 +61,7 @@ export default function ProjectCard({ project }: { project: Project }) {
       )}
 
       {/* Action Buttons */}
-      <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-luminous-faint">
+      <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-white/10">
         {project.githubUrl && (
           <Button
             href={project.githubUrl}
@@ -87,8 +87,8 @@ export default function ProjectCard({ project }: { project: Project }) {
             size="sm"
             icon={
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
               </span>
             }
             iconPosition="left"

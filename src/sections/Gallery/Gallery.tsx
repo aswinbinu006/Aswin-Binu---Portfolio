@@ -53,22 +53,22 @@ export default function Gallery() {
       >
         <div>
           <div className="mb-3">
-            <Label beacon beaconColor="bg-cyan">
+            <Label beacon beaconColor="bg-white/80">
               Curated Records // Act V
             </Label>
           </div>
-          <h2 className="font-mono text-h1 font-bold tracking-tight text-luminous">
+          <h2 className="font-mono text-h1 font-bold tracking-tight text-white">
             Exhibition Wall
           </h2>
-          <p className="mt-3 max-w-[65ch] font-mono text-body leading-relaxed text-luminous-muted">
+          <p className="mt-3 max-w-[65ch] font-mono text-body leading-relaxed text-white/70">
             Curated archive of technical hackathons, escape-room architectures,
             and engineering symposia orchestrated across collegiate and IEEE chapters.
             Select any poster to inspect archival records.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 font-mono text-caption text-luminous-dim">
-          <span className="h-1.5 w-1.5 rounded-full bg-cyan animate-pulse" />
+        <div className="flex items-center gap-2 font-mono text-caption text-white/50">
+          <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
           <span>{events.length} CURATED ARTIFACTS</span>
         </div>
       </motion.div>
@@ -118,11 +118,11 @@ function ScrollGalleryBackground({ isInView }: { isInView: boolean }) {
       aria-hidden="true"
     >
       <div
-        className="absolute inset-0 bg-gradient-to-b from-transparent via-navy-surface/40 to-transparent transition-opacity duration-1000"
+        className="absolute inset-0 bg-gradient-to-b from-transparent via-[#12151c]/40 to-transparent transition-opacity duration-1000"
         style={{ opacity: isInView ? 1 : 0 }}
       />
       <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[350px] rounded-full bg-cyan/5 blur-3xl transition-opacity duration-1000"
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[350px] rounded-full bg-white/[0.03] blur-3xl transition-opacity duration-1000"
         style={{ opacity: isInView ? 0.6 : 0 }}
       />
     </div>

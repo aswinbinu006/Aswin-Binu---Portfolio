@@ -23,13 +23,13 @@ export default function Tag({
 
   const variantStyles = {
     default:
-      'bg-navy-surface border border-luminous-faint text-luminous-muted',
+      'bg-surface-subtle border border-white/10 text-luminous-muted',
     cyan:
-      'bg-cyan-dim border border-cyan/30 text-cyan-bright',
+      'bg-white/10 border border-white/20 text-white',
     stellar:
-      'bg-stellar-subtle border border-stellar/40 text-luminous',
+      'bg-surface-panel border border-white/10 text-luminous',
     outline:
-      'bg-transparent border border-luminous-faint text-luminous-dim',
+      'bg-transparent border border-white/10 text-luminous-dim',
   }[variant];
 
   return (

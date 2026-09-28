@@ -14,7 +14,7 @@ export interface LabelProps extends React.HTMLAttributes<HTMLSpanElement> {
 export default function Label({
   children,
   beacon = true,
-  beaconColor = 'bg-cyan',
+  beaconColor = 'bg-silver',
   className = '',
   ...props
 }: LabelProps) {

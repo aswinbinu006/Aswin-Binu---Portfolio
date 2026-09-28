@@ -38,7 +38,7 @@ export default function HorizontalTextReveal({
   className = "",
   wordClassName = "",
   highlightWords = [],
-  highlightColor = "#F6C343",
+  highlightColor = "#ffffff",
   xOffset = 70,
   skewAngle = -12,
   delay = 0,

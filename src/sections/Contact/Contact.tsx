@@ -40,7 +40,7 @@ export default function Contact() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <Label beacon beaconColor="bg-cyan">
+          <Label beacon beaconColor="bg-white/80">
             Transmission // Act VIII
           </Label>
         </motion.div>
@@ -52,11 +52,11 @@ export default function Contact() {
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.3 }}
         >
-          <h2 className="font-mono text-h1 font-bold tracking-tight text-luminous">
+          <h2 className="font-mono text-h1 font-bold tracking-tight text-white">
             Let&apos;s build something memorable.
           </h2>
 
-          <p className="mt-4 max-w-[50ch] font-mono text-body text-luminous-muted leading-relaxed mx-auto">
+          <p className="mt-4 max-w-[50ch] font-mono text-body text-white/70 leading-relaxed mx-auto">
             Open for high-impact AI/ML research collaborations, critical systems
             engineering, and architectural discussions.
           </p>
@@ -81,9 +81,9 @@ export default function Contact() {
                   onClick={handleCopyEmail}
                   icon={
                     copied ? (
-                      <span className="text-void font-bold">✓</span>
+                      <span className="text-black font-bold">✓</span>
                     ) : (
-                      <span className="text-void">✉</span>
+                      <span className="text-black">✉</span>
                     )
                   }
                   iconPosition="left"
@@ -110,7 +110,7 @@ export default function Contact() {
 
         {/* Subtle HUD Transmission Telemetry Footer */}
         <motion.div
-          className="mt-20 font-mono text-label tracking-widest text-luminous-dim uppercase flex flex-col sm:flex-row items-center gap-2 sm:gap-4"
+          className="mt-20 font-mono text-label tracking-widest text-white/40 uppercase flex flex-col sm:flex-row items-center gap-2 sm:gap-4"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -130,7 +130,7 @@ export default function Contact() {
         aria-hidden="true"
       >
         <div
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[350px] rounded-full bg-cyan/5 blur-3xl transition-opacity duration-1000"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[350px] rounded-full bg-white/[0.03] blur-3xl transition-opacity duration-1000"
           style={{ opacity: isInView ? 0.7 : 0 }}
         />
       </div>
