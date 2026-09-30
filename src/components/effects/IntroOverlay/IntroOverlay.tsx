@@ -28,8 +28,8 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
       role="region"
       aria-label="Astronaut Point of View"
       onClick={finishIntro}
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden select-none cursor-pointer"
-      style={{ backgroundColor: "transparent" }}
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden select-none cursor-pointer bg-black"
+      style={{ backgroundColor: "#000000" }}
     >
       {/* Dynamic High-Speed Warp Velocity Starfield */}
       <WarpSpeedCanvas isFastMoving={isFastMoving} />

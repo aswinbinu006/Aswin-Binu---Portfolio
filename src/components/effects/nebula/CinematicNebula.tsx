@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Renderer, Program, Mesh, Triangle, Texture } from 'ogl';
 import { ScrollTrigger } from '@/utils/gsap';
 import {
@@ -17,10 +17,14 @@ import {
   Dust,
   Constellation,
   Meteor,
+  Satellite,
+  PaperTrace,
+  ClusterPulse,
 } from './types';
 import { VERTEX, buildFragment } from './shaders';
 import { smooth, analyzeImage } from './analyzeImage';
 import { makeSoftSprite, makeHeroSprite } from './sprites';
+import { getNebulaTier, shouldReduceAnimations } from '@/utils/device';
 
 export type { NebulaControl };
 
@@ -30,14 +34,63 @@ export interface CinematicNebulaProps {
   control?: React.MutableRefObject<NebulaControl>;
 }
 
-// Section-dependent ambient cosmic tint palette:
-// [r, g, b, alpha] - Refined Dark Grey & Silver Monochrome Atmosphere
+/**
+ * CSS-only starfield for mobile/low-end devices
+ * Lightweight static background with subtle twinkling via CSS animation
+ */
+function MobileStarfield() {
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+      style={{
+        background: NEBULA_BG,
+      }}
+    >
+      {/* Static starfield using pseudo-elements and CSS */}
+      <style>{`
+        .starfield {
+          position: absolute;
+          inset: 0;
+          background-image:
+            radial-gradient(1px 1px at 10% 20%, rgba(230, 238, 248, 0.8), transparent),
+            radial-gradient(1.5px 1.5px at 85% 30%, rgba(195, 210, 225, 0.6), transparent),
+            radial-gradient(1px 1px at 45% 65%, rgba(160, 175, 195, 0.7), transparent),
+            radial-gradient(2px 2px at 70% 80%, rgba(220, 230, 245, 0.5), transparent),
+            radial-gradient(1px 1px at 25% 45%, rgba(240, 245, 255, 0.9), transparent),
+            radial-gradient(1.5px 1.5px at 60% 15%, rgba(180, 195, 215, 0.6), transparent),
+            radial-gradient(1px 1px at 90% 55%, rgba(200, 215, 235, 0.7), transparent),
+            radial-gradient(2px 2px at 15% 75%, rgba(210, 220, 235, 0.5), transparent),
+            radial-gradient(1px 1px at 50% 50%, rgba(235, 242, 252, 0.8), transparent),
+            radial-gradient(1.5px 1.5px at 35% 85%, rgba(170, 185, 205, 0.6), transparent),
+            radial-gradient(1px 1px at 78% 40%, rgba(190, 205, 225, 0.7), transparent),
+            radial-gradient(2px 2px at 8% 8%, rgba(225, 235, 250, 0.5), transparent),
+            radial-gradient(1px 1px at 65% 92%, rgba(165, 180, 200, 0.6), transparent),
+            radial-gradient(1.5px 1.5px at 95% 70%, rgba(205, 220, 240, 0.7), transparent),
+            radial-gradient(1px 1px at 30% 30%, rgba(175, 190, 210, 0.8), transparent),
+            radial-gradient(2px 2px at 55% 25%, rgba(215, 228, 245, 0.5), transparent);
+          animation: twinkle 8s ease-in-out infinite alternate;
+        }
+        @keyframes twinkle {
+          0% { opacity: 0.4; }
+          50% { opacity: 0.8; }
+          100% { opacity: 0.4; }
+        }
+      `}</style>
+      <div className="starfield" />
+    </div>
+  );
+}
+
+// Section-dependent ambient cosmic tint palette across 7 chapters:
+// [r, g, b, alpha] - Strict Palette: #020814 / #061A3A / #0F4C81 / #5FA8FF / #F7FBFF
 const SECTION_TINTS: [number, number, number, number][] = [
   [180, 195, 215, 0.02],  // Hero: Silver Starlight
   [148, 163, 184, 0.025], // About: Neutral Slate Grey
   [160, 175, 195, 0.022], // Skills: Platinum Nebula
   [120, 135, 155, 0.025], // Projects: Deep Technical Slate
   [140, 155, 175, 0.02],  // Gallery: Curated Graphite
+  [155, 170, 190, 0.022], // Academics: Archival Slate Starlight
   [180, 195, 215, 0.025], // Contact: Horizon Silver
 ];
 
@@ -46,6 +99,30 @@ export default function CinematicNebula({
   vignette = 0.5,
   control,
 }: CinematicNebulaProps) {
+  // Check device capabilities on mount
+  const [deviceTier, setDeviceTier] = useState(() => getNebulaTier());
+  const [shouldUseMobile, setShouldUseMobile] = useState(false);
+
+  useEffect(() => {
+    setDeviceTier(getNebulaTier());
+    setShouldUseMobile(deviceTier.useWebGL === false);
+
+    // Update on resize
+    const handleResize = () => {
+      const newTier = getNebulaTier();
+      setDeviceTier(newTier);
+      setShouldUseMobile(newTier.useWebGL === false);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Mobile/low-end: render lightweight CSS starfield only
+  if (shouldUseMobile) {
+    return <MobileStarfield />;
+  }
+
   const hostRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLCanvasElement>(null);
   const dimRef = useRef(dim);
@@ -63,7 +140,6 @@ export default function CinematicNebula({
     const tier = TIERS[detectTier()];
     const mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
     let reduced = mqReduce.matches;
-    const isTouch = window.matchMedia('(pointer: coarse)').matches;
 
     // ── state & dimensions
     let cssW = host.clientWidth || window.innerWidth;
@@ -77,22 +153,11 @@ export default function CinematicNebula({
     let scrollSm = window.scrollY;
     let maxScroll = 1;
     let lastMeasure = -1;
-    // Cap devicePixelRatio strictly at 2
-    let dprNow = Math.min(window.devicePixelRatio || 1, Math.min(tier.dpr, 2));
+    let dprNow = Math.min(window.devicePixelRatio || 1, Math.min(tier.overlayDpr, 2));
     let time = 0;
     let wall = 0;
     let last = performance.now();
     let isTabVisible = !document.hidden;
-
-    // ── Mouse tracking for subtle 3D parallax & cursor aura
-    const mouse = {
-      x: 0,
-      y: 0,
-      targetX: 0,
-      targetY: 0,
-      active: false,
-      lastMove: 0,
-    };
 
     let stars: Star[] = [];
     let heroes: Hero[] = [];
@@ -116,12 +181,13 @@ export default function CinematicNebula({
       mid: makeSoftSprite(64, 0.1, '120,135,155'),
       front: makeSoftSprite(128, 0.0, '190,205,220'),
       glow: makeSoftSprite(64, 0.08, '180,195,210'),
+      blueGlow: makeSoftSprite(64, 0.12, '95,168,255'),
       white: makeSoftSprite(48, 0.15, '220,230,240'),
     };
 
     const rnd = (a: number, b: number) => a + Math.random() * (b - a);
 
-    // ── Dust system with occasional particle glints
+    // ── Dust system with natural passive drift
     const dust: Dust[] = [];
     const nBack = Math.round(tier.dust * 0.6);
     const nMid = Math.round(tier.dust * 0.28);
@@ -145,7 +211,7 @@ export default function CinematicNebula({
           alpha: rnd(alpha[0], alpha[1]),
           depth: rnd(depth[0], depth[1]),
           phase: Math.random() * 6.28,
-          glintTime: Math.random() < 0.18 ? rnd(2, 12) : undefined,
+          glintTime: Math.random() < 0.18 ? rnd(3, 14) : undefined,
           sprite,
         });
       }
@@ -156,24 +222,29 @@ export default function CinematicNebula({
     const backCount = dust.length;
     addDust(nFront, sprites.front, [12, 28], [0.02, 0.04], [0.25, 0.45], 0.008);
 
-    // ── Multi-meteor shooting stars system (every 3 to 8 seconds)
+    // ── Rare Ambient Events Management
+    // Only enable rare events if configured
+    const enableMeteors = tier.meteors > 0;
+    const enableSatellites = tier.satellites > 0;
+    const enablePaperTraces = tier.paperTraces > 0;
+    const enableClusterPulse = tier.clusterPulse;
+
+    // 1. Meteors (rare: every 35 to 75 seconds)
     const meteors: Meteor[] = [];
-    let nextMeteorTime = rnd(3, 7);
+    let nextMeteorTime = rnd(35, 65);
 
     const spawnMeteor = () => {
-      if (reduced) return;
-      const maxConcurrent = tier.isMobile ? 1 : 2;
-      const activeCount = meteors.filter((m) => m.active).length;
-      if (activeCount >= maxConcurrent) return;
+      if (reduced || !enableMeteors) return;
+      if (meteors.filter((m) => m.active).length >= tier.meteors) return;
 
-      const direction = Math.random() < 0.55 ? 1 : -1;
-      const angleRad = (rnd(22, 42) * Math.PI) / 180;
-      const speed = rnd(950, 1400);
-      const len = rnd(180, 320);
-      const duration = rnd(0.7, 1.15);
+      const direction = Math.random() < 0.5 ? 1 : -1;
+      const angleRad = (rnd(25, 38) * Math.PI) / 180;
+      const speed = rnd(1000, 1500);
+      const len = rnd(190, 300);
+      const duration = rnd(0.75, 1.1);
 
-      const spawnX = direction > 0 ? rnd(-100, cssW * 0.45) : rnd(cssW * 0.55, cssW + 100);
-      const spawnY = rnd(-40, cssH * 0.7);
+      const spawnX = direction > 0 ? rnd(-80, cssW * 0.4) : rnd(cssW * 0.6, cssW + 80);
+      const spawnY = rnd(-30, cssH * 0.5);
 
       meteors.push({
         active: true,
@@ -186,11 +257,81 @@ export default function CinematicNebula({
         age: 0,
         dur: duration,
         headRgb: '255, 255, 255',
-        tailRgb: '180, 195, 215',
+        tailRgb: '180, 205, 240',
       });
 
-      // Next spawn scheduled in 3 to 8 seconds
-      nextMeteorTime = wall + rnd(3, 8);
+      nextMeteorTime = wall + rnd(45, 80);
+    };
+
+    // 2. Satellite Flyby (very rare: every 90 to 160 seconds)
+    const satellites: Satellite[] = [];
+    let nextSatelliteTime = rnd(75, 120);
+
+    const spawnSatellite = () => {
+      if (reduced || !enableSatellites) return;
+      if (satellites.filter((s) => s.active).length >= tier.satellites) return;
+
+      const startY = rnd(cssH * 0.15, cssH * 0.85);
+      const endY = startY + rnd(-80, 80);
+      const duration = rnd(12, 18);
+      const speed = (cssW + 100) / duration;
+
+      satellites.push({
+        active: true,
+        x: -50,
+        y: startY,
+        dx: 1,
+        dy: (endY - startY) / (cssW + 100),
+        speed,
+        age: 0,
+        dur: duration,
+      });
+
+      nextSatelliteTime = wall + rnd(100, 180);
+    };
+
+    // 3. Paper Trace (Discovery 04 - rare gliding light trace: every 110 to 190s)
+    const paperTraces: PaperTrace[] = [];
+    let nextPaperTraceTime = rnd(90, 150);
+
+    const spawnPaperTrace = () => {
+      if (reduced || !enablePaperTraces) return;
+      if (paperTraces.filter((p) => p.active).length >= tier.paperTraces) return;
+
+      const duration = rnd(8, 12);
+      paperTraces.push({
+        active: true,
+        x: -40,
+        y: rnd(cssH * 0.2, cssH * 0.6),
+        dx: 1,
+        dy: 0.25,
+        speed: (cssW + 80) / duration,
+        age: 0,
+        dur: duration,
+        pathHistory: [],
+      });
+
+      nextPaperTraceTime = wall + rnd(130, 220);
+    };
+
+    // 4. Star Cluster Response (synchronized subtle shimmer)
+    let clusterPulse: ClusterPulse | null = null;
+    let nextClusterTime = rnd(50, 90);
+
+    const checkClusterPulse = () => {
+      if (reduced || !enableClusterPulse) return;
+      if (wall >= nextClusterTime && !clusterPulse) {
+        clusterPulse = {
+          clusterId: Math.floor(Math.random() * 4) + 1,
+          active: true,
+          born: wall,
+          duration: 3.5,
+        };
+        nextClusterTime = wall + rnd(60, 110);
+      }
+      if (clusterPulse && wall - clusterPulse.born > clusterPulse.duration) {
+        clusterPulse = null;
+      }
     };
 
     // ── Layout calculations
@@ -202,24 +343,18 @@ export default function CinematicNebula({
       parallaxRange = Math.min(slackY * 0.9, cssH * 0.05);
     };
 
-    const UNIFIED_MOUSE_FACTOR = 0.025;
-
     const toScreen = (nx: number, ny: number, layer: 1 | 2 | 3 = 2) => {
-      // Unified mouse parallax speed across all layers (image, stars, dust)
       let scrollFactor = 0.06;
       if (layer === 1) {
         scrollFactor = 0.02;
       } else if (layer === 3) {
         scrollFactor = 0.12;
       }
-
-      const mxOffset = reduced ? 0 : mouse.x * UNIFIED_MOUSE_FACTOR * cssW;
-      const myOffset = reduced ? 0 : mouse.y * UNIFIED_MOUSE_FACTOR * cssH;
       const sOffset = reduced ? 0 : parallaxY * (scrollFactor / 0.06);
 
       return {
-        x: cssW / 2 + (nx - 0.5) * drawW + mxOffset,
-        y: cssH / 2 + sOffset + (ny - 0.5) * drawH + myOffset,
+        x: cssW / 2 + (nx - 0.5) * drawW,
+        y: cssH / 2 + sOffset + (ny - 0.5) * drawH,
       };
     };
 
@@ -244,25 +379,7 @@ export default function CinematicNebula({
       layout();
     };
 
-    // ── Mouse & Touch listeners for parallax
-    const onMouseMove = (e: MouseEvent) => {
-      if (reduced || isTouch) return;
-      mouse.targetX = (e.clientX / cssW - 0.5) * 2;
-      mouse.targetY = (e.clientY / cssH - 0.5) * 2;
-      mouse.active = true;
-      mouse.lastMove = wall;
-    };
-
-    const onMouseLeave = () => {
-      mouse.targetX = 0;
-      mouse.targetY = 0;
-      mouse.active = false;
-    };
-
-    window.addEventListener('mousemove', onMouseMove, { passive: true });
-    window.addEventListener('mouseleave', onMouseLeave);
-
-    // ── Tab Visibility Listener (pause when tab hidden to preserve battery)
+    // ── Tab Visibility Listener
     const onVisibilityChange = () => {
       isTabVisible = !document.hidden;
       if (isTabVisible) {
@@ -384,19 +501,20 @@ export default function CinematicNebula({
         imgH = img.naturalHeight;
         const a = analyzeImage(img, tier.stars);
         if (a) {
-          // Distribute extracted photo stars across 3 depth layers
           const extractedStars: Star[] = a.stars.map((s, idx) => {
             const rand = (idx * 37) % 100;
             const layer: 1 | 2 | 3 = rand < 50 ? 1 : rand < 85 ? 2 : 3;
             return {
-              ...s,
+              nx: s.nx,
+              ny: s.ny,
+              s: s.s,
               layer,
               twinkleSpeed: layer === 1 ? rnd(0.5, 0.9) : layer === 2 ? rnd(1.0, 1.6) : rnd(1.6, 2.4),
               twinkleOffset: idx * 1.618,
+              clusterId: (idx % 5) + 1,
             };
           });
 
-          // Procedural supplement: ensures rich, dense starfield in the lower viewport (ny: 0.35 to 1.05)
           const lowerFieldCount = Math.round(tier.stars * 0.75);
           const lowerStars: Star[] = Array.from({ length: lowerFieldCount }, (_, idx) => {
             const rand = (idx * 43) % 100;
@@ -408,6 +526,7 @@ export default function CinematicNebula({
               layer,
               twinkleSpeed: layer === 1 ? rnd(0.5, 0.9) : layer === 2 ? rnd(1.0, 1.6) : rnd(1.6, 2.4),
               twinkleOffset: idx * 1.414,
+              clusterId: (idx % 5) + 1,
             };
           });
 
@@ -440,6 +559,7 @@ export default function CinematicNebula({
             layer,
             twinkleSpeed: layer === 1 ? rnd(0.5, 0.9) : layer === 2 ? rnd(1.0, 1.6) : rnd(1.6, 2.4),
             twinkleOffset: idx * 1.618,
+            clusterId: (idx % 5) + 1,
           };
         });
         applySize();
@@ -448,20 +568,79 @@ export default function CinematicNebula({
         }
       });
 
-    // ── Click constellation generator
+    // ── Click constellation & Hidden Discovery Generator
+    let clickCount = 0;
     const spawnConstellation = (px: number, py: number) => {
       if (!stars.length) return;
-      const k = 4 + Math.floor(Math.random() * 5);
+      clickCount++;
+
+      const ctrl = control ? control.current : { reveal: 1, dissolve: 0, sectionIndex: 0 };
+      const currentSection = ctrl.sectionIndex ?? 0;
+
+      // DISCOVERY 03: Graduation Cap Trace (near Academic Chapter - sectionIndex === 5)
+      if (currentSection === 5 && Math.random() < 0.38) {
+        // Spawn subtle graduation diamond cap silhouette centered near click
+        const capScale = 45;
+        const normW = drawW || cssW;
+        const normH = drawH || cssH;
+        const cnx = (px - cssW / 2) / normW + 0.5;
+        const cny = (py - cssH / 2) / normH + 0.5;
+
+        const capPts = [
+          { nx: cnx, ny: cny - (capScale * 0.6) / normH }, // top
+          { nx: cnx + capScale / normW, ny: cny },         // right
+          { nx: cnx, ny: cny + (capScale * 0.6) / normH }, // bottom
+          { nx: cnx - capScale / normW, ny: cny },         // left
+          { nx: cnx, ny: cny - (capScale * 0.6) / normH }, // close diamond
+          { nx: cnx + (capScale * 0.8) / normW, ny: cny + (capScale * 0.9) / normH }, // tassel line
+        ];
+
+        constellations.push({
+          pts: capPts,
+          born: wall,
+          type: 'graduation',
+          duration: 3.2,
+        });
+        if (constellations.length > 3) constellations.shift();
+        return;
+      }
+
+      // DISCOVERY 02: Neural Layered Topology (rare ~8% or 3rd consecutive click)
+      if (Math.random() < 0.1 || clickCount % 7 === 0) {
+        const scr = stars
+          .map((s) => ({ s, ...toScreen(s.nx, s.ny, s.layer) }))
+          .filter((o) => Math.hypot(o.x - px, o.y - py) < 180)
+          .sort((a, b) => a.x - b.x);
+
+        if (scr.length >= 5) {
+          const neuralChain = scr.slice(0, 7);
+          constellations.push({
+            pts: neuralChain.map((o) => ({ nx: o.s.nx, ny: o.s.ny })),
+            born: wall,
+            type: 'neural',
+            duration: 3.2,
+          });
+          if (constellations.length > 3) constellations.shift();
+          return;
+        }
+      }
+
+      // DISCOVERY 01: Constellation Extension (20% chance to draw intricate 8-10 star geometry)
+      const isExtended = Math.random() < 0.22;
+      const k = isExtended ? 8 : 4 + Math.floor(Math.random() * 3);
+
       const scr = stars
         .map((s) => ({ s, ...toScreen(s.nx, s.ny, s.layer) }))
         .filter((o) => o.x > 8 && o.x < cssW - 8 && o.y > 8 && o.y < cssH - 8)
         .sort((a, b) => (a.x - px) ** 2 + (a.y - py) ** 2 - ((b.x - px) ** 2 + (b.y - py) ** 2));
+
       const picked: typeof scr = [];
       for (const o of scr) {
         if (picked.length >= k) break;
-        if (picked.every((p) => Math.hypot(p.x - o.x, p.y - o.y) >= 30)) picked.push(o);
+        if (picked.every((p) => Math.hypot(p.x - o.x, p.y - o.y) >= 28)) picked.push(o);
       }
       if (picked.length < 3) return;
+
       const chain = [picked.shift()!];
       while (picked.length) {
         const tail = chain[chain.length - 1];
@@ -476,7 +655,13 @@ export default function CinematicNebula({
         });
         chain.push(picked.splice(bi, 1)[0]);
       }
-      constellations.push({ pts: chain.map((o) => ({ nx: o.s.nx, ny: o.s.ny })), born: wall });
+
+      constellations.push({
+        pts: chain.map((o) => ({ nx: o.s.nx, ny: o.s.ny })),
+        born: wall,
+        type: isExtended ? 'extended' : 'standard',
+        duration: isExtended ? 3.0 : CONSTELLATION_LIFE,
+      });
       if (constellations.length > 3) constellations.shift();
     };
 
@@ -491,17 +676,14 @@ export default function CinematicNebula({
     };
     window.addEventListener('click', onClick);
 
-    // ── Drawing Dust & Glints (Synchronized with unified mouse parallax)
+    // ── Drawing Dust (Atmospheric space particles without cursor tracking)
     const drawDust = (from: number, to: number, dt: number, motion: number, sc: number) => {
-      const mxOffset = reduced ? 0 : mouse.x * UNIFIED_MOUSE_FACTOR * cssW;
-      const myOffset = reduced ? 0 : mouse.y * UNIFIED_MOUSE_FACTOR * cssH;
-
       for (let i = from; i < to; i++) {
         const d = dust[i];
         d.u = (d.u + d.vx * dt * motion + 1) % 1;
         d.v = (d.v + d.vy * dt * motion + 1) % 1;
-        const x = d.u * cssW + mxOffset;
-        const y = (((d.v * cssH - sc * d.depth) % cssH) + cssH) % cssH + myOffset;
+        const x = d.u * cssW;
+        const y = (((d.v * cssH - sc * d.depth) % cssH) + cssH) % cssH;
 
         let glintAlpha = 0;
         if (d.glintTime && !reduced) {
@@ -515,7 +697,6 @@ export default function CinematicNebula({
         octx.globalAlpha = Math.min(1, alpha + glintAlpha);
         octx.drawImage(d.sprite, x - d.size / 2, y - d.size / 2, d.size, d.size);
 
-        // Draw sparkle glint crosshair if active
         if (glintAlpha > 0.3) {
           octx.strokeStyle = `rgba(226, 232, 240, ${glintAlpha * 0.4})`;
           octx.lineWidth = 0.8;
@@ -529,42 +710,33 @@ export default function CinematicNebula({
       }
     };
 
-    // ── Drawing 3-Depth Starfield with Cursor Attraction (softened to match background photo stars)
+    // ── Drawing 3-Depth Starfield (Calm, dignified, with cluster response)
     const drawStars = (dissolve: number) => {
       const baseAlpha = 0.48 + 0.24 * smooth(0.05, 0.65, dissolve);
-
-      const cursorScreenX = (mouse.x * 0.5 + 0.5) * cssW;
-      const cursorScreenY = (mouse.y * 0.5 + 0.5) * cssH;
-      const hasCursor = mouse.active && !isTouch && !reduced;
+      const isClusterActive = clusterPulse?.active ?? false;
+      const activeClusterId = clusterPulse?.clusterId;
 
       for (let i = 0; i < stars.length; i++) {
         const s = stars[i];
         const p = toScreen(s.nx, s.ny, s.layer);
 
-        // Gravitational cursor attraction for nearby stars
-        let drawX = p.x;
-        let drawY = p.y;
-        let hoverBoost = 0;
+        if (p.x < -15 || p.x > cssW + 15 || p.y < -15 || p.y > cssH + 15) continue;
 
-        if (hasCursor) {
-          const distToCursor = Math.hypot(cursorScreenX - p.x, cursorScreenY - p.y);
-          if (distToCursor < 110) {
-            const pull = (1 - distToCursor / 110) * 8;
-            const angle = Math.atan2(cursorScreenY - p.y, cursorScreenX - p.x);
-            drawX += Math.cos(angle) * pull;
-            drawY += Math.sin(angle) * pull;
-            hoverBoost = (1 - distToCursor / 110) * 0.25;
-          }
+        let speed = s.twinkleSpeed ?? 1.2;
+        let offset = s.twinkleOffset ?? (i * 1.618);
+
+        // Star Cluster Shimmer Synchronization
+        if (isClusterActive && s.clusterId === activeClusterId && clusterPulse) {
+          const clusterProgress = (wall - clusterPulse.born) / clusterPulse.duration;
+          const clusterGlow = Math.sin(clusterProgress * Math.PI) * 0.45;
+          speed = 2.5;
+          offset = 0;
+          baseAlpha + clusterGlow;
         }
 
-        if (drawX < -15 || drawX > cssW + 15 || drawY < -15 || drawY > cssH + 15) continue;
-
-        const speed = s.twinkleSpeed ?? 1.2;
-        const offset = s.twinkleOffset ?? (i * 1.618);
         const twinkle = 0.72 + 0.28 * Math.sin(time * speed + offset);
-        const alpha = Math.min(0.85, (baseAlpha * twinkle + hoverBoost) * gainAt(drawX, drawY));
+        const alpha = Math.min(0.85, baseAlpha * twinkle * gainAt(p.x, p.y));
 
-        // Layer-based size and soft matching colors
         let size = 0.8;
         if (s.layer === 1) {
           size = 0.7 + s.s * 0.5;
@@ -575,16 +747,15 @@ export default function CinematicNebula({
         } else {
           size = 1.8 + s.s * 0.9;
           octx.fillStyle = 'rgba(230, 238, 248, 0.8)';
-          // Soft subtle halo around hero/foreground stars
           if (!reduced) {
             octx.globalAlpha = alpha * 0.2;
-            octx.drawImage(sprites.glow, drawX - 8, drawY - 8, 16, 16);
+            octx.drawImage(sprites.glow, p.x - 8, p.y - 8, 16, 16);
           }
         }
 
         octx.globalAlpha = alpha;
         octx.beginPath();
-        octx.arc(drawX, drawY, size * 0.5, 0, Math.PI * 2);
+        octx.arc(p.x, p.y, size * 0.5, 0, Math.PI * 2);
         octx.fill();
       }
     };
@@ -604,19 +775,20 @@ export default function CinematicNebula({
       }
     };
 
-    // ── Drawing Constellations
+    // ── Drawing Constellations & Hidden Discoveries
     const drawConstellations = () => {
       octx.lineCap = 'round';
       octx.lineJoin = 'round';
       for (let i = constellations.length - 1; i >= 0; i--) {
         const c = constellations[i];
+        const life = c.duration || CONSTELLATION_LIFE;
         const age = wall - c.born;
-        if (age >= CONSTELLATION_LIFE) {
+        if (age >= life) {
           constellations.splice(i, 1);
           continue;
         }
         const fadeIn = reduced ? 1 : Math.min(1, age / 0.25);
-        const fadeOut = age > CONSTELLATION_LIFE - 0.8 ? (CONSTELLATION_LIFE - age) / 0.8 : 1;
+        const fadeOut = age > life - 0.8 ? (life - age) / 0.8 : 1;
         const a = fadeIn * fadeOut;
         const lastPt = c.pts.length - 1;
         const revealPt = reduced ? lastPt : Math.min(lastPt, (age / 0.6) * lastPt);
@@ -636,24 +808,36 @@ export default function CinematicNebula({
           }
         };
 
-        // Outer subtle slate-silver aura
+        // Outer subtle aura (blue for special discoveries, silver for standard)
         trace();
-        octx.lineWidth = 3.5;
-        octx.strokeStyle = `rgba(148, 163, 184, ${0.18 * a})`;
+        octx.lineWidth = c.type === 'graduation' || c.type === 'neural' ? 4 : 3.5;
+        octx.strokeStyle =
+          c.type === 'graduation' || c.type === 'neural'
+            ? `rgba(95, 168, 255, ${0.25 * a})`
+            : `rgba(148, 163, 184, ${0.18 * a})`;
         octx.stroke();
 
-        // Core bright silver thread
+        // Core bright thread
         trace();
         octx.lineWidth = 1.2;
-        octx.strokeStyle = `rgba(226, 232, 240, ${0.8 * a})`;
+        octx.strokeStyle =
+          c.type === 'graduation'
+            ? `rgba(180, 215, 255, ${0.9 * a})`
+            : `rgba(226, 232, 240, ${0.8 * a})`;
         octx.stroke();
 
         P.forEach((p, j) => {
           if (j > revealPt + 0.001) return;
           octx.globalAlpha = a * 0.9;
-          octx.drawImage(sprites.glow, p.x - 14, p.y - 14, 28, 28);
+          octx.drawImage(
+            c.type === 'graduation' ? sprites.blueGlow : sprites.glow,
+            p.x - 14,
+            p.y - 14,
+            28,
+            28
+          );
           octx.globalAlpha = a;
-          octx.fillStyle = '#f8fafc';
+          octx.fillStyle = c.type === 'graduation' ? '#95c4ff' : '#f8fafc';
           octx.beginPath();
           octx.arc(p.x, p.y, 1.8, 0, Math.PI * 2);
           octx.fill();
@@ -662,11 +846,10 @@ export default function CinematicNebula({
       }
     };
 
-    // ── Drawing Meteors with glowing trails
+    // ── Drawing Meteors with glowing trails (Controlled Rare Event)
     const drawMeteors = (dt: number) => {
-      if (reduced) return;
+      if (reduced || !enableMeteors) return;
 
-      // Spawn check
       if (wall >= nextMeteorTime) {
         spawnMeteor();
       }
@@ -693,22 +876,20 @@ export default function CinematicNebula({
         const tailX = m.x - m.dx * m.len;
         const tailY = m.y - m.dy * m.len;
 
-        // Glowing outer trail
         const trailGrad = octx.createLinearGradient(m.x, m.y, tailX, tailY);
         trailGrad.addColorStop(0, `rgba(${m.headRgb}, ${0.95 * alphaCurve})`);
         trailGrad.addColorStop(0.3, `rgba(${m.tailRgb}, ${0.65 * alphaCurve})`);
         trailGrad.addColorStop(1, 'rgba(100, 116, 139, 0)');
 
         octx.strokeStyle = trailGrad;
-        octx.lineWidth = 3.5;
+        octx.lineWidth = 3.2;
         octx.beginPath();
         octx.moveTo(m.x, m.y);
         octx.lineTo(tailX, tailY);
         octx.stroke();
 
-        // Intense core white streak
         octx.strokeStyle = `rgba(255, 255, 255, ${0.9 * alphaCurve})`;
-        octx.lineWidth = 1.2;
+        octx.lineWidth = 1.1;
         octx.beginPath();
         octx.moveTo(m.x, m.y);
         octx.lineTo(m.x - m.dx * (m.len * 0.4), m.y - m.dy * (m.len * 0.4));
@@ -716,22 +897,117 @@ export default function CinematicNebula({
       }
     };
 
-    // ── Draw Faint Cursor Aura
-    const drawCursorAura = () => {
-      if (reduced || isTouch || !mouse.active || wall - mouse.lastMove > 3.0) return;
-      const cx = (mouse.x * 0.5 + 0.5) * cssW;
-      const cy = (mouse.y * 0.5 + 0.5) * cssH;
-      const fade = Math.max(0, 1 - (wall - mouse.lastMove) / 3.0);
+    // ── Drawing Satellites (Rare Ambient Event)
+    const drawSatellites = (dt: number) => {
+      if (reduced || !enableSatellites) return;
 
-      const rad = octx.createRadialGradient(cx, cy, 0, cx, cy, 110);
-      rad.addColorStop(0, `rgba(226, 232, 240, ${0.05 * fade})`);
-      rad.addColorStop(0.5, `rgba(148, 163, 184, ${0.02 * fade})`);
-      rad.addColorStop(1, 'rgba(9, 10, 15, 0)');
+      if (wall >= nextSatelliteTime) {
+        spawnSatellite();
+      }
 
-      octx.fillStyle = rad;
-      octx.beginPath();
-      octx.arc(cx, cy, 110, 0, Math.PI * 2);
-      octx.fill();
+      for (let i = satellites.length - 1; i >= 0; i--) {
+        const s = satellites[i];
+        if (!s.active) {
+          satellites.splice(i, 1);
+          continue;
+        }
+
+        s.age += dt;
+        const progress = s.age / s.dur;
+        if (progress >= 1 || s.x > cssW + 60) {
+          s.active = false;
+          satellites.splice(i, 1);
+          continue;
+        }
+
+        s.x += s.speed * dt;
+        s.y += s.dy * s.speed * dt;
+
+        const alphaCurve = Math.min(1, Math.sin(Math.PI * progress) * 1.5);
+        octx.globalAlpha = 0.45 * alphaCurve;
+        octx.fillStyle = '#e2e8f0';
+        octx.beginPath();
+        octx.arc(s.x, s.y, 1.2, 0, Math.PI * 2);
+        octx.fill();
+
+        // Tiny starlight beacon blink
+        if (Math.sin(wall * 3.5) > 0.8) {
+          octx.globalAlpha = 0.7 * alphaCurve;
+          octx.fillStyle = '#5FA8FF';
+          octx.beginPath();
+          octx.arc(s.x, s.y, 1.8, 0, Math.PI * 2);
+          octx.fill();
+        }
+      }
+    };
+
+    // ── Drawing Discovery 04: Paper Trace (Rare gliding aerodynamic starlight silhouette)
+    const drawPaperTraces = (dt: number) => {
+      if (reduced || !enablePaperTraces) return;
+
+      if (wall >= nextPaperTraceTime) {
+        spawnPaperTrace();
+      }
+
+      for (let i = paperTraces.length - 1; i >= 0; i--) {
+        const pt = paperTraces[i];
+        if (!pt.active) {
+          paperTraces.splice(i, 1);
+          continue;
+        }
+
+        pt.age += dt;
+        const progress = pt.age / pt.dur;
+        if (progress >= 1 || pt.x > cssW + 80) {
+          pt.active = false;
+          paperTraces.splice(i, 1);
+          continue;
+        }
+
+        // Gentle sinusoidal aerodynamic curve
+        pt.x += pt.speed * dt;
+        pt.y += Math.sin(progress * Math.PI * 3) * 35 * dt + pt.dy * pt.speed * dt;
+
+        pt.pathHistory.push({ x: pt.x, y: pt.y });
+        if (pt.pathHistory.length > 25) pt.pathHistory.shift();
+
+        const alphaCurve = Math.sin(Math.PI * progress);
+
+        // Faint dissipating trailing wake
+        if (pt.pathHistory.length > 2) {
+          octx.beginPath();
+          octx.moveTo(pt.pathHistory[0].x, pt.pathHistory[0].y);
+          for (let j = 1; j < pt.pathHistory.length; j++) {
+            octx.lineTo(pt.pathHistory[j].x, pt.pathHistory[j].y);
+          }
+          octx.strokeStyle = `rgba(95, 168, 255, ${0.18 * alphaCurve})`;
+          octx.lineWidth = 1;
+          octx.stroke();
+        }
+
+        // Paper Plane Silhouette Vector
+        octx.save();
+        octx.translate(pt.x, pt.y);
+        const heading = Math.atan2(
+          pt.pathHistory.length >= 2
+            ? pt.y - pt.pathHistory[pt.pathHistory.length - 2].y
+            : pt.dy,
+          pt.speed * dt
+        );
+        octx.rotate(heading);
+
+        octx.strokeStyle = `rgba(240, 245, 255, ${0.85 * alphaCurve})`;
+        octx.lineWidth = 1;
+        octx.beginPath();
+        octx.moveTo(8, 0);   // nose
+        octx.lineTo(-6, -4); // left wing
+        octx.lineTo(-2, 0);  // center fold
+        octx.lineTo(-6, 4);  // right wing
+        octx.closePath();
+        octx.stroke();
+
+        octx.restore();
+      }
     };
 
     // ── Draw Section Ambient Color Shift
@@ -746,7 +1022,6 @@ export default function CinematicNebula({
     const frame = (now: number) => {
       rafId = requestAnimationFrame(frame);
 
-      // Do nothing if tab is hidden
       if (!isTabVisible) return;
 
       const dt = Math.min(0.1, Math.max(0, (now - last) / 1000));
@@ -754,12 +1029,6 @@ export default function CinematicNebula({
       wall += dt;
       const motion = reduced ? 0 : 1;
       time += dt * motion;
-
-      // Smooth mouse position interpolation
-      if (!reduced && !isTouch) {
-        mouse.x += (mouse.targetX - mouse.x) * (1 - Math.exp(-dt * 5));
-        mouse.y += (mouse.targetY - mouse.y) * (1 - Math.exp(-dt * 5));
-      }
 
       const ctrl = control ? control.current : { reveal: 1, dissolve: 0, sectionIndex: 0 };
       const reveal = typeof ctrl.reveal === 'number' ? Math.max(0, Math.min(1, ctrl.reveal)) : 1;
@@ -776,14 +1045,15 @@ export default function CinematicNebula({
       scrollSm += (window.scrollY - scrollSm) * (1 - Math.exp(-dt * 6));
       parallaxY = reduced ? 0 : (0.5 - Math.min(1, Math.max(0, scrollSm / maxScroll))) * 2 * parallaxRange;
 
+      // Ambient cluster check
+      checkClusterPulse();
+
       // WebGL render
       const { renderer, program, mesh } = uni;
       if (uni.ready && renderer && program && mesh && !uni.lost) {
         const u = program.uniforms;
-        const nebulaMouseX = reduced ? 0 : mouse.x * UNIFIED_MOUSE_FACTOR;
-        const nebulaMouseY = reduced ? 0 : mouse.y * UNIFIED_MOUSE_FACTOR;
         u.uTime.value = time;
-        u.uCenter.value = [0.5 + nebulaMouseX, 0.5 - parallaxY / cssH + nebulaMouseY];
+        u.uCenter.value = [0.5, 0.5 - parallaxY / cssH];
         u.uDim.value = dimRef.current;
         u.uVignette.value = vigRef.current;
         u.uPhoto.value = Math.max(0.1, 1.0 - 0.88 * dissolve);
@@ -808,7 +1078,8 @@ export default function CinematicNebula({
       octx.globalAlpha = 1;
       drawConstellations();
       drawMeteors(dt);
-      drawCursorAura();
+      drawSatellites(dt);
+      drawPaperTraces(dt);
 
       octx.globalCompositeOperation = 'source-over';
       drawSectionColorShift(sectionIndex);
@@ -833,8 +1104,6 @@ export default function CinematicNebula({
       cancelAnimationFrame(rafId);
       ro.disconnect();
       window.removeEventListener('click', onClick);
-      window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('mouseleave', onMouseLeave);
       document.removeEventListener('visibilitychange', onVisibilityChange);
       mqReduce.removeEventListener('change', onMq);
       if (uni.renderer) {

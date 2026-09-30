@@ -15,13 +15,16 @@ export interface TierConfig {
   dust: number;
   stars: number;
   meteors: number;
+  satellites: number;
+  paperTraces: number;
+  clusterPulse: boolean;
   isMobile: boolean;
 }
 
 export const TIERS: Record<TierName, TierConfig> = {
-  high: { dpr: 2, overlayDpr: 1.5, amp: 6, octaves: 3, dust: 140, stars: 360, meteors: 3, isMobile: false },
-  medium: { dpr: 1.5, overlayDpr: 1.25, amp: 5, octaves: 3, dust: 90, stars: 220, meteors: 2, isMobile: false },
-  low: { dpr: 1.25, overlayDpr: 1, amp: 4, octaves: 2, dust: 45, stars: 120, meteors: 1, isMobile: true },
+  high: { dpr: 2, overlayDpr: 1.5, amp: 6, octaves: 3, dust: 140, stars: 360, meteors: 3, satellites: 1, paperTraces: 1, clusterPulse: true, isMobile: false },
+  medium: { dpr: 1.5, overlayDpr: 1.25, amp: 5, octaves: 3, dust: 90, stars: 220, meteors: 2, satellites: 1, paperTraces: 1, clusterPulse: true, isMobile: false },
+  low: { dpr: 1, overlayDpr: 0.75, amp: 3, octaves: 1, dust: 20, stars: 60, meteors: 0, satellites: 0, paperTraces: 0, clusterPulse: false, isMobile: true },
 };
 
 export function detectTier(): TierName {
@@ -41,6 +44,7 @@ export interface Star {
   layer?: 1 | 2 | 3;
   twinkleSpeed?: number;
   twinkleOffset?: number;
+  clusterId?: number;
 }
 
 export interface Hero {
@@ -68,6 +72,8 @@ export interface Dust {
 export interface Constellation {
   pts: { nx: number; ny: number }[];
   born: number;
+  type?: 'standard' | 'extended' | 'neural' | 'graduation';
+  duration?: number;
 }
 
 export interface Meteor {
@@ -82,6 +88,36 @@ export interface Meteor {
   dur: number;
   headRgb: string;
   tailRgb: string;
+}
+
+export interface Satellite {
+  active: boolean;
+  x: number;
+  y: number;
+  dx: number;
+  dy: number;
+  speed: number;
+  age: number;
+  dur: number;
+}
+
+export interface PaperTrace {
+  active: boolean;
+  x: number;
+  y: number;
+  dx: number;
+  dy: number;
+  speed: number;
+  age: number;
+  dur: number;
+  pathHistory: { x: number; y: number }[];
+}
+
+export interface ClusterPulse {
+  clusterId: number;
+  active: boolean;
+  born: number;
+  duration: number;
 }
 
 export const HERO_SEEDS = [
@@ -107,4 +143,3 @@ export const CONSTELLATION_LIFE = 2.5;
 // Full-bleed dark grey space background with upper and lower atmospheric cosmic glows
 export const NEBULA_BG =
   'radial-gradient(1300px circle at 50% 38%, rgba(45, 52, 65, 0.28) 0%, rgba(20, 24, 32, 0.6) 55%, transparent 85%), radial-gradient(1000px circle at 50% 88%, rgba(38, 46, 58, 0.24) 0%, rgba(16, 20, 28, 0.55) 60%, transparent 85%), #090a0f';
-

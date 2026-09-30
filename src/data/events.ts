@@ -142,7 +142,7 @@ export const events: EventItem[] = [
     title: 'Doomsday Protocol',
     year: '2024',
     summary: 'Cyber-defense red team simulation under simulated total network failure.',
-    image: 'https://images.unsplash.com/photo-1526374879895-57242f3cc9ce?q=80&w=1000&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop',
     tags: ['Red Team', 'Mesh Radio', 'Defense'],
     posterAspect: 'tall',
     story:

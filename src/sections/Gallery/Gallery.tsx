@@ -38,22 +38,22 @@ export default function Gallery() {
     <section
       ref={sectionRef}
       id="events"
-      className="relative z-10 mx-auto max-w-[1500px] px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-24 md:py-36 overflow-x-clip"
+      className="relative z-10 mx-auto max-w-5xl px-4 sm:px-8 md:px-12 py-16 md:py-24 overflow-x-clip select-none"
     >
       {/* Editorial Header with Horizontal Reveal */}
-      <div className="mb-10 md:mb-14 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
+      <div className="mb-6 md:mb-8 flex flex-col items-start justify-between gap-3 md:flex-row md:items-end">
         <div>
           <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.05}>
-            <div className="mb-3">
+            <div className="mb-2">
               <Label beacon beaconColor="bg-white/80">
-                EXHIBITIONS & EVENTS
+                CHAPTER 05 // EXHIBITIONS & EVENTS
               </Label>
             </div>
           </HorizontalReveal>
 
           <HorizontalTextReveal
             text="Exhibition Gallery"
-            className="font-mono text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-white"
+            className="font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-white"
             highlightWords={["Exhibition", "Gallery"]}
             highlightColor="#ffffff"
             wordClassName="text-white"
@@ -63,16 +63,15 @@ export default function Gallery() {
           />
 
           <HorizontalReveal xOffset={50} skewAngle={-5} delay={0.2}>
-            <p className="mt-3 max-w-[70ch] font-mono text-body leading-relaxed text-white/70">
+            <p className="mt-2 max-w-[62ch] font-mono text-xs sm:text-caption leading-relaxed text-white/70">
               Curated archive of technical hackathons, escape-room architectures,
               and engineering symposia orchestrated across collegiate and IEEE chapters.
-              Select any poster to inspect archival records.
             </p>
           </HorizontalReveal>
         </div>
 
         <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.25}>
-          <div className="flex items-center gap-2 font-mono text-caption text-white/70">
+          <div className="flex items-center gap-2 font-mono text-[10px] text-white/70 px-3 py-1.5 rounded-lg border border-white/10 bg-white/[0.03]">
             <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
             <span>{events.length} CURATED ARTIFACTS</span>
           </div>
@@ -80,7 +79,7 @@ export default function Gallery() {
       </div>
 
       {/* 3-Column Exhibition Poster Grid with Staggered Horizontal Reveal */}
-      <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+      <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-4.5">
         <ScrollColumn
           index={0}
           delay={0.04}
@@ -94,7 +93,7 @@ export default function Gallery() {
           events={col2}
           onOpenEvent={handleOpenEvent}
           onKeyDown={handleKeyDown}
-          offset="lg:mt-8"
+          offset="lg:mt-3"
         />
         <ScrollColumn
           index={2}
@@ -128,7 +127,7 @@ interface ScrollColumnProps {
 
 function ScrollColumn({ delay, events, onOpenEvent, onKeyDown, offset = "" }: ScrollColumnProps) {
   return (
-    <div className={`flex flex-col gap-6 md:gap-8 ${offset}`}>
+    <div className={`flex flex-col gap-5 sm:gap-6 ${offset}`}>
       {events.map((event, i) => (
         <HorizontalReveal
           key={event.id}

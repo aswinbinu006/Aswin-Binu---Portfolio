@@ -1,12 +1,20 @@
 import { useEffect, type RefObject } from "react";
 import { gsap, ScrollTrigger } from "@/utils/gsap";
-import type { NebulaControl } from "@/components/effects/nebula/types";
+import { detectTier, type NebulaControl } from "@/components/effects/nebula/types";
 
 interface UseBackgroundAnimationProps {
   control: RefObject<NebulaControl>;
 }
 
-const SECTION_IDS = ["hero", "about", "skills", "projects", "events", "contact"];
+const SECTION_IDS = [
+  "hero",
+  "about",
+  "skills",
+  "projects",
+  "certifications",
+  "academics",
+  "contact",
+];
 
 /**
  * Coordinates living universe background states across chapters:
@@ -15,12 +23,28 @@ const SECTION_IDS = ["hero", "about", "skills", "projects", "events", "contact"]
  * - Feeds section progression to the WebGL/Canvas renderer for subtle cosmic color shifting
  */
 export function useBackgroundAnimation({ control }: UseBackgroundAnimationProps) {
+  const isMobile = typeof window !== 'undefined' && (window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768);
+
   useEffect(() => {
     if (control.current) {
       control.current.reveal = 1;
       control.current.dissolve = 0;
       control.current.sectionIndex = 0;
       control.current.sectionProgress = 0;
+    }
+
+    const tier = detectTier();
+    const reducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // On mobile, skip ScrollTrigger setup entirely and set initial state
+    if (isMobile || reducedMotion) {
+      if (control.current) {
+        control.current.reveal = reducedMotion ? 1 : 0;
+        control.current.dissolve = 0;
+        control.current.sectionIndex = 0;
+        control.current.sectionProgress = 0;
+      }
+      return;
     }
 
     const ctx = gsap.context(() => {
