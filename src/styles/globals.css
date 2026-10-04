@@ -192,7 +192,7 @@ svg {
   max-width: 100%;
 }
 
-/* -- Reduced Motion -- */
+/* -- Reduced Motion & WCAG 2.3.3 Pause Animations -- */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -202,6 +202,19 @@ svg {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+.animations-paused *,
+.animations-paused *::before,
+.animations-paused *::after,
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-play-state: paused !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
 }
 
 /* ==========================================================================

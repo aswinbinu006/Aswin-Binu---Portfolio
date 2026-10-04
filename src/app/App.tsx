@@ -3,6 +3,7 @@ import { Providers } from "./providers";
 import Background from "@/components/layout/Background";
 import { IntroOverlay } from "@/components/effects/IntroOverlay";
 import { MobileNoticeBanner } from "@/components/layout/MobileNoticeBanner";
+import { PauseAnimationsButton } from "@/components/ui/PauseAnimationsButton";
 import { Hero } from "@/sections/Hero";
 import { About } from "@/sections/About";
 import { Skills } from "@/sections/Skills";
@@ -49,7 +50,12 @@ export default function App() {
     <Providers>
       <Background isIntroComplete={isIntroComplete} />
       <IntroOverlay onComplete={() => setIsIntroComplete(true)} />
-      {isIntroComplete && <MobileNoticeBanner />}
+      {isIntroComplete && (
+        <>
+          <MobileNoticeBanner />
+          <PauseAnimationsButton />
+        </>
+      )}
       <main
         className={`relative z-10 w-full overflow-x-clip transition-opacity duration-700 ${
           isIntroComplete ? "opacity-100" : "opacity-0 pointer-events-none"

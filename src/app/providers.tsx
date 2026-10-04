@@ -1,5 +1,6 @@
 import React from "react";
 import SmoothScroll from "@/components/layout/SmoothScroll";
+import { MotionProvider } from "@/context/MotionContext";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -7,8 +8,13 @@ export interface ProvidersProps {
 
 /**
  * Global Application Providers
- * Wraps tree in smooth scrolling, layout, and any future contexts.
+ * Wraps tree in motion controls, smooth scrolling, and layout contexts.
  */
 export function Providers({ children }: ProvidersProps) {
-  return <SmoothScroll>{children}</SmoothScroll>;
+  return (
+    <MotionProvider>
+      <SmoothScroll>{children}</SmoothScroll>
+    </MotionProvider>
+  );
 }
+
