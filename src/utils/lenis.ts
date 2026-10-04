@@ -28,10 +28,11 @@ export function initLenis(): Lenis | null {
   if (prefersReduced) return null;
 
   lenisInstance = new Lenis({
-    duration: 1.1,
+    duration: 0.9,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     smoothWheel: true,
-    touchMultiplier: 1.5,
+    syncTouch: false,
+    touchMultiplier: 1,
   });
 
   // Sync Lenis scroll with GSAP ScrollTrigger

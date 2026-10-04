@@ -22,9 +22,9 @@ export interface TierConfig {
 }
 
 export const TIERS: Record<TierName, TierConfig> = {
-  high: { dpr: 2, overlayDpr: 1.5, amp: 6, octaves: 3, dust: 60, stars: 280, meteors: 2, satellites: 1, paperTraces: 1, clusterPulse: false, isMobile: false },
-  medium: { dpr: 1.5, overlayDpr: 1.25, amp: 5, octaves: 3, dust: 35, stars: 180, meteors: 1, satellites: 1, paperTraces: 1, clusterPulse: false, isMobile: false },
-  low: { dpr: 1, overlayDpr: 0.75, amp: 3, octaves: 1, dust: 20, stars: 100, meteors: 0, satellites: 0, paperTraces: 0, clusterPulse: false, isMobile: true },
+  high: { dpr: 1.25, overlayDpr: 1.0, amp: 4, octaves: 2, dust: 25, stars: 120, meteors: 1, satellites: 1, paperTraces: 0, clusterPulse: false, isMobile: false },
+  medium: { dpr: 1.0, overlayDpr: 0.85, amp: 3, octaves: 1, dust: 15, stars: 80, meteors: 1, satellites: 0, paperTraces: 0, clusterPulse: false, isMobile: false },
+  low: { dpr: 0.75, overlayDpr: 0.75, amp: 2, octaves: 1, dust: 8, stars: 45, meteors: 0, satellites: 0, paperTraces: 0, clusterPulse: false, isMobile: true },
 };
 
 export function detectTier(): TierName {
@@ -32,8 +32,8 @@ export function detectTier(): TierName {
   const w = window.innerWidth;
   const coarse = window.matchMedia('(pointer: coarse)').matches;
   const cores = navigator.hardwareConcurrency || 4;
-  if (coarse && w < 768) return 'low';
-  if (coarse || w < 1100 || cores <= 4) return 'medium';
+  if (coarse || w < 768) return 'low';
+  if (w < 1200 || cores <= 4) return 'medium';
   return 'high';
 }
 

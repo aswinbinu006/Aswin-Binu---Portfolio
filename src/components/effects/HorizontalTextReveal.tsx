@@ -69,7 +69,6 @@ export default function HorizontalTextReveal({
       <div
         ref={containerRef}
         className={`flex flex-wrap items-baseline gap-x-[0.3em] gap-y-1 ${className}`}
-        style={{ perspective: "1000px" }}
       >
         {words.map((word, index) => {
           const step = 1 / words.length;
@@ -83,7 +82,6 @@ export default function HorizontalTextReveal({
               progress={scrollYProgress}
               range={[start, end]}
               xOffset={xOffset}
-              skewAngle={skewAngle}
               isHighlight={isHighlighted(word)}
               highlightColor={highlightColor}
               className={wordClassName}
@@ -99,7 +97,6 @@ export default function HorizontalTextReveal({
     <div
       ref={containerRef}
       className={`flex flex-wrap items-baseline gap-x-[0.3em] gap-y-1 overflow-visible ${className}`}
-      style={{ perspective: "1000px" }}
     >
       {words.map((word, index) => {
         const highlighted = isHighlighted(word);
@@ -108,7 +105,6 @@ export default function HorizontalTextReveal({
           <span
             key={`${word}-${index}`}
             className="inline-block overflow-visible"
-            style={{ transformStyle: "preserve-3d" }}
           >
             <motion.span
               className={`inline-block ${wordClassName}`}
@@ -119,22 +115,16 @@ export default function HorizontalTextReveal({
               initial={{
                 opacity: 0,
                 x: xOffset,
-                skewX: skewAngle,
-                filter: "blur(4px)",
               }}
               animate={
                 isInView
                   ? {
                       opacity: 1,
                       x: 0,
-                      skewX: 0,
-                      filter: "blur(0px)",
                     }
                   : {
                       opacity: 0,
                       x: xOffset,
-                      skewX: skewAngle,
-                      filter: "blur(4px)",
                     }
               }
               transition={{
@@ -157,7 +147,6 @@ function ScrubWord({
   progress,
   range,
   xOffset,
-  skewAngle,
   isHighlight,
   highlightColor,
   className,
@@ -166,14 +155,12 @@ function ScrubWord({
   progress: any;
   range: [number, number];
   xOffset: number;
-  skewAngle: number;
   isHighlight: boolean;
   highlightColor: string;
   className: string;
 }) {
   const opacity = useTransform(progress, range, [0, 1]);
   const x = useTransform(progress, range, [xOffset, 0]);
-  const skewX = useTransform(progress, range, [skewAngle, 0]);
 
   return (
     <span className="inline-block overflow-visible">
@@ -182,7 +169,6 @@ function ScrubWord({
         style={{
           opacity,
           x,
-          skewX,
           color: isHighlight ? highlightColor : undefined,
           transformOrigin: "center left",
         }}

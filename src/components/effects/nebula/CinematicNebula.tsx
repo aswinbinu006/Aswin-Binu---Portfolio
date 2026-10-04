@@ -105,7 +105,7 @@ export default function CinematicNebula({
     let scrollSm = window.scrollY;
     let maxScroll = 1;
     let lastMeasure = -1;
-    let dprNow = Math.min(window.devicePixelRatio || 1, Math.min(tier.overlayDpr, 2));
+    let dprNow = Math.min(window.devicePixelRatio || 1, tier.dpr);
     let time = 0;
     let wall = 0;
     let last = performance.now();
@@ -323,7 +323,7 @@ export default function CinematicNebula({
         renderer.setSize(cssW, cssH);
         if (program) program.uniforms.uRes.value = [cssW, cssH];
       }
-      const odpr = Math.min(window.devicePixelRatio || 1, Math.min(tier.overlayDpr, 2));
+      const odpr = Math.min(window.devicePixelRatio || 1, tier.overlayDpr);
       overlay.width = Math.round(cssW * odpr);
       overlay.height = Math.round(cssH * odpr);
       overlay.style.width = cssW + 'px';
@@ -352,7 +352,7 @@ export default function CinematicNebula({
       });
       const gl = renderer.gl;
       const canvas = gl.canvas as HTMLCanvasElement;
-      canvas.style.cssText = 'position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease';
+      canvas.style.cssText = 'position:absolute;inset:0;opacity:1;';
       canvas.addEventListener('webglcontextlost', (e) => {
         e.preventDefault();
         uni.lost = true;
