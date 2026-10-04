@@ -43,21 +43,29 @@ export default function Background({ isIntroComplete = true }: BackgroundProps) 
   }, [isIntroComplete]);
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden select-none bg-[#020814]">
+    <div className="pointer-events-none fixed top-0 left-0 right-0 bottom-0 w-screen h-[100dvh] min-h-screen z-0 overflow-hidden select-none bg-[#020814]">
       {/* 1. Living Universe Cinematic Nebula (WebGL + Canvas real stars) - Desktop & Tablet */}
       {!isMobile && (
-        <div className="absolute inset-0 z-[1]">
+        <div className="absolute inset-0 w-full h-full z-[1]">
           <CinematicNebula control={control} dim={0.12} vignette={0.3} />
         </div>
       )}
 
-      {/* 2. Ultra-lightweight static cosmic gradient backdrop - Mobile only */}
+      {/* 2. Static Nebula Image - Mobile only (No effects, zero lag, completely fixed) */}
       {isMobile && (
-        <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[#030914] via-[#050e20] to-[#020712]">
-          {/* Subtle static ambient glows (zero CPU/GPU overhead) */}
-          <div className="absolute -top-[10%] left-1/2 -translate-x-1/2 w-[450px] h-[450px] rounded-full bg-cyan-900/15 blur-[100px] pointer-events-none" />
-          <div className="absolute top-[40%] right-[-10%] w-[350px] h-[350px] rounded-full bg-indigo-900/10 blur-[90px] pointer-events-none" />
-          <div className="absolute bottom-[10%] left-[-10%] w-[350px] h-[350px] rounded-full bg-blue-900/15 blur-[100px] pointer-events-none" />
+        <div className="absolute inset-0 w-full h-full z-[1] overflow-hidden">
+          <picture className="w-full h-full block">
+            <source srcSet="/nebula.webp" type="image/webp" />
+            <img
+              src="/nebula.jpg"
+              alt=""
+              className="w-full h-full object-cover object-center pointer-events-none select-none"
+              loading="eager"
+              decoding="sync"
+            />
+          </picture>
+          {/* Subtle cosmic tint overlay to enhance card and text contrast */}
+          <div className="absolute inset-0 bg-[#020814]/30 pointer-events-none" />
         </div>
       )}
 

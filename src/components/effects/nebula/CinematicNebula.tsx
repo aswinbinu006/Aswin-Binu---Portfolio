@@ -285,27 +285,19 @@ export default function CinematicNebula({
       }
     };
 
-    // ── Layout calculations
+    // ── Layout calculations (Completely stationary, full-cover background)
     const layout = () => {
       const cover = Math.max(cssW / imgW, cssH / imgH) * ZOOM;
       drawW = imgW * cover;
       drawH = imgH * cover;
-      const slackY = Math.max(0, (drawH - cssH) / 2 - tier.amp * 1.5);
-      parallaxRange = Math.min(slackY * 0.9, cssH * 0.05);
+      parallaxRange = 0;
+      parallaxY = 0;
     };
 
-    const toScreen = (nx: number, ny: number, layer: 1 | 2 | 3 = 2) => {
-      let scrollFactor = 0.06;
-      if (layer === 1) {
-        scrollFactor = 0.02;
-      } else if (layer === 3) {
-        scrollFactor = 0.12;
-      }
-      const sOffset = reduced ? 0 : parallaxY * (scrollFactor / 0.06);
-
+    const toScreen = (nx: number, ny: number, _layer: 1 | 2 | 3 = 2) => {
       return {
         x: cssW / 2 + (nx - 0.5) * drawW,
-        y: cssH / 2 + sOffset + (ny - 0.5) * drawH,
+        y: cssH / 2 + (ny - 0.5) * drawH,
       };
     };
 
@@ -894,8 +886,7 @@ export default function CinematicNebula({
         maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
         lastMeasure = wall;
       }
-      scrollSm += (window.scrollY - scrollSm) * (1 - Math.exp(-dt * 6));
-      parallaxY = reduced ? 0 : (0.5 - Math.min(1, Math.max(0, scrollSm / maxScroll))) * 2 * parallaxRange;
+      parallaxY = 0;
 
       const scrollFrac = Math.min(1, Math.max(0, scrollSm / maxScroll));
       const ctrl = control ? control.current : { reveal: 1, dissolve: scrollFrac, sectionIndex: 0 };
@@ -912,12 +903,12 @@ export default function CinematicNebula({
       // Ambient cluster check
       checkClusterPulse();
 
-      // WebGL render with gentle, progressive darkening across the whole page
+      // WebGL render with gentle, progressive darkening across the whole page (100% fixed position)
       const { renderer, program, mesh } = uni;
       if (uni.ready && renderer && program && mesh && !uni.lost) {
         const u = program.uniforms;
         u.uTime.value = time;
-        u.uCenter.value = [0.5, 0.5 - parallaxY / cssH];
+        u.uCenter.value = [0.5, 0.5];
         u.uDim.value = dimRef.current;
         u.uVignette.value = vigRef.current;
         // Keep nebula atmospheric glow and structure visible across entire page including Contact
@@ -935,7 +926,7 @@ export default function CinematicNebula({
       // 2D Canvas Overlay pass
       octx.clearRect(0, 0, cssW, cssH);
       octx.globalCompositeOperation = 'lighter';
-      const sc = reduced ? 0 : scrollSm;
+      const sc = 0;
 
       drawDust(0, backCount, dt, motion, sc);
       drawHeroes(currentDissolve);
