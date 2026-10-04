@@ -9,18 +9,18 @@ interface UseBackgroundAnimationProps {
 const SECTION_IDS = [
   "hero",
   "about",
-  "skills",
   "projects",
-  "certifications",
+  "skills",
+  "certificates",
   "academics",
   "contact",
 ];
 
 /**
  * Coordinates living universe background states across chapters:
- * - Tracks chapter transitions and calculates smooth section progression
- * - Dissolves nebula seamlessly across chapters while maintaining active starlight
- * - Feeds section progression to the WebGL/Canvas renderer for subtle cosmic color shifting
+ * - Smoothly and progressively darkens the cosmic background across the entire scroll height
+ * - Eliminates abrupt transitions or sudden 2-scroll cliffs
+ * - Feeds continuous progress to WebGL/Canvas renderer
  */
 export function useBackgroundAnimation({ control }: UseBackgroundAnimationProps) {
   const isMobile = typeof window !== 'undefined' && (window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768);
@@ -36,7 +36,6 @@ export function useBackgroundAnimation({ control }: UseBackgroundAnimationProps)
     const tier = detectTier();
     const reducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // On mobile, skip ScrollTrigger setup entirely and set initial state
     if (isMobile || reducedMotion) {
       if (control.current) {
         control.current.reveal = reducedMotion ? 1 : 0;
@@ -48,16 +47,17 @@ export function useBackgroundAnimation({ control }: UseBackgroundAnimationProps)
     }
 
     const ctx = gsap.context(() => {
-      // Global scroll tracking for subtle nebula depth and color shifts
+      // Global continuous scroll tracking across the whole page (smooth progressive darkening)
       ScrollTrigger.create({
         trigger: document.body,
         start: "top top",
         end: "bottom bottom",
-        scrub: true,
+        scrub: 0.8,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           if (control.current) {
             control.current.sectionProgress = self.progress;
+            control.current.dissolve = self.progress;
           }
         },
       });
@@ -79,26 +79,6 @@ export function useBackgroundAnimation({ control }: UseBackgroundAnimationProps)
           });
         }
       });
-
-      // Smooth dissolve between About and Projects
-      const about = document.getElementById("about");
-      const projects = document.getElementById("projects");
-
-      if (about && projects) {
-        ScrollTrigger.create({
-          trigger: about,
-          start: "center top",
-          endTrigger: projects,
-          end: "top center",
-          scrub: true,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            if (control.current) {
-              control.current.dissolve = self.progress;
-            }
-          },
-        });
-      }
     });
 
     return () => ctx.revert();

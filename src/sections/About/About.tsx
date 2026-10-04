@@ -104,7 +104,7 @@ export default function About({ isIntroComplete = true }: AboutProps) {
     <section
       ref={sectionRef}
       id="about"
-      className="relative z-10 w-full min-h-screen overflow-x-clip px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-20 md:py-28 select-none flex items-center"
+      className="relative z-10 w-full overflow-x-clip px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-10 sm:py-14 md:py-20 select-none flex items-center"
     >
       {/* Ambient subtle silver light wash without dark background blocking */}
       <div

@@ -19,22 +19,32 @@ export default function ProjectCard({ project, onSelect }: ProjectCardProps) {
         return "border-purple-400/30 bg-purple-400/10 text-purple-200";
       case "Full Stack":
         return "border-sky-400/30 bg-sky-400/10 text-sky-200";
+      case "GovTech AI":
+        return "border-indigo-400/30 bg-indigo-400/10 text-indigo-200";
       case "ML Benchmark":
         return "border-amber-400/30 bg-amber-400/10 text-amber-200";
       case "Predictive Model":
         return "border-rose-400/30 bg-rose-400/10 text-rose-200";
+      case "Lab Work":
+        return "border-teal-400/30 bg-teal-400/10 text-teal-200";
       default:
         return "border-white/20 bg-white/5 text-white/80";
     }
   };
 
   const getCategoryIcon = () => {
-    switch (project.filterCategory) {
-      case "ai-agentic":
+    if (project.type === "lab-work") {
+      return <Terminal className="size-3 text-teal-300" />;
+    }
+    switch (project.badgeType) {
+      case "Agentic Engine":
+      case "Live System":
         return <Bot className="size-3 text-purple-300" />;
-      case "fullstack-web":
+      case "Full Stack":
+      case "GovTech AI":
         return <Globe className="size-3 text-sky-300" />;
-      case "ml-datascience":
+      case "ML Benchmark":
+      case "Predictive Model":
         return <Cpu className="size-3 text-amber-300" />;
       default:
         return <Sparkles className="size-3 text-white" />;
@@ -127,7 +137,7 @@ export default function ProjectCard({ project, onSelect }: ProjectCardProps) {
 
       {/* Card Footer: Status & Links */}
       <div className="mt-3 pt-2 border-t border-white/10 flex items-center justify-between font-mono text-[9px] text-white/40">
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           {project.demoUrl ? (
             <span className="flex items-center gap-1 text-emerald-400">
               <span className="relative flex h-1.5 w-1.5">
@@ -140,6 +150,12 @@ export default function ProjectCard({ project, onSelect }: ProjectCardProps) {
             <span className="flex items-center gap-1 text-white/50">
               <Terminal className="size-2.5 text-white/60" />
               <span>OPEN SOURCE</span>
+            </span>
+          )}
+
+          {project.contributors && project.contributors.length > 1 && (
+            <span className="px-1.5 py-0.2 rounded bg-purple-500/10 border border-purple-400/20 text-purple-300 font-mono text-[8px] flex items-center gap-1">
+              <span>👥 Team</span>
             </span>
           )}
         </div>

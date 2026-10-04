@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import type { CertificateItem } from "@/data/certificates";
+import { pauseScroll, resumeScroll } from "@/utils/lenis";
 import { X, ExternalLink, ShieldCheck, Award, CheckCircle2, FileCheck } from "lucide-react";
 
 interface CertificateDetailModalProps {
@@ -19,18 +20,19 @@ export default function CertificateDetailModal({
   useEffect(() => {
     if (!item) return;
 
+    pauseScroll();
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onClose();
       }
     };
 
-    document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.body.style.overflow = "";
       window.removeEventListener("keydown", handleKeyDown);
+      resumeScroll();
     };
   }, [item, onClose]);
 
@@ -40,15 +42,17 @@ export default function CertificateDetailModal({
     <div
       role="dialog"
       aria-modal="true"
+      data-lenis-prevent="true"
       aria-labelledby="cert-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn touch-none"
       onClick={onClose}
     >
       <div
         ref={modalRef}
         data-no-constellation
+        data-lenis-prevent="true"
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-lg rounded-2xl border border-white/20 bg-[#090a0f]/95 p-5 sm:p-6 shadow-[0_25px_60px_rgba(0,0,0,0.9)] backdrop-blur-2xl transition-all"
+        className="relative w-full max-w-lg rounded-2xl border border-white/20 bg-[#090a0f]/95 p-5 sm:p-6 shadow-[0_25px_60px_rgba(0,0,0,0.9)] backdrop-blur-2xl transition-all touch-auto overscroll-contain max-h-[90vh] overflow-y-auto custom-scrollbar"
       >
         {/* Close Button */}
         <button

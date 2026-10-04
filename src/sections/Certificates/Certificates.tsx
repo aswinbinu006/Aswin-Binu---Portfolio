@@ -35,7 +35,7 @@ export default function Certificates() {
     <section
       ref={sectionRef}
       id="certifications"
-      className="relative z-10 mx-auto max-w-[1500px] px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-24 md:py-36 overflow-x-clip select-none"
+      className="relative z-10 mx-auto max-w-[1500px] px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-10 sm:py-14 md:py-20 overflow-x-clip select-none"
     >
       {/* Chapter Ambient Beam */}
       <div
@@ -48,7 +48,7 @@ export default function Certificates() {
       />
 
       {/* Editorial Header */}
-      <div className="mb-10 md:mb-12 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
+      <div className="mb-6 sm:mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
         <div>
           <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.05}>
             <div className="mb-3">

@@ -80,7 +80,7 @@ export default function Academics() {
     <section
       ref={sectionRef}
       id="academics"
-      className="relative z-10 w-full min-h-screen overflow-x-clip px-4 sm:px-8 md:px-12 lg:px-16 py-16 md:py-24 select-none flex flex-col items-center justify-center"
+      className="relative z-10 w-full overflow-x-clip px-4 sm:px-8 md:px-12 lg:px-16 py-10 sm:py-14 md:py-20 select-none flex flex-col items-center justify-center"
     >
       {/* Chapter Ambient Lighting Beam (Matching About & Hero Silver Tone) */}
       <div

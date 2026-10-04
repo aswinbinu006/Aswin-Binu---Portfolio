@@ -55,8 +55,8 @@ export default function App() {
       >
         <Hero isIntroComplete={isIntroComplete} />
         <About isIntroComplete={isIntroComplete} />
-        <Skills />
         <Projects />
+        <Skills />
         <Certificates />
         <Academics />
         <Contact />

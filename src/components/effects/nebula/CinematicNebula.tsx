@@ -47,34 +47,10 @@ function MobileStarfield() {
         background: NEBULA_BG,
       }}
     >
-      {/* Static starfield using pseudo-elements and CSS */}
+      {/* Static starfield disabled for clean, non-cluttered cosmic background */}
       <style>{`
         .starfield {
-          position: absolute;
-          inset: 0;
-          background-image:
-            radial-gradient(1px 1px at 10% 20%, rgba(230, 238, 248, 0.8), transparent),
-            radial-gradient(1.5px 1.5px at 85% 30%, rgba(195, 210, 225, 0.6), transparent),
-            radial-gradient(1px 1px at 45% 65%, rgba(160, 175, 195, 0.7), transparent),
-            radial-gradient(2px 2px at 70% 80%, rgba(220, 230, 245, 0.5), transparent),
-            radial-gradient(1px 1px at 25% 45%, rgba(240, 245, 255, 0.9), transparent),
-            radial-gradient(1.5px 1.5px at 60% 15%, rgba(180, 195, 215, 0.6), transparent),
-            radial-gradient(1px 1px at 90% 55%, rgba(200, 215, 235, 0.7), transparent),
-            radial-gradient(2px 2px at 15% 75%, rgba(210, 220, 235, 0.5), transparent),
-            radial-gradient(1px 1px at 50% 50%, rgba(235, 242, 252, 0.8), transparent),
-            radial-gradient(1.5px 1.5px at 35% 85%, rgba(170, 185, 205, 0.6), transparent),
-            radial-gradient(1px 1px at 78% 40%, rgba(190, 205, 225, 0.7), transparent),
-            radial-gradient(2px 2px at 8% 8%, rgba(225, 235, 250, 0.5), transparent),
-            radial-gradient(1px 1px at 65% 92%, rgba(165, 180, 200, 0.6), transparent),
-            radial-gradient(1.5px 1.5px at 95% 70%, rgba(205, 220, 240, 0.7), transparent),
-            radial-gradient(1px 1px at 30% 30%, rgba(175, 190, 210, 0.8), transparent),
-            radial-gradient(2px 2px at 55% 25%, rgba(215, 228, 245, 0.5), transparent);
-          animation: twinkle 8s ease-in-out infinite alternate;
-        }
-        @keyframes twinkle {
-          0% { opacity: 0.4; }
-          50% { opacity: 0.8; }
-          100% { opacity: 0.4; }
+          display: none;
         }
       `}</style>
       <div className="starfield" />
@@ -175,14 +151,14 @@ export default function CinematicNebula({
       shown: false,
     };
 
-    // ── Sprites matching strict silver / slate / white palette
+    // ── Sprites matching pure brilliant diamond starlight white palette
     const sprites = {
-      back: makeSoftSprite(32, 0.3, '160,175,195'),
-      mid: makeSoftSprite(64, 0.1, '120,135,155'),
-      front: makeSoftSprite(128, 0.0, '190,205,220'),
-      glow: makeSoftSprite(64, 0.08, '180,195,210'),
-      blueGlow: makeSoftSprite(64, 0.12, '95,168,255'),
-      white: makeSoftSprite(48, 0.15, '220,230,240'),
+      back: makeSoftSprite(32, 0.3, '235,245,255'),
+      mid: makeSoftSprite(64, 0.1, '245,250,255'),
+      front: makeSoftSprite(128, 0.0, '255,255,255'),
+      glow: makeSoftSprite(64, 0.08, '255,255,255'),
+      blueGlow: makeSoftSprite(64, 0.12, '240,248,255'),
+      white: makeSoftSprite(48, 0.15, '255,255,255'),
     };
 
     const rnd = (a: number, b: number) => a + Math.random() * (b - a);
@@ -360,7 +336,9 @@ export default function CinematicNebula({
 
     const gainAt = (x: number, y: number) => {
       const d = Math.hypot(x / cssW - 0.5, y / cssH - 0.5) * 1.4142;
-      return (1 - dimRef.current * 0.4) * (1 - vigRef.current * 0.3 * smooth(0.55, 1.15, d));
+      // In darker peripheral/deep-space regions, boost star intensity and contrast
+      const darkRegionBoost = 1.0 + 0.45 * smooth(0.35, 1.1, d);
+      return Math.min(1.35, darkRegionBoost * (1 - dimRef.current * 0.1));
     };
 
     const applySize = () => {
@@ -501,36 +479,19 @@ export default function CinematicNebula({
         imgH = img.naturalHeight;
         const a = analyzeImage(img, tier.stars);
         if (a) {
-          const extractedStars: Star[] = a.stars.map((s, idx) => {
+          stars = a.stars.map((s, idx) => {
             const rand = (idx * 37) % 100;
-            const layer: 1 | 2 | 3 = rand < 50 ? 1 : rand < 85 ? 2 : 3;
+            const layer: 1 | 2 | 3 = rand < 60 ? 1 : rand < 90 ? 2 : 3;
             return {
               nx: s.nx,
               ny: s.ny,
-              s: s.s,
+              s: s.s * 0.75,
               layer,
-              twinkleSpeed: layer === 1 ? rnd(0.5, 0.9) : layer === 2 ? rnd(1.0, 1.6) : rnd(1.6, 2.4),
+              twinkleSpeed: layer === 1 ? rnd(0.4, 0.8) : layer === 2 ? rnd(0.8, 1.2) : rnd(1.2, 1.6),
               twinkleOffset: idx * 1.618,
-              clusterId: (idx % 5) + 1,
+              clusterId: (idx % 4) + 1,
             };
           });
-
-          const lowerFieldCount = Math.round(tier.stars * 0.75);
-          const lowerStars: Star[] = Array.from({ length: lowerFieldCount }, (_, idx) => {
-            const rand = (idx * 43) % 100;
-            const layer: 1 | 2 | 3 = rand < 45 ? 1 : rand < 80 ? 2 : 3;
-            return {
-              nx: Math.random(),
-              ny: 0.35 + Math.random() * 0.7,
-              s: 0.35 + Math.random() * 0.65,
-              layer,
-              twinkleSpeed: layer === 1 ? rnd(0.5, 0.9) : layer === 2 ? rnd(1.0, 1.6) : rnd(1.6, 2.4),
-              twinkleOffset: idx * 1.414,
-              clusterId: (idx % 5) + 1,
-            };
-          });
-
-          stars = [...extractedStars, ...lowerStars];
           heroes = buildHeroes(a.cands, a.aw, a.ah);
         } else {
           heroes = buildHeroes([], 640, 370);
@@ -549,15 +510,15 @@ export default function CinematicNebula({
       })
       .catch(() => {
         if (cancelled) return;
-        stars = Array.from({ length: tier.stars }, (_, idx) => {
+        stars = Array.from({ length: Math.round(tier.stars * 1.8) }, (_, idx) => {
           const rand = (idx * 37) % 100;
-          const layer: 1 | 2 | 3 = rand < 50 ? 1 : rand < 85 ? 2 : 3;
+          const layer: 1 | 2 | 3 = rand < 45 ? 1 : rand < 80 ? 2 : 3;
           return {
             nx: Math.random(),
             ny: Math.random(),
-            s: 1,
+            s: 0.6 + Math.random() * 0.6,
             layer,
-            twinkleSpeed: layer === 1 ? rnd(0.5, 0.9) : layer === 2 ? rnd(1.0, 1.6) : rnd(1.6, 2.4),
+            twinkleSpeed: layer === 1 ? rnd(0.6, 1.1) : layer === 2 ? rnd(1.1, 1.8) : rnd(1.8, 2.8),
             twinkleOffset: idx * 1.618,
             clusterId: (idx % 5) + 1,
           };
@@ -685,34 +646,15 @@ export default function CinematicNebula({
         const x = d.u * cssW;
         const y = (((d.v * cssH - sc * d.depth) % cssH) + cssH) % cssH;
 
-        let glintAlpha = 0;
-        if (d.glintTime && !reduced) {
-          const glintCycle = (wall + d.phase) % d.glintTime;
-          if (glintCycle < 0.4) {
-            glintAlpha = Math.sin((glintCycle / 0.4) * Math.PI) * 0.7;
-          }
-        }
-
-        const alpha = d.alpha * (0.7 + 0.3 * Math.sin(time * 0.6 + d.phase)) * gainAt(x, y);
-        octx.globalAlpha = Math.min(1, alpha + glintAlpha);
+        const alpha = d.alpha * (0.6 + 0.25 * Math.sin(time * 0.5 + d.phase)) * gainAt(x, y);
+        octx.globalAlpha = Math.min(0.6, alpha);
         octx.drawImage(d.sprite, x - d.size / 2, y - d.size / 2, d.size, d.size);
-
-        if (glintAlpha > 0.3) {
-          octx.strokeStyle = `rgba(226, 232, 240, ${glintAlpha * 0.4})`;
-          octx.lineWidth = 0.8;
-          octx.beginPath();
-          octx.moveTo(x - 5, y);
-          octx.lineTo(x + 5, y);
-          octx.moveTo(x, y - 5);
-          octx.lineTo(x, y + 5);
-          octx.stroke();
-        }
       }
     };
 
-    // ── Drawing 3-Depth Starfield (Calm, dignified, with cluster response)
+    // ── Drawing 3-Depth Starfield (Subtle, elegant starlight shimmer)
     const drawStars = (dissolve: number) => {
-      const baseAlpha = 0.48 + 0.24 * smooth(0.05, 0.65, dissolve);
+      const baseAlpha = 0.42 + 0.18 * smooth(0.05, 0.65, dissolve);
       const isClusterActive = clusterPulse?.active ?? false;
       const activeClusterId = clusterPulse?.clusterId;
 
@@ -722,34 +664,39 @@ export default function CinematicNebula({
 
         if (p.x < -15 || p.x > cssW + 15 || p.y < -15 || p.y > cssH + 15) continue;
 
-        let speed = s.twinkleSpeed ?? 1.2;
+        let speed = s.twinkleSpeed ?? 0.8;
         let offset = s.twinkleOffset ?? (i * 1.618);
 
         // Star Cluster Shimmer Synchronization
         if (isClusterActive && s.clusterId === activeClusterId && clusterPulse) {
           const clusterProgress = (wall - clusterPulse.born) / clusterPulse.duration;
-          const clusterGlow = Math.sin(clusterProgress * Math.PI) * 0.45;
-          speed = 2.5;
+          const clusterGlow = Math.sin(clusterProgress * Math.PI) * 0.2;
+          speed = 1.4;
           offset = 0;
           baseAlpha + clusterGlow;
         }
 
-        const twinkle = 0.72 + 0.28 * Math.sin(time * speed + offset);
+        const rawTwinkle = Math.sin(time * speed + offset);
+        const twinkle = 0.85 + 0.15 * rawTwinkle;
         const alpha = Math.min(0.85, baseAlpha * twinkle * gainAt(p.x, p.y));
 
-        let size = 0.8;
+        let size = 0.9;
         if (s.layer === 1) {
-          size = 0.7 + s.s * 0.5;
-          octx.fillStyle = 'rgba(160, 175, 195, 0.6)';
+          size = 0.7 + s.s * 0.4;
+          octx.fillStyle = 'rgba(215, 230, 250, 0.75)';
         } else if (s.layer === 2) {
-          size = 1.1 + s.s * 0.7;
-          octx.fillStyle = 'rgba(195, 210, 225, 0.7)';
-        } else {
-          size = 1.8 + s.s * 0.9;
-          octx.fillStyle = 'rgba(230, 238, 248, 0.8)';
+          size = 1.1 + s.s * 0.5;
+          octx.fillStyle = 'rgba(240, 248, 255, 0.85)';
           if (!reduced) {
-            octx.globalAlpha = alpha * 0.2;
-            octx.drawImage(sprites.glow, p.x - 8, p.y - 8, 16, 16);
+            octx.globalAlpha = alpha * 0.1;
+            octx.drawImage(sprites.glow, p.x - 4, p.y - 4, 8, 8);
+          }
+        } else {
+          size = 1.5 + s.s * 0.6;
+          octx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+          if (!reduced) {
+            octx.globalAlpha = alpha * 0.15;
+            octx.drawImage(sprites.glow, p.x - 6, p.y - 6, 12, 12);
           }
         }
 
@@ -761,7 +708,7 @@ export default function CinematicNebula({
     };
 
     const drawHeroes = (dissolve: number) => {
-      const heroSpikeAlpha = Math.max(0.4, 1.0 - 0.88 * dissolve);
+      const heroSpikeAlpha = Math.max(0.3, 0.8 - 0.6 * dissolve);
       for (const h of heroes) {
         const p = toScreen(h.nx, h.ny, 3);
         const len = h.len * drawW;
@@ -769,7 +716,8 @@ export default function CinematicNebula({
         octx.globalAlpha =
           h.strength *
           heroSpikeAlpha *
-          (0.82 + 0.18 * Math.sin(time * BREATH_HZ + h.phase)) *
+          0.38 *
+          (0.88 + 0.12 * Math.sin(time * BREATH_HZ + h.phase)) *
           gainAt(p.x, p.y);
         octx.drawImage(h.sprite, p.x - len, p.y - len, len * 2, len * 2);
       }
@@ -1019,6 +967,7 @@ export default function CinematicNebula({
 
     // ── Single RequestAnimationFrame Loop
     let rafId = 0;
+    let currentDissolve = 0;
     const frame = (now: number) => {
       rafId = requestAnimationFrame(frame);
 
@@ -1032,8 +981,11 @@ export default function CinematicNebula({
 
       const ctrl = control ? control.current : { reveal: 1, dissolve: 0, sectionIndex: 0 };
       const reveal = typeof ctrl.reveal === 'number' ? Math.max(0, Math.min(1, ctrl.reveal)) : 1;
-      const dissolve = typeof ctrl.dissolve === 'number' ? Math.max(0, Math.min(1, ctrl.dissolve)) : 0;
+      const targetDissolve = typeof ctrl.dissolve === 'number' ? Math.max(0, Math.min(1, ctrl.dissolve)) : 0;
       const sectionIndex = ctrl.sectionIndex || 0;
+
+      // Smooth buttery continuous interpolation for background dissolve (zero sudden pops or jumps)
+      currentDissolve += (targetDissolve - currentDissolve) * (1 - Math.exp(-dt * 3.5));
 
       host.style.opacity = String(reveal);
       if (reveal < 0.01) return;
@@ -1048,7 +1000,7 @@ export default function CinematicNebula({
       // Ambient cluster check
       checkClusterPulse();
 
-      // WebGL render
+      // WebGL render with gentle, progressive darkening across the whole page
       const { renderer, program, mesh } = uni;
       if (uni.ready && renderer && program && mesh && !uni.lost) {
         const u = program.uniforms;
@@ -1056,9 +1008,11 @@ export default function CinematicNebula({
         u.uCenter.value = [0.5, 0.5 - parallaxY / cssH];
         u.uDim.value = dimRef.current;
         u.uVignette.value = vigRef.current;
-        u.uPhoto.value = Math.max(0.1, 1.0 - 0.88 * dissolve);
-        u.uAmp.value = tier.amp * (1.0 - dissolve * 0.7);
-        u.uBreath.value = BREATH * (1.0 - dissolve * 0.7);
+        // Smoothly and gradually dim from 1.0 at the top to 0.42 at the very bottom
+        const photoBrightness = Math.max(0.4, 1.0 - 0.58 * Math.pow(currentDissolve, 1.15));
+        u.uPhoto.value = photoBrightness;
+        u.uAmp.value = tier.amp * (1.0 - currentDissolve * 0.35);
+        u.uBreath.value = BREATH * (1.0 - currentDissolve * 0.35);
         renderer.render({ scene: mesh });
         if (!uni.shown) {
           (renderer.gl.canvas as HTMLCanvasElement).style.opacity = '1';
@@ -1072,8 +1026,8 @@ export default function CinematicNebula({
       const sc = reduced ? 0 : scrollSm;
 
       drawDust(0, backCount, dt, motion, sc);
-      drawHeroes(dissolve);
-      drawStars(dissolve);
+      drawHeroes(currentDissolve);
+      drawStars(currentDissolve);
       drawDust(backCount, dust.length, dt, motion, sc);
       octx.globalAlpha = 1;
       drawConstellations();

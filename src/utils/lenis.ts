@@ -64,7 +64,9 @@ export function pauseScroll() {
     lenisInstance.stop();
   }
   document.documentElement.classList.add('lenis-stopped');
+  document.documentElement.style.overflow = 'hidden';
   document.body.style.overflow = 'hidden';
+  document.body.style.touchAction = 'none';
 }
 
 export function resumeScroll() {
@@ -72,7 +74,9 @@ export function resumeScroll() {
     lenisInstance.start();
   }
   document.documentElement.classList.remove('lenis-stopped');
+  document.documentElement.style.overflow = '';
   document.body.style.overflow = '';
+  document.body.style.touchAction = '';
 }
 
 export function scrollTo(

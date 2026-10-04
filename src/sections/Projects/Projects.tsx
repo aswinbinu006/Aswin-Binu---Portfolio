@@ -1,38 +1,33 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { projects, type Project, type ProjectCategory } from "@/data/projects";
+import { projects, type Project, type ProjectType } from "@/data/projects";
 import ProjectCard from "./ProjectCard";
 import ProjectDetailModal from "./ProjectDetailModal";
 import { Label } from "@/components/ui";
 import HorizontalTextReveal from "@/components/effects/HorizontalTextReveal";
 import HorizontalReveal from "@/components/effects/HorizontalReveal";
 
-const CATEGORIES: { key: ProjectCategory; label: string }[] = [
-  { key: "all", label: "ALL PROJECTS" },
-  { key: "ai-agentic", label: "AI & AGENTIC" },
-  { key: "fullstack-web", label: "FULL STACK & WEB" },
-  { key: "ml-datascience", label: "ML & DATA SCIENCE" },
+const CATEGORIES: { key: ProjectType; label: string }[] = [
+  { key: "project", label: "PROJECTS" },
+  { key: "lab-work", label: "LAB WORK" },
 ];
 
 /**
- * Chapter 4 — Featured Projects
- * Cosmic obsidian glass aesthetic matching Chapter 5 Certificates layout with category filtering and interactive inspection modal.
+ * Chapter 4 — Featured Projects & Lab Work
+ * Cosmic obsidian glass aesthetic matching Chapter 5 Certificates layout with Projects and Lab Work tabs.
  */
 export default function Projects() {
-  const [activeCategory, setActiveCategory] = useState<ProjectCategory>("all");
+  const [activeCategory, setActiveCategory] = useState<ProjectType>("project");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
-  const filteredProjects =
-    activeCategory === "all"
-      ? projects
-      : projects.filter((p) => p.filterCategory === activeCategory);
+  const filteredProjects = projects.filter((p) => p.type === activeCategory);
 
   return (
     <section
       ref={sectionRef}
       id="projects"
-      className="relative z-10 mx-auto max-w-[1500px] px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-24 md:py-36 overflow-x-clip select-none"
+      className="relative z-10 mx-auto max-w-[1500px] px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-10 sm:py-14 md:py-20 lg:py-24 overflow-x-clip select-none"
     >
       {/* Chapter Ambient Beam */}
       <div
@@ -45,20 +40,20 @@ export default function Projects() {
       />
 
       {/* Editorial Header */}
-      <div className="mb-10 md:mb-12 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
+      <div className="mb-6 sm:mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
         <div>
           <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.05}>
             <div className="mb-3">
               <Label beacon beaconColor="bg-white/80">
-                CHAPTER 04 // CASE STUDIES & ARCHITECTURE
+                CHAPTER 03 // PROJECTS & LAB WORK
               </Label>
             </div>
           </HorizontalReveal>
 
           <HorizontalTextReveal
-            text="Featured Projects"
+            text="Projects & Lab Work"
             className="font-mono text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-white"
-            highlightWords={["Featured", "Projects"]}
+            highlightWords={["Projects", "Lab", "Work"]}
             highlightColor="#ffffff"
             wordClassName="text-white"
             xOffset={60}
@@ -68,7 +63,7 @@ export default function Projects() {
 
           <HorizontalReveal xOffset={50} skewAngle={-5} delay={0.2}>
             <p className="mt-3 max-w-[70ch] font-mono text-body leading-relaxed text-white/70">
-              Selected autonomous systems, agentic telemetry engines, AI platforms, and predictive machine learning models.
+              Selected autonomous full-stack systems, multi-agent AI platforms, predictive ML pipelines, and core computer science laboratory implementations.
             </p>
           </HorizontalReveal>
         </div>
@@ -76,31 +71,28 @@ export default function Projects() {
         <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.25}>
           <div className="flex items-center gap-2 font-mono text-caption text-white/70 px-3.5 py-2 rounded-xl border border-white/10 bg-white/[0.03]">
             <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-            <span>{projects.length} FEATURED PROJECTS</span>
+            <span>{projects.length} TOTAL REPOSITORIES</span>
           </div>
         </HorizontalReveal>
       </div>
 
-      {/* Category Filter Navigation Bar */}
+      {/* Category Filter Navigation Bar: Exactly 2 Options */}
       <div className="mb-8 flex flex-wrap gap-2.5 border-b border-white/10 pb-4 font-mono text-caption">
         {CATEGORIES.map((cat) => {
-          const count =
-            cat.key === "all"
-              ? projects.length
-              : projects.filter((p) => p.filterCategory === cat.key).length;
+          const count = projects.filter((p) => p.type === cat.key).length;
           const isActive = activeCategory === cat.key;
           return (
             <button
               key={cat.key}
               type="button"
               onClick={() => setActiveCategory(cat.key)}
-              className={`px-3.5 py-1.5 rounded-lg border transition-all cursor-pointer ${
+              className={`px-4 py-2 rounded-lg border text-xs sm:text-sm font-semibold tracking-wider transition-all cursor-pointer ${
                 isActive
-                  ? "border-white/40 bg-white/15 text-white font-bold shadow-[0_0_10px_rgba(255,255,255,0.2)]"
+                  ? "border-white/40 bg-white/15 text-white font-bold shadow-[0_0_12px_rgba(255,255,255,0.25)]"
                   : "border-white/5 bg-white/[0.02] text-white/50 hover:border-white/20 hover:text-white/80"
               }`}
             >
-              {cat.label} <span className="opacity-40">({count})</span>
+              {cat.label} <span className="opacity-50 ml-1">({count})</span>
             </button>
           );
         })}

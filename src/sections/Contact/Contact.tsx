@@ -32,7 +32,7 @@ export default function Contact() {
   return (
     <Section
       id="contact"
-      className="flex min-h-[75vh] flex-col items-center justify-center text-center select-none py-28 md:py-36 overflow-x-clip"
+      className="flex min-h-[50vh] flex-col items-center justify-center text-center select-none py-14 sm:py-18 md:py-24 overflow-x-clip"
     >
       <div ref={sectionRef} className="relative z-10 max-w-4xl mx-auto flex flex-col items-center">
         {/* Eyebrow Label */}

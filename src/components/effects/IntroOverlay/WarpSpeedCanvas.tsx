@@ -40,16 +40,16 @@ export default function WarpSpeedCanvas({ isFastMoving }: WarpSpeedCanvasProps) 
 
     window.addEventListener("resize", handleResize);
 
-    const numStars = 400;
+    const numStars = 550;
     starsRef.current = Array.from({ length: numStars }, () => {
       const z = Math.random() * 1000 + 1;
       return {
-        x: (Math.random() - 0.5) * 2000,
-        y: (Math.random() - 0.5) * 2000,
+        x: (Math.random() - 0.5) * 2200,
+        y: (Math.random() - 0.5) * 2200,
         z,
         pz: z,
         color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        size: Math.random() * 1.5 + 0.8,
+        size: Math.random() * 1.8 + 1.0,
       };
     });
 
@@ -84,8 +84,8 @@ export default function WarpSpeedCanvas({ isFastMoving }: WarpSpeedCanvasProps) 
         if (star.z <= 0) {
           star.z = 1000;
           star.pz = 1000;
-          star.x = (Math.random() - 0.5) * 2000;
-          star.y = (Math.random() - 0.5) * 2000;
+          star.x = (Math.random() - 0.5) * 2200;
+          star.y = (Math.random() - 0.5) * 2200;
         }
 
         const k = (400 * dpr) / star.z;
@@ -110,7 +110,7 @@ export default function WarpSpeedCanvas({ isFastMoving }: WarpSpeedCanvasProps) 
           ctx.lineCap = "round";
           ctx.stroke();
         } else {
-          const alpha = (1 - star.z / 1000) * 0.5;
+          const alpha = (1 - star.z / 1000) * 0.85;
           ctx.beginPath();
           ctx.arc(px, py, star.size * (1 - star.z / 1000) * dpr, 0, Math.PI * 2);
           ctx.fillStyle = star.color;
