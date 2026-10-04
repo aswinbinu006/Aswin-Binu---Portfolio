@@ -22,9 +22,9 @@ export interface TierConfig {
 }
 
 export const TIERS: Record<TierName, TierConfig> = {
-  high: { dpr: 1.25, overlayDpr: 1.0, amp: 4, octaves: 2, dust: 25, stars: 120, meteors: 1, satellites: 1, paperTraces: 0, clusterPulse: false, isMobile: false },
-  medium: { dpr: 1.0, overlayDpr: 0.85, amp: 3, octaves: 1, dust: 15, stars: 80, meteors: 1, satellites: 0, paperTraces: 0, clusterPulse: false, isMobile: false },
-  low: { dpr: 0.75, overlayDpr: 0.75, amp: 2, octaves: 1, dust: 8, stars: 45, meteors: 0, satellites: 0, paperTraces: 0, clusterPulse: false, isMobile: true },
+  high: { dpr: 1.25, overlayDpr: 1.0, amp: 4, octaves: 2, dust: 40, stars: 420, meteors: 1, satellites: 1, paperTraces: 0, clusterPulse: false, isMobile: false },
+  medium: { dpr: 1.0, overlayDpr: 0.85, amp: 3, octaves: 1, dust: 25, stars: 280, meteors: 1, satellites: 0, paperTraces: 0, clusterPulse: false, isMobile: false },
+  low: { dpr: 0.75, overlayDpr: 0.75, amp: 2, octaves: 1, dust: 15, stars: 150, meteors: 0, satellites: 0, paperTraces: 0, clusterPulse: false, isMobile: true },
 };
 
 export function detectTier(): TierName {

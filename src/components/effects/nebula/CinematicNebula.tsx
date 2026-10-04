@@ -444,25 +444,63 @@ export default function CinematicNebula({
         if (cancelled) return;
         imgW = img.naturalWidth;
         imgH = img.naturalHeight;
-        const a = analyzeImage(img, tier.stars);
-        if (a) {
-          stars = a.stars.map((s, idx) => {
-            const rand = (idx * 37) % 100;
-            const layer: 1 | 2 | 3 = rand < 60 ? 1 : rand < 90 ? 2 : 3;
-            return {
-              nx: s.nx,
-              ny: s.ny,
-              s: s.s * 0.75,
-              layer,
-              twinkleSpeed: layer === 1 ? rnd(0.4, 0.8) : layer === 2 ? rnd(0.8, 1.2) : rnd(1.2, 1.6),
-              twinkleOffset: idx * 1.618,
-              clusterId: (idx % 4) + 1,
-            };
-          });
-          heroes = buildHeroes(a.cands, a.aw, a.ah);
-        } else {
-          heroes = buildHeroes([], 640, 370);
+        const a = analyzeImage(img, Math.round(tier.stars * 0.7));
+        const detectedStars: Star[] = a
+          ? a.stars.map((s, idx) => {
+              const rand = (idx * 37) % 100;
+              const layer: 1 | 2 | 3 = rand < 60 ? 1 : rand < 90 ? 2 : 3;
+              return {
+                nx: s.nx,
+                ny: s.ny,
+                s: s.s * 0.85,
+                layer,
+                twinkleSpeed: layer === 1 ? rnd(0.4, 0.8) : layer === 2 ? rnd(0.8, 1.2) : rnd(1.2, 1.6),
+                twinkleOffset: idx * 1.618,
+                clusterId: (idx % 4) + 1,
+              };
+            })
+          : [];
+
+        // Ensure full-canopy uniform celestial star coverage across all grid regions (top, center, behind text)
+        const gridCols = 10;
+        const gridRows = 8;
+        const gridStars: Star[] = [];
+        let starIdx = detectedStars.length;
+
+        for (let r = 0; r < gridRows; r++) {
+          for (let c = 0; c < gridCols; c++) {
+            const minX = c / gridCols;
+            const maxX = (c + 1) / gridCols;
+            const minY = r / gridRows;
+            const maxY = (r + 1) / gridRows;
+
+            // Check how many detected stars fall in this cell
+            const inCell = detectedStars.filter(
+              (s) => s.nx >= minX && s.nx < maxX && s.ny >= minY && s.ny < maxY
+            );
+
+            // If a cell has sparse star coverage, add 2-4 stars to guarantee connection anywhere
+            const deficit = Math.max(0, 3 - inCell.length);
+            for (let k = 0; k < deficit; k++) {
+              const rand = (starIdx * 41) % 100;
+              const layer: 1 | 2 | 3 = rand < 50 ? 1 : rand < 85 ? 2 : 3;
+              gridStars.push({
+                nx: minX + 0.05 + Math.random() * (maxX - minX - 0.1),
+                ny: minY + 0.05 + Math.random() * (maxY - minY - 0.1),
+                s: 0.5 + Math.random() * 0.6,
+                layer,
+                twinkleSpeed: layer === 1 ? rnd(0.5, 0.9) : layer === 2 ? rnd(0.9, 1.4) : rnd(1.4, 2.0),
+                twinkleOffset: starIdx * 1.618,
+                clusterId: (starIdx % 5) + 1,
+              });
+              starIdx++;
+            }
+          }
         }
+
+        stars = [...detectedStars, ...gridStars];
+        heroes = a ? buildHeroes(a.cands, a.aw, a.ah) : buildHeroes([], 640, 370);
+
         try {
           const fallbackMask = document.createElement('canvas');
           fallbackMask.width = fallbackMask.height = 1;
@@ -751,17 +789,17 @@ export default function CinematicNebula({
 
     const spawnConstellation = (px: number, py: number) => {
       if (!stars.length) return;
-      const k = 4 + Math.floor(Math.random() * 2); // 4 to 5 nearby stars
+      const k = 4 + Math.floor(Math.random() * 3); // 4 to 6 nearby stars
       const scr = stars
         .map((s) => ({ s, ...toScreen(s.nx, s.ny, s.layer) }))
-        .filter((o) => o.x > 12 && o.x < cssW - 12 && o.y > 12 && o.y < cssH - 12)
+        .filter((o) => o.x > 0 && o.x < cssW && o.y > 0 && o.y < cssH)
         .sort((a, b) => (a.x - px) ** 2 + (a.y - py) ** 2 - ((b.x - px) ** 2 + (b.y - py) ** 2));
 
       const picked: typeof scr = [];
       for (const o of scr) {
         if (picked.length >= k) break;
-        // Ensure elegant spatial separation between constellation stars
-        if (picked.every((p) => Math.hypot(p.x - o.x, p.y - o.y) >= 28)) {
+        // Ensure graceful spatial distribution between constellation stars
+        if (picked.every((p) => Math.hypot(p.x - o.x, p.y - o.y) >= 15)) {
           picked.push(o);
         }
       }
@@ -787,7 +825,7 @@ export default function CinematicNebula({
         pts: chain.map((o) => ({ nx: o.s.nx, ny: o.s.ny, layer: o.s.layer })),
         born: wall,
       });
-      if (constellations.length > 3) constellations.shift();
+      if (constellations.length > 4) constellations.shift();
     };
 
     const onPointerDown = (e: MouseEvent | TouchEvent | PointerEvent) => {
