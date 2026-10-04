@@ -15,7 +15,7 @@ export default function SchoolRecordPlate({ record }: SchoolRecordPlateProps) {
   return (
     <div
       data-no-constellation
-      className="relative w-full rounded-xl border border-white/10 bg-[#0a0a0c]/90 backdrop-blur-xl p-3.5 sm:p-4.5 transition-all duration-300 hover:border-white/25 hover:shadow-silver select-none"
+      className="relative w-full rounded-xl border border-white/20 bg-slate-800/25 backdrop-blur-xl p-3.5 sm:p-4.5 transition-all duration-300 hover:border-white/40 hover:bg-slate-700/35 hover:shadow-silver select-none"
     >
       {/* Top Header Ribbon: Registry Reference + Period */}
       <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-white/10">

@@ -38,7 +38,7 @@ export default function Skills() {
 
           <HorizontalTextReveal
             text="Languages & Technologies"
-            className="font-mono text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-white"
+            className="font-mono text-2xl sm:text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-white"
             highlightWords={['Languages', 'Technologies']}
             highlightColor="#ffffff"
             wordClassName="text-white"
@@ -48,7 +48,7 @@ export default function Skills() {
           />
 
           <HorizontalReveal xOffset={50} skewAngle={-5} delay={0.2}>
-            <p className="mt-3 max-w-[70ch] font-mono text-body leading-relaxed text-white/80 font-medium">
+            <p className="mt-2.5 max-w-[70ch] font-mono text-xs sm:text-sm leading-relaxed text-white/80 font-medium">
               Verified languages, frameworks, and developer libraries utilized directly across
               production applications, AI state machines, and core CS laboratories.
             </p>
@@ -57,7 +57,7 @@ export default function Skills() {
 
         {/* Global Technology Counter */}
         <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.25}>
-          <div className="flex items-center gap-2 font-mono text-caption text-white/90 px-4 py-2.5 rounded-xl border border-white/20 bg-[#080B14]/85 backdrop-blur-md shadow-glass">
+          <div className="flex items-center gap-2 font-mono text-caption text-white/90 px-3.5 py-2 rounded-xl border border-white/20 bg-slate-800/25 backdrop-blur-md shadow-glass">
             <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
             <span className="tracking-wider uppercase font-bold text-xs">
               {skillsData.length} TECHNOLOGIES // PROJECT-VERIFIED

@@ -52,7 +52,7 @@ export default function Projects() {
 
           <HorizontalTextReveal
             text="Projects & Lab Work"
-            className="font-mono text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-white"
+            className="font-mono text-2xl sm:text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-white"
             highlightWords={["Projects", "Lab", "Work"]}
             highlightColor="#ffffff"
             wordClassName="text-white"
@@ -62,22 +62,22 @@ export default function Projects() {
           />
 
           <HorizontalReveal xOffset={50} skewAngle={-5} delay={0.2}>
-            <p className="mt-3 max-w-[70ch] font-mono text-body leading-relaxed text-white/70">
+            <p className="mt-2.5 max-w-[70ch] font-mono text-xs sm:text-sm leading-relaxed text-white/80 font-medium">
               Selected autonomous full-stack systems, multi-agent AI platforms, predictive ML pipelines, and core computer science laboratory implementations.
             </p>
           </HorizontalReveal>
         </div>
 
         <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.25}>
-          <div className="flex items-center gap-2 font-mono text-caption text-white/70 px-3.5 py-2 rounded-xl border border-white/10 bg-white/[0.03]">
+          <div className="flex items-center gap-2 font-mono text-caption text-white/90 px-3.5 py-2 rounded-xl border border-white/20 bg-slate-800/25 backdrop-blur-md shadow-glass">
             <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-            <span>{projects.length} TOTAL REPOSITORIES</span>
+            <span className="tracking-wider uppercase font-bold text-xs">{projects.length} TOTAL REPOSITORIES</span>
           </div>
         </HorizontalReveal>
       </div>
 
       {/* Category Filter Navigation Bar: Exactly 2 Options */}
-      <div className="mb-8 flex flex-wrap gap-2.5 border-b border-white/10 pb-4 font-mono text-caption">
+      <div className="mb-6 flex flex-wrap gap-2.5 border-b border-white/10 pb-4 font-mono text-caption">
         {CATEGORIES.map((cat) => {
           const count = projects.filter((p) => p.type === cat.key).length;
           const isActive = activeCategory === cat.key;
@@ -88,11 +88,11 @@ export default function Projects() {
               onClick={() => setActiveCategory(cat.key)}
               className={`px-4 py-2 rounded-lg border text-xs sm:text-sm font-semibold tracking-wider transition-all cursor-pointer ${
                 isActive
-                  ? "border-white/40 bg-white/15 text-white font-bold shadow-[0_0_12px_rgba(255,255,255,0.25)]"
-                  : "border-white/5 bg-white/[0.02] text-white/50 hover:border-white/20 hover:text-white/80"
+                  ? "border-white/40 bg-white/15 text-white font-bold shadow-[0_0_15px_rgba(255,255,255,0.15)]"
+                  : "border-white/15 bg-white/[0.05] text-white/70 hover:border-white/30 hover:bg-white/[0.1] hover:text-white"
               }`}
             >
-              {cat.label} <span className="opacity-50 ml-1">({count})</span>
+              {cat.label} <span className="opacity-60 ml-1">({count})</span>
             </button>
           );
         })}

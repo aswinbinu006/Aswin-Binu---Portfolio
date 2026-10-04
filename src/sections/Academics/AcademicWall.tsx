@@ -29,7 +29,7 @@ export default function AcademicWall() {
   return (
     <div ref={containerRef} className="relative w-full max-w-5xl mx-auto select-none">
       {/* Outer Exhibition Wall Mounting Frame */}
-      <div className="relative z-10 w-full rounded-2xl border border-white/10 bg-[#06080c]/85 backdrop-blur-xl p-3.5 sm:p-5 md:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.7)]">
+      <div className="relative z-10 w-full rounded-2xl border border-white/20 bg-slate-800/25 backdrop-blur-xl p-3.5 sm:p-5 md:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
         
         {/* Wall Masthead Telemetry */}
         <div className="flex flex-wrap items-center justify-between gap-3 pb-3 mb-6 border-b border-white/10 font-mono text-[10px] text-white/50">

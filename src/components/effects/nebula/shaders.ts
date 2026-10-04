@@ -86,6 +86,10 @@ void main() {
 
   float vig = smoothstep(0.55, 1.15, length(vUv - 0.5) * 1.4142);
   col *= (1.0 - uDim) * (1.0 - uVignette * 0.45 * vig);
-  col *= uPhoto;
+  
+  // Blend with deep authentic cosmic space background
+  vec3 deepSpace = vec3(0.008, 0.012, 0.022);
+  col = mix(deepSpace, col, clamp(uPhoto, 0.0, 1.0));
+  
   gl_FragColor = vec4(col, 1.0);
 }`;

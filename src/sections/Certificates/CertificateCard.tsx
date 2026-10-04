@@ -39,12 +39,12 @@ export default function CertificateCard({ item, onClick }: CertificateCardProps)
       tabIndex={0}
       role="button"
       aria-label={`View details for ${item.title}`}
-      className="group relative flex flex-col justify-between rounded-xl border border-white/10 bg-[#0a0a0c]/85 backdrop-blur-xl p-3.5 transition-all duration-300 hover:border-white/30 hover:bg-[#12151f]/90 hover:shadow-silver focus-ring cursor-pointer select-none"
+      className="group relative flex flex-col justify-between rounded-xl border border-white/20 bg-slate-800/25 backdrop-blur-xl p-3.5 transition-all duration-300 hover:border-white/40 hover:bg-slate-700/35 hover:shadow-silver focus-ring cursor-pointer select-none"
     >
       <div>
         {/* Card Header: Issuer, Badge Type & Date */}
-        <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-white/10 font-mono text-[9px]">
-          <span className="font-semibold text-white/50 uppercase truncate max-w-[20ch]">
+        <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-white/15 font-mono text-[9px]">
+          <span className="font-semibold text-white/60 uppercase truncate max-w-[20ch]">
             {item.issuer}
           </span>
           <div className="flex items-center gap-1.5 shrink-0">

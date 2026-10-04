@@ -137,7 +137,6 @@ export default function CinematicNebula({
 
     let stars: Star[] = [];
     let heroes: Hero[] = [];
-    const constellations: Constellation[] = [];
     const uni: {
       renderer?: Renderer;
       program?: Program;
@@ -529,114 +528,6 @@ export default function CinematicNebula({
         }
       });
 
-    // ── Click constellation & Hidden Discovery Generator
-    let clickCount = 0;
-    const spawnConstellation = (px: number, py: number) => {
-      if (!stars.length) return;
-      clickCount++;
-
-      const ctrl = control ? control.current : { reveal: 1, dissolve: 0, sectionIndex: 0 };
-      const currentSection = ctrl.sectionIndex ?? 0;
-
-      // DISCOVERY 03: Graduation Cap Trace (near Academic Chapter - sectionIndex === 5)
-      if (currentSection === 5 && Math.random() < 0.38) {
-        // Spawn subtle graduation diamond cap silhouette centered near click
-        const capScale = 45;
-        const normW = drawW || cssW;
-        const normH = drawH || cssH;
-        const cnx = (px - cssW / 2) / normW + 0.5;
-        const cny = (py - cssH / 2) / normH + 0.5;
-
-        const capPts = [
-          { nx: cnx, ny: cny - (capScale * 0.6) / normH }, // top
-          { nx: cnx + capScale / normW, ny: cny },         // right
-          { nx: cnx, ny: cny + (capScale * 0.6) / normH }, // bottom
-          { nx: cnx - capScale / normW, ny: cny },         // left
-          { nx: cnx, ny: cny - (capScale * 0.6) / normH }, // close diamond
-          { nx: cnx + (capScale * 0.8) / normW, ny: cny + (capScale * 0.9) / normH }, // tassel line
-        ];
-
-        constellations.push({
-          pts: capPts,
-          born: wall,
-          type: 'graduation',
-          duration: 3.2,
-        });
-        if (constellations.length > 3) constellations.shift();
-        return;
-      }
-
-      // DISCOVERY 02: Neural Layered Topology (rare ~8% or 3rd consecutive click)
-      if (Math.random() < 0.1 || clickCount % 7 === 0) {
-        const scr = stars
-          .map((s) => ({ s, ...toScreen(s.nx, s.ny, s.layer) }))
-          .filter((o) => Math.hypot(o.x - px, o.y - py) < 180)
-          .sort((a, b) => a.x - b.x);
-
-        if (scr.length >= 5) {
-          const neuralChain = scr.slice(0, 7);
-          constellations.push({
-            pts: neuralChain.map((o) => ({ nx: o.s.nx, ny: o.s.ny })),
-            born: wall,
-            type: 'neural',
-            duration: 3.2,
-          });
-          if (constellations.length > 3) constellations.shift();
-          return;
-        }
-      }
-
-      // DISCOVERY 01: Constellation Extension (20% chance to draw intricate 8-10 star geometry)
-      const isExtended = Math.random() < 0.22;
-      const k = isExtended ? 8 : 4 + Math.floor(Math.random() * 3);
-
-      const scr = stars
-        .map((s) => ({ s, ...toScreen(s.nx, s.ny, s.layer) }))
-        .filter((o) => o.x > 8 && o.x < cssW - 8 && o.y > 8 && o.y < cssH - 8)
-        .sort((a, b) => (a.x - px) ** 2 + (a.y - py) ** 2 - ((b.x - px) ** 2 + (b.y - py) ** 2));
-
-      const picked: typeof scr = [];
-      for (const o of scr) {
-        if (picked.length >= k) break;
-        if (picked.every((p) => Math.hypot(p.x - o.x, p.y - o.y) >= 28)) picked.push(o);
-      }
-      if (picked.length < 3) return;
-
-      const chain = [picked.shift()!];
-      while (picked.length) {
-        const tail = chain[chain.length - 1];
-        let bi = 0;
-        let bd = Infinity;
-        picked.forEach((p, i) => {
-          const d = Math.hypot(p.x - tail.x, p.y - tail.y);
-          if (d < bd) {
-            bd = d;
-            bi = i;
-          }
-        });
-        chain.push(picked.splice(bi, 1)[0]);
-      }
-
-      constellations.push({
-        pts: chain.map((o) => ({ nx: o.s.nx, ny: o.s.ny })),
-        born: wall,
-        type: isExtended ? 'extended' : 'standard',
-        duration: isExtended ? 3.0 : CONSTELLATION_LIFE,
-      });
-      if (constellations.length > 3) constellations.shift();
-    };
-
-    const onClick = (e: MouseEvent) => {
-      if (e.button !== 0) return;
-      const ctrl = control ? control.current : { reveal: 1, dissolve: 0 };
-      if (ctrl.reveal < 0.5) return;
-      const t = e.target as Element | null;
-      if (t?.closest?.('a,button,input,textarea,select,summary,[role="button"],[data-no-constellation]'))
-        return;
-      spawnConstellation(e.clientX, e.clientY);
-    };
-    window.addEventListener('click', onClick);
-
     // ── Drawing Dust (Atmospheric space particles without cursor tracking)
     const drawDust = (from: number, to: number, dt: number, motion: number, sc: number) => {
       for (let i = from; i < to; i++) {
@@ -720,77 +611,6 @@ export default function CinematicNebula({
           (0.88 + 0.12 * Math.sin(time * BREATH_HZ + h.phase)) *
           gainAt(p.x, p.y);
         octx.drawImage(h.sprite, p.x - len, p.y - len, len * 2, len * 2);
-      }
-    };
-
-    // ── Drawing Constellations & Hidden Discoveries
-    const drawConstellations = () => {
-      octx.lineCap = 'round';
-      octx.lineJoin = 'round';
-      for (let i = constellations.length - 1; i >= 0; i--) {
-        const c = constellations[i];
-        const life = c.duration || CONSTELLATION_LIFE;
-        const age = wall - c.born;
-        if (age >= life) {
-          constellations.splice(i, 1);
-          continue;
-        }
-        const fadeIn = reduced ? 1 : Math.min(1, age / 0.25);
-        const fadeOut = age > life - 0.8 ? (life - age) / 0.8 : 1;
-        const a = fadeIn * fadeOut;
-        const lastPt = c.pts.length - 1;
-        const revealPt = reduced ? lastPt : Math.min(lastPt, (age / 0.6) * lastPt);
-        const P = c.pts.map((p) => toScreen(p.nx, p.ny, 2));
-
-        const trace = () => {
-          octx.beginPath();
-          octx.moveTo(P[0].x, P[0].y);
-          const full = Math.floor(revealPt);
-          for (let j = 1; j <= full; j++) octx.lineTo(P[j].x, P[j].y);
-          const frac = revealPt - full;
-          if (frac > 0 && full + 1 <= lastPt) {
-            octx.lineTo(
-              P[full].x + (P[full + 1].x - P[full].x) * frac,
-              P[full].y + (P[full + 1].y - P[full].y) * frac
-            );
-          }
-        };
-
-        // Outer subtle aura (blue for special discoveries, silver for standard)
-        trace();
-        octx.lineWidth = c.type === 'graduation' || c.type === 'neural' ? 4 : 3.5;
-        octx.strokeStyle =
-          c.type === 'graduation' || c.type === 'neural'
-            ? `rgba(95, 168, 255, ${0.25 * a})`
-            : `rgba(148, 163, 184, ${0.18 * a})`;
-        octx.stroke();
-
-        // Core bright thread
-        trace();
-        octx.lineWidth = 1.2;
-        octx.strokeStyle =
-          c.type === 'graduation'
-            ? `rgba(180, 215, 255, ${0.9 * a})`
-            : `rgba(226, 232, 240, ${0.8 * a})`;
-        octx.stroke();
-
-        P.forEach((p, j) => {
-          if (j > revealPt + 0.001) return;
-          octx.globalAlpha = a * 0.9;
-          octx.drawImage(
-            c.type === 'graduation' ? sprites.blueGlow : sprites.glow,
-            p.x - 14,
-            p.y - 14,
-            28,
-            28
-          );
-          octx.globalAlpha = a;
-          octx.fillStyle = c.type === 'graduation' ? '#95c4ff' : '#f8fafc';
-          octx.beginPath();
-          octx.arc(p.x, p.y, 1.8, 0, Math.PI * 2);
-          octx.fill();
-        });
-        octx.globalAlpha = 1;
       }
     };
 
@@ -958,6 +778,147 @@ export default function CinematicNebula({
       }
     };
 
+    // ── Interactive Star Constellation System (Exact 1:1 Screen Coordinate Anchor)
+    interface ActiveConstellation {
+      id: number;
+      clickX: number;
+      clickY: number;
+      born: number;
+      dur: number;
+      starIndices: number[];
+      edges: [number, number][];
+    }
+    const constellations: ActiveConstellation[] = [];
+    let nextConstellationId = 0;
+
+    const onPointerDown = (e: MouseEvent | TouchEvent) => {
+      if (stars.length === 0) return;
+      const clientX = 'touches' in e && e.touches.length > 0 ? e.touches[0].clientX : (e as MouseEvent).clientX;
+      const clientY = 'touches' in e && e.touches.length > 0 ? e.touches[0].clientY : (e as MouseEvent).clientY;
+      if (typeof clientX !== 'number' || typeof clientY !== 'number') return;
+
+      // Find stars near click in live screen coordinates
+      const distances: { index: number; dist: number; px: number; py: number }[] = [];
+      for (let i = 0; i < stars.length; i++) {
+        const s = stars[i];
+        const p = toScreen(s.nx, s.ny, s.layer);
+        const dist = Math.hypot(p.x - clientX, p.y - clientY);
+        distances.push({ index: i, dist, px: p.x, py: p.y });
+      }
+
+      distances.sort((a, b) => a.dist - b.dist);
+      const maxRange = 260;
+      const filtered = distances.filter((d) => d.dist <= maxRange);
+      const chosen = (filtered.length >= 2 ? filtered : distances).slice(0, 5);
+
+      if (chosen.length === 0) return;
+
+      const starIndices = chosen.map((c) => c.index);
+      const edges: [number, number][] = [];
+      for (let i = 0; i < chosen.length; i++) {
+        for (let j = i + 1; j < chosen.length; j++) {
+          const d = Math.hypot(chosen[i].px - chosen[j].px, chosen[i].py - chosen[j].py);
+          if (d < 220) {
+            edges.push([chosen[i].index, chosen[j].index]);
+          }
+        }
+      }
+
+      if (constellations.length >= 4) {
+        constellations.shift();
+      }
+
+      constellations.push({
+        id: nextConstellationId++,
+        clickX: clientX,
+        clickY: clientY,
+        born: wall,
+        dur: 3.2,
+        starIndices,
+        edges,
+      });
+    };
+
+    window.addEventListener('pointerdown', onPointerDown, { passive: true });
+
+    // ── Draw Interactive Constellations
+    const drawConstellations = () => {
+      for (let i = constellations.length - 1; i >= 0; i--) {
+        const c = constellations[i];
+        const age = wall - c.born;
+        const progress = age / c.dur;
+        if (progress >= 1) {
+          constellations.splice(i, 1);
+          continue;
+        }
+
+        const alphaCurve = Math.sin(progress * Math.PI);
+
+        // 1. Draw glowing connecting lines from Click Point to each Connected Star
+        for (const idx of c.starIndices) {
+          const s = stars[idx];
+          if (!s) continue;
+          const p = toScreen(s.nx, s.ny, s.layer);
+
+          // Outer faint halo line
+          octx.strokeStyle = `rgba(180, 215, 255, ${0.4 * alphaCurve})`;
+          octx.lineWidth = 1.8;
+          octx.beginPath();
+          octx.moveTo(c.clickX, c.clickY);
+          octx.lineTo(p.x, p.y);
+          octx.stroke();
+
+          // Crisp inner white beam
+          octx.strokeStyle = `rgba(255, 255, 255, ${0.75 * alphaCurve})`;
+          octx.lineWidth = 0.9;
+          octx.beginPath();
+          octx.moveTo(c.clickX, c.clickY);
+          octx.lineTo(p.x, p.y);
+          octx.stroke();
+
+          // Star node radiant pulse
+          octx.strokeStyle = `rgba(255, 255, 255, ${0.85 * alphaCurve})`;
+          octx.lineWidth = 1.0;
+          octx.beginPath();
+          octx.arc(p.x, p.y, (3 + s.s * 1.5) * (1 + 0.25 * Math.sin(wall * 5)), 0, Math.PI * 2);
+          octx.stroke();
+
+          octx.fillStyle = `rgba(255, 255, 255, ${0.95 * alphaCurve})`;
+          octx.beginPath();
+          octx.arc(p.x, p.y, 1.8, 0, Math.PI * 2);
+          octx.fill();
+        }
+
+        // 2. Inter-star constellation geometry lines
+        for (const [idxA, idxB] of c.edges) {
+          const sA = stars[idxA];
+          const sB = stars[idxB];
+          if (!sA || !sB) continue;
+          const pA = toScreen(sA.nx, sA.ny, sA.layer);
+          const pB = toScreen(sB.nx, sB.ny, sB.layer);
+
+          octx.strokeStyle = `rgba(95, 168, 255, ${0.35 * alphaCurve})`;
+          octx.lineWidth = 1.0;
+          octx.beginPath();
+          octx.moveTo(pA.x, pA.y);
+          octx.lineTo(pB.x, pB.y);
+          octx.stroke();
+        }
+
+        // 3. Central Click Node Indicator
+        octx.fillStyle = `rgba(255, 255, 255, ${0.9 * alphaCurve})`;
+        octx.beginPath();
+        octx.arc(c.clickX, c.clickY, 2.5, 0, Math.PI * 2);
+        octx.fill();
+
+        octx.strokeStyle = `rgba(95, 168, 255, ${0.55 * alphaCurve})`;
+        octx.lineWidth = 1.2;
+        octx.beginPath();
+        octx.arc(c.clickX, c.clickY, 4 + progress * 14, 0, Math.PI * 2);
+        octx.stroke();
+      }
+    };
+
     // ── Draw Section Ambient Color Shift
     const drawSectionColorShift = (secIdx: number) => {
       const tint = SECTION_TINTS[Math.min(secIdx, SECTION_TINTS.length - 1)] || SECTION_TINTS[0];
@@ -979,9 +940,17 @@ export default function CinematicNebula({
       const motion = reduced ? 0 : 1;
       time += dt * motion;
 
-      const ctrl = control ? control.current : { reveal: 1, dissolve: 0, sectionIndex: 0 };
+      if (wall - lastMeasure > 0.5) {
+        maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        lastMeasure = wall;
+      }
+      scrollSm += (window.scrollY - scrollSm) * (1 - Math.exp(-dt * 6));
+      parallaxY = reduced ? 0 : (0.5 - Math.min(1, Math.max(0, scrollSm / maxScroll))) * 2 * parallaxRange;
+
+      const scrollFrac = Math.min(1, Math.max(0, scrollSm / maxScroll));
+      const ctrl = control ? control.current : { reveal: 1, dissolve: scrollFrac, sectionIndex: 0 };
       const reveal = typeof ctrl.reveal === 'number' ? Math.max(0, Math.min(1, ctrl.reveal)) : 1;
-      const targetDissolve = typeof ctrl.dissolve === 'number' ? Math.max(0, Math.min(1, ctrl.dissolve)) : 0;
+      const targetDissolve = typeof ctrl.dissolve === 'number' && ctrl.dissolve > 0 ? ctrl.dissolve : scrollFrac;
       const sectionIndex = ctrl.sectionIndex || 0;
 
       // Smooth buttery continuous interpolation for background dissolve (zero sudden pops or jumps)
@@ -989,13 +958,6 @@ export default function CinematicNebula({
 
       host.style.opacity = String(reveal);
       if (reveal < 0.01) return;
-
-      if (wall - lastMeasure > 0.5) {
-        maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-        lastMeasure = wall;
-      }
-      scrollSm += (window.scrollY - scrollSm) * (1 - Math.exp(-dt * 6));
-      parallaxY = reduced ? 0 : (0.5 - Math.min(1, Math.max(0, scrollSm / maxScroll))) * 2 * parallaxRange;
 
       // Ambient cluster check
       checkClusterPulse();
@@ -1008,11 +970,11 @@ export default function CinematicNebula({
         u.uCenter.value = [0.5, 0.5 - parallaxY / cssH];
         u.uDim.value = dimRef.current;
         u.uVignette.value = vigRef.current;
-        // Smoothly and gradually dim from 1.0 at the top to 0.42 at the very bottom
-        const photoBrightness = Math.max(0.4, 1.0 - 0.58 * Math.pow(currentDissolve, 1.15));
+        // Smoothly and progressively dim the nebula to genuine dark cosmos across scroll
+        const photoBrightness = Math.max(0.01, 1.0 - Math.pow(currentDissolve, 0.85) * 0.99);
         u.uPhoto.value = photoBrightness;
-        u.uAmp.value = tier.amp * (1.0 - currentDissolve * 0.35);
-        u.uBreath.value = BREATH * (1.0 - currentDissolve * 0.35);
+        u.uAmp.value = tier.amp * (1.0 - currentDissolve * 0.5);
+        u.uBreath.value = BREATH * (1.0 - currentDissolve * 0.5);
         renderer.render({ scene: mesh });
         if (!uni.shown) {
           (renderer.gl.canvas as HTMLCanvasElement).style.opacity = '1';
@@ -1028,9 +990,9 @@ export default function CinematicNebula({
       drawDust(0, backCount, dt, motion, sc);
       drawHeroes(currentDissolve);
       drawStars(currentDissolve);
+      drawConstellations();
       drawDust(backCount, dust.length, dt, motion, sc);
       octx.globalAlpha = 1;
-      drawConstellations();
       drawMeteors(dt);
       drawSatellites(dt);
       drawPaperTraces(dt);
@@ -1057,9 +1019,9 @@ export default function CinematicNebula({
       cancelled = true;
       cancelAnimationFrame(rafId);
       ro.disconnect();
-      window.removeEventListener('click', onClick);
       document.removeEventListener('visibilitychange', onVisibilityChange);
       mqReduce.removeEventListener('change', onMq);
+      window.removeEventListener('pointerdown', onPointerDown);
       if (uni.renderer) {
         const gl = uni.renderer.gl;
         (gl.canvas as HTMLCanvasElement).remove();

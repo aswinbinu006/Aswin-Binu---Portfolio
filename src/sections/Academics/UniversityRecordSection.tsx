@@ -25,7 +25,7 @@ export default function UniversityRecordSection({
   return (
     <div
       data-no-constellation
-      className="relative w-full rounded-xl border border-white/10 bg-[#0a0a0c]/90 backdrop-blur-xl p-3.5 sm:p-4.5 md:p-5 transition-all duration-300 hover:border-white/25 hover:shadow-silver select-none"
+      className="relative w-full rounded-xl border border-white/20 bg-slate-800/25 backdrop-blur-xl p-3.5 sm:p-4.5 md:p-5 transition-all duration-300 hover:border-white/40 hover:bg-slate-700/35 hover:shadow-silver select-none"
     >
       {/* University Archival Header */}
       <div className="flex flex-wrap items-start justify-between gap-4 pb-3.5 border-b border-white/10">

@@ -33,36 +33,22 @@ export function useBackgroundAnimation({ control }: UseBackgroundAnimationProps)
       control.current.sectionProgress = 0;
     }
 
-    const tier = detectTier();
-    const reducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (isMobile || reducedMotion) {
+    const handleScroll = () => {
+      const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+      const progress = Math.min(1, Math.max(0, scrollY / max));
       if (control.current) {
-        control.current.reveal = reducedMotion ? 1 : 0;
-        control.current.dissolve = 0;
-        control.current.sectionIndex = 0;
-        control.current.sectionProgress = 0;
+        control.current.reveal = 1;
+        control.current.dissolve = progress;
+        control.current.sectionProgress = progress;
       }
-      return;
-    }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
+    handleScroll();
 
     const ctx = gsap.context(() => {
-      // Global continuous scroll tracking across the whole page (smooth progressive darkening)
-      ScrollTrigger.create({
-        trigger: document.body,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 0.8,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          if (control.current) {
-            control.current.sectionProgress = self.progress;
-            control.current.dissolve = self.progress;
-          }
-        },
-      });
-
-      // Individual section index tracking
       SECTION_IDS.forEach((id, index) => {
         const el = document.getElementById(id);
         if (el) {
@@ -81,6 +67,10 @@ export function useBackgroundAnimation({ control }: UseBackgroundAnimationProps)
       });
     });
 
-    return () => ctx.revert();
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+      ctx.revert();
+    };
   }, [control]);
 }

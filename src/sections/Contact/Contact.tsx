@@ -48,7 +48,7 @@ export default function Contact() {
         <div className="w-full flex flex-col items-center">
           <HorizontalTextReveal
             text="Let's Build Something Memorable"
-            className="font-mono text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-white justify-center text-center"
+            className="font-mono text-2xl sm:text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-white justify-center text-center"
             highlightWords={["Build", "Memorable"]}
             highlightColor="#ffffff"
             wordClassName="text-white"
@@ -58,7 +58,7 @@ export default function Contact() {
           />
 
           <HorizontalReveal xOffset={50} skewAngle={-5} delay={0.2}>
-            <p className="mt-4 max-w-[50ch] font-mono text-body text-white/70 leading-relaxed mx-auto">
+            <p className="mt-3 max-w-[50ch] font-mono text-xs sm:text-sm text-white/80 leading-relaxed mx-auto font-medium">
               Open for high-impact AI/ML research collaborations, critical systems
               engineering, and architectural discussions.
             </p>
