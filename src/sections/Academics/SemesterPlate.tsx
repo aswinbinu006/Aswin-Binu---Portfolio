@@ -106,12 +106,12 @@ export default function SemesterPlate({
 
           <div className="flex items-center gap-2">
             <div className="text-right">
-              <span className="font-mono text-[8px] text-white/40 uppercase block">
+              <span className="font-mono text-[8.5px] text-white/70 uppercase block font-semibold">
                 {semester.sgpa !== undefined ? "SGPA" : "STATUS"}
               </span>
               <span
                 className={`font-mono text-xs sm:text-sm font-extrabold ${
-                  isExpanded || isCurrent ? "text-white" : "text-white/85"
+                  isExpanded || isCurrent ? "text-white" : "text-white/90"
                 }`}
               >
                 {semester.sgpa !== undefined
@@ -124,7 +124,7 @@ export default function SemesterPlate({
               className={`font-mono text-[10px] transition-transform duration-300 ${
                 isExpanded
                   ? "rotate-180 text-white"
-                  : "text-white/40 group-hover:text-white"
+                  : "text-white/70 group-hover:text-white"
               }`}
             >
               ▾
@@ -133,11 +133,11 @@ export default function SemesterPlate({
         </div>
 
         {/* Focus Subtitle in Rest State */}
-        <div className="mt-1.5 flex items-center justify-between gap-2 font-mono text-[10px] text-white/50">
+        <div className="mt-1.5 flex items-center justify-between gap-2 font-mono text-[10px] text-white/75">
           <span className="truncate max-w-[24ch] sm:max-w-[32ch]">
             {semester.focus}
           </span>
-          <span className="shrink-0 text-white/40 text-[9px]">
+          <span className="shrink-0 text-white/70 text-[9px] font-semibold">
             {semester.credits} Cr
           </span>
         </div>
@@ -149,7 +149,7 @@ export default function SemesterPlate({
           ref={contentRef}
           className="border-t border-white/10 bg-[#06080c]/95 p-3 sm:p-3.5 space-y-2 animate-fadeIn"
         >
-          <div className="flex items-center justify-between font-mono text-[8px] text-white/40 uppercase tracking-wider pb-1 border-b border-white/[0.06]">
+          <div className="flex items-center justify-between font-mono text-[8.5px] text-white/75 uppercase tracking-wider pb-1 border-b border-white/[0.08] font-semibold">
             <span>COURSE / CODE</span>
             <div className="flex items-center gap-3">
               <span>CR</span>
@@ -161,32 +161,32 @@ export default function SemesterPlate({
             {semester.subjects.map((sub) => (
               <div
                 key={sub.name}
-                className="flex items-center justify-between gap-2 py-1 px-1.5 rounded-md bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.06] transition-colors"
+                className="flex items-center justify-between gap-2 py-1 px-1.5 rounded-md bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.08] transition-colors"
               >
                 <div className="flex flex-col">
-                  <span className="font-mono text-[11px] text-white font-medium leading-tight">
+                  <span className="font-mono text-[11px] text-white font-semibold leading-tight">
                     {sub.name}
                   </span>
                   {sub.code && (
-                    <span className="font-mono text-[8px] text-white/40">
+                    <span className="font-mono text-[8.5px] text-white/70">
                       {sub.code} {sub.category ? `• ${sub.category}` : ""}
                     </span>
                   )}
                 </div>
 
                 <div className="flex items-center gap-3 shrink-0">
-                  <span className="font-mono text-[10px] text-white/50">
+                  <span className="font-mono text-[10px] text-white/80 font-medium">
                     {sub.credits}
                   </span>
                   <span
                     className={`font-mono text-[10px] font-bold px-1.5 py-0.2 rounded ${
                       sub.grade === "O"
-                        ? "bg-white/15 text-white border border-white/30"
+                        ? "bg-white/20 text-white border border-white/40 shadow-sm"
                         : sub.grade === "A+"
-                        ? "bg-white/10 text-white/90 border border-white/20"
+                        ? "bg-white/15 text-white border border-white/30"
                         : sub.grade === "Current"
-                        ? "bg-white/10 text-white border border-white/20 italic"
-                        : "bg-white/5 text-white/70 border border-white/10"
+                        ? "bg-white/15 text-white border border-white/30 italic"
+                        : "bg-white/10 text-white border border-white/20"
                     }`}
                   >
                     {sub.grade || "PASS"}
@@ -196,9 +196,9 @@ export default function SemesterPlate({
             ))}
           </div>
 
-          <div className="pt-1.5 flex items-center justify-between font-mono text-[9px] text-white/40">
+          <div className="pt-1.5 flex items-center justify-between font-mono text-[9px] text-white/70">
             <span>Term: {semester.academicYear}</span>
-            <span className="text-white/80 hover:text-white underline underline-offset-2">
+            <span className="text-white hover:text-white underline underline-offset-2 font-semibold">
               ESC / click to collapse
             </span>
           </div>

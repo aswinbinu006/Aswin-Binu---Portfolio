@@ -1,100 +1,169 @@
-import React, { useRef, useEffect } from "react";
+import React from "react";
 import type { Project } from "@/data/projects";
-import { gsap } from "@/utils/gsap";
+import { Bot, Cpu, Database, ExternalLink, Globe, Layers, Sparkles, Terminal } from "lucide-react";
 
 interface ProjectCardProps {
   project: Project;
   onSelect: (project: Project) => void;
 }
 
+/**
+ * Compact Cosmic Obsidian & Silver Project Card matching Chapter 05 CertificateCard layout
+ */
 export default function ProjectCard({ project, onSelect }: ProjectCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!cardRef.current || typeof window === "undefined") return;
-
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
-
-    const ctx = gsap.context(() => {
-      const card = cardRef.current;
-      if (card) {
-        card.addEventListener("mouseenter", handleMouseEnter);
-        card.addEventListener("mouseleave", handleMouseLeave);
-      }
-    }, cardRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  const handleMouseEnter = () => {
-    gsap.to(cardRef.current, { y: -4, duration: 0.25, ease: "power2.out" });
+  const getBadgeStyle = (type: Project["badgeType"]) => {
+    switch (type) {
+      case "Live System":
+        return "border-emerald-400/30 bg-emerald-400/10 text-emerald-200";
+      case "Agentic Engine":
+        return "border-purple-400/30 bg-purple-400/10 text-purple-200";
+      case "Full Stack":
+        return "border-sky-400/30 bg-sky-400/10 text-sky-200";
+      case "ML Benchmark":
+        return "border-amber-400/30 bg-amber-400/10 text-amber-200";
+      case "Predictive Model":
+        return "border-rose-400/30 bg-rose-400/10 text-rose-200";
+      default:
+        return "border-white/20 bg-white/5 text-white/80";
+    }
   };
 
-  const handleMouseLeave = () => {
-    gsap.to(cardRef.current, { y: 0, duration: 0.35, ease: "power2.out" });
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      onSelect(project);
+  const getCategoryIcon = () => {
+    switch (project.filterCategory) {
+      case "ai-agentic":
+        return <Bot className="size-3 text-purple-300" />;
+      case "fullstack-web":
+        return <Globe className="size-3 text-sky-300" />;
+      case "ml-datascience":
+        return <Cpu className="size-3 text-amber-300" />;
+      default:
+        return <Sparkles className="size-3 text-white" />;
     }
   };
 
   return (
     <div
-      ref={cardRef}
+      data-no-constellation
       id={`project-card-${project.id}`}
       tabIndex={0}
       role="button"
       aria-label={`Inspect ${project.title}`}
       onClick={() => onSelect(project)}
-      onKeyDown={handleKeyDown}
-      className="project-card group relative flex flex-col justify-between rounded-2xl border border-white/10 bg-[#0a0a0c]/90 p-5 backdrop-blur-xl transition-all duration-300 hover:border-white/30 hover:bg-[#121215]/95 hover:shadow-silver focus-ring select-none cursor-pointer h-full"
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onSelect(project);
+        }
+      }}
+      className="group relative flex flex-col justify-between rounded-xl border border-white/10 bg-[#0a0a0c]/85 backdrop-blur-xl p-3.5 transition-all duration-300 hover:border-white/30 hover:bg-[#12151f]/90 hover:shadow-silver focus-ring cursor-pointer select-none h-full"
     >
       <div>
-        {/* Top Visual Container */}
-        <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl border border-white/10 bg-[#111114] mb-5">
-          <img
-            src={project.image}
-            alt={project.title}
-            className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105 opacity-85 group-hover:opacity-100"
-            loading="lazy"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
-
-          {/* Top Category Badge */}
-          <div className="absolute top-3 left-3">
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full font-mono text-[10px] font-semibold tracking-wider uppercase bg-black/60 text-white/90 border border-white/15 backdrop-blur-md">
-              {project.category}
+        {/* Card Header: Role/Category, Badge Type & Year */}
+        <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-white/10 font-mono text-[9px]">
+          <span className="font-semibold text-white/50 uppercase truncate max-w-[18ch]">
+            {project.role}
+          </span>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span
+              className={`px-2 py-0.5 rounded-full border font-semibold tracking-wider ${getBadgeStyle(
+                project.badgeType
+              )}`}
+            >
+              {project.badgeType}
             </span>
-          </div>
-
-          <div className="absolute bottom-3 left-3 right-3 font-mono text-[11px] text-white/70">
-            <span>{project.role}</span>
+            <span className="text-white/40">{project.year}</span>
           </div>
         </div>
 
-        {/* Project Title */}
-        <h3 className="font-mono text-xl sm:text-2xl font-bold tracking-tight text-white transition-colors group-hover:text-accent-gold leading-snug">
-          {project.title}
-        </h3>
+        {/* Embedded Project Preview Box Inside the Card */}
+        <div className="mt-2.5 relative w-full aspect-[16/8.5] rounded-lg overflow-hidden border border-white/10 bg-[#12151c]">
+          <img
+            src={project.image}
+            alt={`${project.title} preview`}
+            loading="lazy"
+            className="w-full h-full object-cover grayscale opacity-60 group-hover:opacity-90 group-hover:grayscale-0 transition-[opacity,filter] duration-400"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#090a0f] via-transparent to-black/30" />
 
-        {/* Project Description */}
-        <p className="mt-2.5 font-mono text-xs sm:text-sm text-white/70 leading-relaxed line-clamp-2">
-          {project.description}
-        </p>
+          {/* Watermark Category Pill & Icon Overlay */}
+          <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between pointer-events-none">
+            <span className="px-2 py-0.5 rounded bg-black/75 border border-white/15 font-mono text-[8.5px] text-white/90 backdrop-blur-md truncate max-w-[22ch]">
+              {project.category}
+            </span>
+            <span className="p-1 rounded-full bg-black/70 border border-white/20 text-white backdrop-blur-md">
+              {getCategoryIcon()}
+            </span>
+          </div>
+        </div>
+
+        {/* Title & Description */}
+        <div className="mt-2.5">
+          <h3 className="font-mono text-sm font-bold text-white group-hover:text-silver-bright transition-colors line-clamp-1">
+            {project.title}
+          </h3>
+
+          <p className="mt-1 font-mono text-[11px] leading-relaxed text-white/60 line-clamp-2">
+            {project.description}
+          </p>
+        </div>
+
+        {/* Tech Stack Pills */}
+        <div className="mt-2.5 flex flex-wrap gap-1.5">
+          {project.stack.slice(0, 3).map((tech) => (
+            <span
+              key={tech}
+              className="px-1.5 py-0.5 rounded bg-white/[0.03] border border-white/[0.06] font-mono text-[8.5px] text-white/70"
+            >
+              {tech}
+            </span>
+          ))}
+          {project.stack.length > 3 && (
+            <span className="px-1.5 py-0.5 rounded bg-white/[0.02] border border-white/[0.04] font-mono text-[8.5px] text-white/40">
+              +{project.stack.length - 3}
+            </span>
+          )}
+        </div>
       </div>
 
-      {/* Read More Link */}
-      <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between font-mono text-xs text-white/80 group-hover:text-white transition-colors">
-        <span className="font-semibold tracking-wider uppercase text-[11px]">
-          Read more
-        </span>
-        <span className="transform group-hover:translate-x-1.5 transition-transform text-accent-gold">
-          →
-        </span>
+      {/* Card Footer: Status & Links */}
+      <div className="mt-3 pt-2 border-t border-white/10 flex items-center justify-between font-mono text-[9px] text-white/40">
+        <div className="flex items-center gap-1.5">
+          {project.demoUrl ? (
+            <span className="flex items-center gap-1 text-emerald-400">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+              </span>
+              <span>LIVE DEMO</span>
+            </span>
+          ) : (
+            <span className="flex items-center gap-1 text-white/50">
+              <Terminal className="size-2.5 text-white/60" />
+              <span>OPEN SOURCE</span>
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2">
+          {project.githubUrl && (
+            <a
+              href={project.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`GitHub source for ${project.title}`}
+              onClick={(e) => e.stopPropagation()}
+              className="p-1 rounded border border-white/10 bg-white/[0.04] hover:bg-white/20 text-white/70 hover:text-white transition-all"
+            >
+              <svg viewBox="0 0 24 24" className="h-2.5 w-2.5 fill-current">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+              </svg>
+            </a>
+          )}
+          <div className="flex items-center gap-1 text-white/60 group-hover:text-white transition-colors shrink-0">
+            <span>INSPECT</span>
+            <ExternalLink className="size-2.5" />
+          </div>
+        </div>
       </div>
     </div>
   );

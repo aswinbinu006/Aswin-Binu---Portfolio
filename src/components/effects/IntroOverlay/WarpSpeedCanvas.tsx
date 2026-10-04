@@ -27,13 +27,15 @@ export default function WarpSpeedCanvas({ isFastMoving }: WarpSpeedCanvasProps) 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let width = (canvas.width = window.innerWidth * dpr);
+    let height = (canvas.height = window.innerHeight * dpr);
 
     const handleResize = () => {
       if (!canvas) return;
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = canvas.width = window.innerWidth * dpr;
+      height = canvas.height = window.innerHeight * dpr;
     };
 
     window.addEventListener("resize", handleResize);
@@ -63,7 +65,6 @@ export default function WarpSpeedCanvas({ isFastMoving }: WarpSpeedCanvasProps) 
       speedRef.current = currentSpeed;
 
       // Dark trail clear for motion blur (pure neutral space black)
-      ctx.fillStyle = isFastMoving ? "rgba(0, 0, 0, 0.25)" : "rgba(0, 0, 0, 1)";
       ctx.clearRect(0, 0, width, height);
 
       if (isFastMoving) {
@@ -87,7 +88,7 @@ export default function WarpSpeedCanvas({ isFastMoving }: WarpSpeedCanvasProps) 
           star.y = (Math.random() - 0.5) * 2000;
         }
 
-        const k = 400 / star.z;
+        const k = (400 * dpr) / star.z;
         const px = star.x * k + cx;
         const py = star.y * k + cy;
 
@@ -97,7 +98,7 @@ export default function WarpSpeedCanvas({ isFastMoving }: WarpSpeedCanvasProps) 
 
         if (isFastMoving) {
           // Calculate previous projected position for warp streak line
-          const pk = 400 / star.pz;
+          const pk = (400 * dpr) / star.pz;
           const prevPx = star.x * pk + cx;
           const prevPy = star.y * pk + cy;
 
@@ -105,13 +106,13 @@ export default function WarpSpeedCanvas({ isFastMoving }: WarpSpeedCanvasProps) 
           ctx.moveTo(prevPx, prevPy);
           ctx.lineTo(px, py);
           ctx.strokeStyle = star.color;
-          ctx.lineWidth = Math.min(3.5, Math.max(1, (1 - star.z / 1000) * 3.2));
+          ctx.lineWidth = Math.min(3.5 * dpr, Math.max(1 * dpr, (1 - star.z / 1000) * 3.2 * dpr));
           ctx.lineCap = "round";
           ctx.stroke();
         } else {
           const alpha = (1 - star.z / 1000) * 0.5;
           ctx.beginPath();
-          ctx.arc(px, py, star.size * (1 - star.z / 1000), 0, Math.PI * 2);
+          ctx.arc(px, py, star.size * (1 - star.z / 1000) * dpr, 0, Math.PI * 2);
           ctx.fillStyle = star.color;
           ctx.globalAlpha = alpha;
           ctx.fill();
@@ -119,9 +120,9 @@ export default function WarpSpeedCanvas({ isFastMoving }: WarpSpeedCanvasProps) 
         }
       }
 
-      // Add central high-velocity warm starlight glow tunnel when fast-moving (Zero blue)
+      // Add central high-velocity warm starlight glow tunnel when fast-moving
       if (isFastMoving && currentSpeed > 10) {
-        const gradient = ctx.createRadialGradient(cx, cy, 10, cx, cy, width * 0.55);
+        const gradient = ctx.createRadialGradient(cx, cy, 10 * dpr, cx, cy, width * 0.55);
         gradient.addColorStop(0, "rgba(255, 255, 255, 0.22)");
         gradient.addColorStop(0.35, "rgba(240, 210, 160, 0.08)");
         gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
@@ -144,9 +145,7 @@ export default function WarpSpeedCanvas({ isFastMoving }: WarpSpeedCanvasProps) 
   return (
     <canvas
       ref={canvasRef}
-      className={`pointer-events-none absolute inset-0 z-15 h-full w-full transition-opacity duration-300 ${
-        isFastMoving ? "opacity-100" : "opacity-0"
-      }`}
+      className="pointer-events-none absolute inset-0 z-0 h-full w-full"
     />
   );
 }

@@ -87,22 +87,26 @@ export function useIntroAnimation({ onComplete }: UseIntroAnimationProps = {}) {
     );
   }, [onComplete]);
 
-  // Click & Keyboard interactions (Escape, Space, Enter, or any key)
+  // Click, Touch & Keyboard interactions (Escape, Space, Enter, or any tap/click)
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = () => {
       finishIntro();
     };
 
-    const handleClick = () => {
+    const handleInteraction = () => {
       finishIntro();
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("click", handleClick);
+    window.addEventListener("click", handleInteraction);
+    window.addEventListener("touchstart", handleInteraction, { passive: true });
+    window.addEventListener("pointerdown", handleInteraction, { passive: true });
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("click", handleClick);
+      window.removeEventListener("click", handleInteraction);
+      window.removeEventListener("touchstart", handleInteraction);
+      window.removeEventListener("pointerdown", handleInteraction);
     };
   }, [finishIntro]);
 
@@ -115,10 +119,16 @@ export function useIntroAnimation({ onComplete }: UseIntroAnimationProps = {}) {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (prefersReduced) {
+      if (contentRef.current) {
+        contentRef.current.style.opacity = "1";
+      }
       const timer = setTimeout(() => {
         finishIntro();
-      }, 2000);
-      return () => clearTimeout(timer);
+      }, 2500);
+      return () => {
+        clearTimeout(timer);
+        resumeScroll();
+      };
     }
 
     const ctx = gsap.context(() => {
@@ -128,18 +138,22 @@ export function useIntroAnimation({ onComplete }: UseIntroAnimationProps = {}) {
 
       const tl = gsap.timeline();
 
-      // 0.3s: Content reveals inside the visor
-      tl.to(contentRef.current, {
-        opacity: 1,
-        scale: 1,
-        duration: 0.9,
-        ease: "power2.out",
-      }, 0.3);
+      // 0.2s: Content reveals inside the visor
+      tl.to(
+        contentRef.current,
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.8,
+          ease: "power2.out",
+        },
+        0.2
+      );
 
-      // Hold for 3.6 seconds then automatically trigger the fast-moving plunge
+      // Hold for 3.5 seconds then automatically trigger the fast-moving plunge
       tl.add(() => {
         finishIntro();
-      }, 4.0);
+      }, 3.8);
 
       timelineRef.current = tl;
     }, overlayRef);

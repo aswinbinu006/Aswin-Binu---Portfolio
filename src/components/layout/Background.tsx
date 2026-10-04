@@ -28,18 +28,14 @@ export default function Background({ isIntroComplete = true }: BackgroundProps) 
   }, [isIntroComplete]);
 
   return (
-    <div
-      className={`pointer-events-none fixed inset-0 z-0 overflow-hidden select-none transition-opacity duration-1000 ${
-        isIntroComplete ? "opacity-100" : "opacity-0"
-      }`}
-    >
-      {/* 1. Cinematic Nebula (WebGL + Canvas real stars) */}
+    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden select-none">
+      {/* 1. Living Universe Cinematic Nebula (WebGL + Canvas real stars) */}
       <div className="absolute inset-0 z-[1]">
-        <CinematicNebula control={control} />
+        <CinematicNebula control={control} dim={0.12} vignette={0.3} />
       </div>
 
       {/* 2. Film grain overlay */}
-      <div className="grain-overlay" />
+      <div className="grain-overlay z-[2]" />
     </div>
   );
 }

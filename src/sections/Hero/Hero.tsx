@@ -39,20 +39,20 @@ export default function Hero({ isIntroComplete }: { isIntroComplete?: boolean })
       {/* ── TOP SECTION (HUD + Ambient Marquee Ribbon 1) ── */}
       <div className="relative z-10 flex w-full flex-col gap-2 sm:gap-3">
         {/* Top Telemetry Flanks */}
-        <div className="flex w-full items-start justify-between border-b border-white/20 pb-2.5 sm:pb-3 font-mono text-[11px] text-white/70">
+        <div className="flex w-full items-start justify-between border-b border-white/20 pb-2.5 sm:pb-3 font-mono text-[11px] text-white/90">
           {/* Left Flank */}
           <div className="flex flex-col gap-0.5 text-left">
             <div className="flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
               <span className="font-semibold text-white">TACTICAL_SYS // ONLINE</span>
             </div>
-            <span className="text-white/60 tracking-wider text-[10px] sm:text-[11px]">
+            <span className="text-white/80 tracking-wider text-[10px] sm:text-[11px]">
               SECTOR_COORD: 05:38:42 • LAT 21.14°N
             </span>
           </div>
 
           {/* Center Space Cue */}
-          <div className="hidden md:flex items-center gap-3 font-mono text-[10px] text-white/50 tracking-[0.2em] uppercase pt-1">
+          <div className="hidden md:flex items-center gap-3 font-mono text-[10px] text-white/75 tracking-[0.2em] uppercase pt-1">
             <span>ORBIT_STATION</span>
             <span>•</span>
             <span>AUTONOMOUS_MATRIX</span>
@@ -64,7 +64,7 @@ export default function Hero({ isIntroComplete }: { isIntroComplete?: boolean })
               <span className="text-white font-medium">CLEARANCE: GRANTED</span>
               <span className="h-1.5 w-1.5 rounded-full bg-white/90 animate-ping" />
             </div>
-            <span className="text-white/60 tracking-wider text-[10px] sm:text-[11px]">
+            <span className="text-white/80 tracking-wider text-[10px] sm:text-[11px]">
               STATUS: OPERATIONAL [ALL SYSTEMS NOMINAL]
             </span>
           </div>
@@ -180,7 +180,7 @@ export default function Hero({ isIntroComplete }: { isIntroComplete?: boolean })
           animate={isIntroComplete ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.55, ease: "easeOut" }}
         >
-          <p className="max-w-xl font-mono text-xs sm:text-sm md:text-base text-white/80 leading-relaxed">
+          <p className="max-w-xl font-mono text-xs sm:text-sm md:text-base text-white/95 font-medium leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
             Architecting deterministic edge runtimes, zero-latency avionics telemetry,
             and self-supervised anomaly matrices for mission-critical infrastructure.
           </p>
@@ -196,7 +196,7 @@ export default function Hero({ isIntroComplete }: { isIntroComplete?: boolean })
           {["EDGE TENSORRT", "ROS2 AUTONOMY", "SENSOR FUSION", "CRITICAL SYS", "IEEE CHAIR"].map((chip) => (
             <span
               key={chip}
-              className="rounded-md border border-white/15 bg-white/[0.03] px-3 py-1 font-mono text-[10px] sm:text-[11px] font-semibold tracking-wider text-white/90 backdrop-blur-md transition-all duration-300 hover:border-white/40 hover:bg-white/[0.08]"
+              className="rounded-lg border border-white/20 bg-[#080B14]/85 px-3 py-1 font-mono text-[10px] sm:text-[11px] font-bold tracking-wider text-white backdrop-blur-md shadow-glass transition-all duration-300 hover:border-white/50 hover:bg-white/15"
             >
               {chip}
             </span>
@@ -206,19 +206,19 @@ export default function Hero({ isIntroComplete }: { isIntroComplete?: boolean })
         {/* Tactical Telemetry Strip — Silver Glass Pill */}
         <motion.div
           id="hero-telemetry"
-          className="mt-4 sm:mt-5 flex flex-wrap items-center justify-center gap-3 sm:gap-4 rounded-full border border-white/15 bg-[#12151c]/80 px-5 sm:px-7 py-2 font-mono text-label text-white/75 backdrop-blur-md shadow-glass"
+          className="mt-4 sm:mt-5 flex flex-wrap items-center justify-center gap-3 sm:gap-4 rounded-full border border-white/20 bg-[#080B14]/90 px-5 sm:px-7 py-2 font-mono text-label text-white/90 backdrop-blur-md shadow-glass"
           initial={{ opacity: 0, y: 15 }}
           animate={isIntroComplete ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.75, ease: "easeOut" }}
         >
           <span className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-            <span>SYS_ID: ASWIN-X2026</span>
+            <span className="font-semibold text-white">SYS_ID: ASWIN-X2026</span>
           </span>
-          <span className="text-white/20 sm:inline">•</span>
-          <span className="text-white font-medium">STATUS: OPERATIONAL</span>
-          <span className="text-white/20 sm:inline">•</span>
-          <span className="text-white/50">CLEARANCE: LEVEL 04</span>
+          <span className="text-white/40 sm:inline">•</span>
+          <span className="text-white font-bold">STATUS: OPERATIONAL</span>
+          <span className="text-white/40 sm:inline">•</span>
+          <span className="text-white/80">CLEARANCE: LEVEL 04</span>
         </motion.div>
       </motion.div>
 
@@ -241,14 +241,14 @@ export default function Hero({ isIntroComplete }: { isIntroComplete?: boolean })
         </div>
 
         {/* Bottom Telemetry Footer & Scroll Prompt */}
-        <div className="flex w-full items-end justify-between border-t border-white/20 pt-2.5 sm:pt-3 pb-1 font-mono text-[11px] text-white/70">
+        <div className="flex w-full items-end justify-between border-t border-white/20 pt-2.5 sm:pt-3 pb-1 font-mono text-[11px] text-white/90">
           <div className="text-left">
-            <span className="text-white/80">MISSION_EPOCH: 2026.09</span>
+            <span className="text-white/90 font-semibold">MISSION_EPOCH: 2026.09</span>
           </div>
 
           {/* Scroll cue prompt */}
           <div className="flex flex-col items-center gap-1 text-center">
-            <span className="uppercase tracking-[0.25em] text-[10px] text-white/90 font-medium">
+            <span className="uppercase tracking-[0.25em] text-[10px] text-white font-bold">
               SCROLL TO INITIALIZE
             </span>
             <div className="relative h-5 w-[1px] overflow-hidden bg-white/40">

@@ -28,10 +28,11 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
       role="region"
       aria-label="Astronaut Point of View"
       onClick={finishIntro}
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden select-none cursor-pointer bg-black"
-      style={{ backgroundColor: "#000000" }}
+      onTouchStart={finishIntro}
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden select-none cursor-pointer"
+      style={{ backgroundColor: "transparent" }}
     >
-      {/* Dynamic High-Speed Warp Velocity Starfield */}
+      {/* Dynamic Cosmic Warp Velocity Starfield */}
       <WarpSpeedCanvas isFastMoving={isFastMoving} />
 
       {/* 1. Outer Solid Black Frame with Astronaut Visor Viewport Cutout */}
@@ -66,7 +67,7 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
           mask="url(#astronaut-visor-cutout-mask)"
         />
 
-        {/* --- ASTRONAUT HELMET PHYSICAL STRUCTURE (NO TEXT) --- */}
+        {/* --- ASTRONAUT HELMET PHYSICAL STRUCTURE --- */}
 
         {/* 1. Outer Gasket & Visor Sealing Channel */}
         <path
@@ -134,7 +135,6 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
 
         {/* 5. Left Helmet Hinge & Seal Locking Assembly */}
         <g opacity="0.85">
-          {/* Vertical Mounting Bracket */}
           <rect
             x="95"
             y="430"
@@ -145,7 +145,6 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
             stroke="rgba(255, 255, 255, 0.12)"
             strokeWidth="2"
           />
-          {/* Main Visor Pivot Hub */}
           <circle
             cx="111"
             cy="540"
@@ -168,7 +167,6 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
             r="8"
             fill="rgba(255, 255, 255, 0.25)"
           />
-          {/* Locking Hex Pins */}
           <circle cx="111" cy="455" r="4.5" fill="rgba(255, 255, 255, 0.3)" />
           <circle cx="111" cy="485" r="3.5" fill="rgba(255, 255, 255, 0.2)" />
           <circle cx="111" cy="595" r="3.5" fill="rgba(255, 255, 255, 0.2)" />
@@ -177,7 +175,6 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
 
         {/* 6. Right Helmet Hinge & Seal Locking Assembly */}
         <g opacity="0.85">
-          {/* Vertical Mounting Bracket */}
           <rect
             x="1793"
             y="430"
@@ -188,7 +185,6 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
             stroke="rgba(255, 255, 255, 0.12)"
             strokeWidth="2"
           />
-          {/* Main Visor Pivot Hub */}
           <circle
             cx="1809"
             cy="540"
@@ -211,7 +207,6 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
             r="8"
             fill="rgba(255, 255, 255, 0.25)"
           />
-          {/* Locking Hex Pins */}
           <circle cx="1809" cy="455" r="4.5" fill="rgba(255, 255, 255, 0.3)" />
           <circle cx="1809" cy="485" r="3.5" fill="rgba(255, 255, 255, 0.2)" />
           <circle cx="1809" cy="595" r="3.5" fill="rgba(255, 255, 255, 0.2)" />
@@ -247,21 +242,17 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
 
         {/* 8. Four Corner Structural Reinforcement Clips */}
         <g stroke="rgba(255, 255, 255, 0.2)" strokeWidth="2" fill="none">
-          {/* Top-Left */}
           <path d="M 230 190 L 265 170" />
           <circle cx="230" cy="190" r="3" fill="rgba(255, 255, 255, 0.3)" />
-          {/* Top-Right */}
           <path d="M 1690 190 L 1655 170" />
           <circle cx="1690" cy="190" r="3" fill="rgba(255, 255, 255, 0.3)" />
-          {/* Bottom-Left */}
           <path d="M 230 890 L 265 910" />
           <circle cx="230" cy="890" r="3" fill="rgba(255, 255, 255, 0.3)" />
-          {/* Bottom-Right */}
           <path d="M 1690 890 L 1655 910" />
           <circle cx="1690" cy="890" r="3" fill="rgba(255, 255, 255, 0.3)" />
         </g>
 
-        {/* 9. Visor Polycarbonate Optical Glass Reflections (Curved Highlight Arcs) */}
+        {/* 9. Visor Polycarbonate Optical Glass Reflections */}
         <path
           d="M 260 175 Q 960 115 1660 175"
           fill="none"
@@ -277,14 +268,18 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
       </svg>
 
       {/* 2. Top-Right Skip Button */}
-      <div className="absolute top-6 right-8 z-30 font-mono text-[10px] sm:text-xs tracking-widest text-white/50 hover:text-white transition-colors uppercase">
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-8 z-30 font-mono text-[10px] sm:text-xs tracking-widest text-white/60 hover:text-white transition-colors uppercase">
         <button
           type="button"
           onClick={(e) => {
             e.stopPropagation();
             finishIntro();
           }}
-          className="cursor-pointer px-3.5 py-1.5 rounded-full border border-white/15 hover:border-white/40 bg-black/60 backdrop-blur-md"
+          onTouchStart={(e) => {
+            e.stopPropagation();
+            finishIntro();
+          }}
+          className="cursor-pointer px-3 py-1.5 sm:px-3.5 sm:py-1.5 rounded-full border border-white/20 hover:border-white/50 bg-black/60 backdrop-blur-md transition-all active:scale-95"
         >
           SKIP [ESC]
         </button>
@@ -293,15 +288,15 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
       {/* 3. 2-Line Content Displayed Exclusively Inside the Visor Viewport */}
       <div
         ref={contentRef}
-        className="relative z-20 flex flex-col items-center justify-center text-center max-w-3xl px-6 sm:px-12 mx-auto"
+        className="relative z-20 flex flex-col items-center justify-center text-center max-w-2xl px-5 sm:px-12 mx-auto"
       >
-        <div className="flex flex-col items-center gap-4 sm:gap-6 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]">
+        <div className="flex flex-col items-center gap-3 sm:gap-6 drop-shadow-[0_2px_16px_rgba(0,0,0,0.9)]">
           {/* Simple, Meaningful 2-Line Manifesto */}
-          <h2 className="font-mono text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight text-white leading-snug">
+          <h2 className="font-mono text-lg sm:text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight text-white leading-snug">
             We don't just teach machines to calculate.
           </h2>
 
-          <p className="font-mono text-base sm:text-lg md:text-xl lg:text-2xl font-normal text-white/85 leading-snug">
+          <p className="font-mono text-sm sm:text-lg md:text-xl lg:text-2xl font-normal text-white/85 leading-snug">
             We build systems that endure when failure isn't an option.
           </p>
         </div>
