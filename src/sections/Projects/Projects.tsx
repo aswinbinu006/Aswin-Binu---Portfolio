@@ -1,11 +1,16 @@
-import React, { useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useRef, useEffect } from "react";
+import { AnimatePresence } from "framer-motion";
 import { projects, type Project, type ProjectType } from "@/data/projects";
 import ProjectCard from "./ProjectCard";
 import ProjectDetailModal from "./ProjectDetailModal";
 import { Label } from "@/components/ui";
 import HorizontalTextReveal from "@/components/effects/HorizontalTextReveal";
 import HorizontalReveal from "@/components/effects/HorizontalReveal";
+import { ChevronDown } from "lucide-react";
+import { ScrollTrigger } from "@/utils/gsap";
+import { scrollTo } from "@/utils/lenis";
+
+const MOBILE_PROJECTS_LIMIT = 3;
 
 const CATEGORIES: { key: ProjectType; label: string }[] = [
   { key: "project", label: "PROJECTS" },
@@ -19,9 +24,48 @@ const CATEGORIES: { key: ProjectType; label: string }[] = [
 export default function Projects() {
   const [activeCategory, setActiveCategory] = useState<ProjectType>("project");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [showAllMobile, setShowAllMobile] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => {
+      setIsMobile(e.matches);
+      if (!e.matches) setShowAllMobile(false);
+    };
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
   const filteredProjects = projects.filter((p) => p.type === activeCategory);
+  const displayedProjects =
+    isMobile && !showAllMobile
+      ? filteredProjects.slice(0, MOBILE_PROJECTS_LIMIT)
+      : filteredProjects;
+
+  const handleToggle = () => {
+    if (showAllMobile) {
+      if (sectionRef.current) {
+        scrollTo(sectionRef.current, { offset: -20 });
+      }
+      setShowAllMobile(false);
+      setTimeout(() => {
+        if (typeof window !== "undefined") {
+          ScrollTrigger.refresh();
+        }
+      }, 150);
+    } else {
+      setShowAllMobile(true);
+      setTimeout(() => {
+        if (typeof window !== "undefined") {
+          ScrollTrigger.refresh();
+        }
+      }, 150);
+    }
+  };
 
   return (
     <section
@@ -68,8 +112,8 @@ export default function Projects() {
           </HorizontalReveal>
         </div>
 
-        <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.25}>
-          <div className="flex items-center gap-2 font-mono text-caption text-white/90 px-3.5 py-2 rounded-xl border border-white/20 bg-slate-800/25 backdrop-blur-md shadow-glass">
+        <HorizontalReveal xOffset={40} delay={0.25}>
+          <div className="flex items-center gap-2 font-mono text-caption text-white/90 px-3.5 py-2 rounded-xl border border-white/20 bg-[#0c121e]/90 shadow-glass">
             <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
             <span className="tracking-wider uppercase font-bold text-xs">{projects.length} TOTAL REPOSITORIES</span>
           </div>
@@ -85,7 +129,10 @@ export default function Projects() {
             <button
               key={cat.key}
               type="button"
-              onClick={() => setActiveCategory(cat.key)}
+              onClick={() => {
+                setActiveCategory(cat.key);
+                setShowAllMobile(false);
+              }}
               className={`px-4 py-2 rounded-lg border text-xs sm:text-sm font-semibold tracking-wider transition-all cursor-pointer ${
                 isActive
                   ? "border-white/40 bg-white/15 text-white font-bold shadow-[0_0_15px_rgba(255,255,255,0.15)]"
@@ -99,28 +146,48 @@ export default function Projects() {
       </div>
 
       {/* Responsive Grid Across Layout */}
-      <motion.div
-        layout
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5"
-      >
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
         <AnimatePresence mode="popLayout">
-          {filteredProjects.map((project) => (
-            <motion.div
+          {displayedProjects.map((project, idx) => (
+            <HorizontalReveal
               key={project.id}
-              layout
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.96 }}
-              transition={{ duration: 0.25 }}
+              index={idx}
+              xOffset={60}
+              skewAngle={-5}
+              stagger={0.06}
+              delay={0.1}
+              className="h-full"
             >
               <ProjectCard
                 project={project}
                 onSelect={() => setSelectedProject(project)}
               />
-            </motion.div>
+            </HorizontalReveal>
           ))}
         </AnimatePresence>
-      </motion.div>
+      </div>
+
+      {/* Mobile-Only See More Button */}
+      {isMobile && filteredProjects.length > MOBILE_PROJECTS_LIMIT && (
+        <div className="mt-6 flex justify-center md:hidden">
+          <button
+            type="button"
+            onClick={handleToggle}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/25 bg-slate-800/50 hover:bg-slate-700/60 active:scale-95 font-mono text-xs font-bold text-white shadow-glass transition-all cursor-pointer"
+          >
+            <span>
+              {showAllMobile
+                ? "SHOW LESS"
+                : `SEE MORE (${filteredProjects.length - MOBILE_PROJECTS_LIMIT} MORE)`}
+            </span>
+            <ChevronDown
+              className={`size-3.5 text-white/80 transition-transform duration-300 ${
+                showAllMobile ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+        </div>
+      )}
 
       {/* Interactive Project Detail Modal */}
       <ProjectDetailModal

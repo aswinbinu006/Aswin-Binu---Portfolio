@@ -110,11 +110,11 @@ export function getNebulaTier(): {
 
   if (info.isMobile) {
     return {
-      useWebGL: false,
+      useWebGL: true,
       useCanvas2D: true,
-      stars: 30,
-      dust: 0,
-      meteors: 0,
+      stars: 60,
+      dust: 20,
+      meteors: 1,
       satellites: 0,
       paperTraces: 0,
       clusterPulse: false,

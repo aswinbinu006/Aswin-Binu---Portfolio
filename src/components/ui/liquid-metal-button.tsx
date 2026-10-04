@@ -38,23 +38,23 @@ export function LiquidMetalButton({
   const dimensions = useMemo(() => {
     if (viewMode === "icon") {
       return {
-        width: 46,
-        height: 46,
-        innerWidth: 42,
-        innerHeight: 42,
-        shaderWidth: 46,
-        shaderHeight: 46,
+        width: 48,
+        height: 48,
+        innerWidth: 44,
+        innerHeight: 44,
+        shaderWidth: 48,
+        shaderHeight: 48,
       };
     } else {
       // Calculate dynamic width based on label length to prevent truncation
-      const calculatedWidth = Math.max(154, (label?.length || 10) * 9 + 50);
+      const calculatedWidth = Math.max(160, (label?.length || 10) * 9 + 52);
       return {
         width: calculatedWidth,
-        height: 46,
+        height: 48,
         innerWidth: calculatedWidth - 4,
-        innerHeight: 42,
+        innerHeight: 44,
         shaderWidth: calculatedWidth,
-        shaderHeight: 46,
+        shaderHeight: 48,
       };
     }
   }, [viewMode, label]);

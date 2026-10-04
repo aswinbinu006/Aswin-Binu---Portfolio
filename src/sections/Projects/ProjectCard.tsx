@@ -65,12 +65,12 @@ export default function ProjectCard({ project, onSelect }: ProjectCardProps) {
           onSelect(project);
         }
       }}
-      className="group relative flex flex-col justify-between rounded-xl border border-white/20 bg-slate-800/25 backdrop-blur-xl p-3.5 transition-all duration-300 hover:border-white/40 hover:bg-slate-700/35 hover:shadow-silver focus-ring cursor-pointer select-none h-full"
+      className="group relative flex flex-col justify-between rounded-xl border border-white/20 bg-[#0c121e]/90 p-3.5 transition-all duration-300 hover:border-white/40 hover:bg-[#111a2b]/95 hover:shadow-silver focus-ring cursor-pointer select-none h-full"
     >
       <div>
         {/* Card Header: Role/Category, Badge Type & Year */}
         <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-white/15 font-mono text-[9px]">
-          <span className="font-semibold text-white/60 uppercase truncate max-w-[18ch]">
+          <span className="font-semibold text-white/70 uppercase truncate max-w-[18ch]">
             {project.role}
           </span>
           <div className="flex items-center gap-1.5 shrink-0">
@@ -81,26 +81,26 @@ export default function ProjectCard({ project, onSelect }: ProjectCardProps) {
             >
               {project.badgeType}
             </span>
-            <span className="text-white/40">{project.year}</span>
+            <span className="text-white/50">{project.year}</span>
           </div>
         </div>
 
         {/* Embedded Project Preview Box Inside the Card */}
-        <div className="mt-2.5 relative w-full aspect-[16/8.5] rounded-lg overflow-hidden border border-white/10 bg-[#12151c]">
+        <div className="mt-2.5 relative w-full aspect-[16/8.5] rounded-lg overflow-hidden border border-white/10 bg-slate-900/60">
           <img
             src={project.image}
             alt={`${project.title} preview`}
             loading="lazy"
-            className="w-full h-full object-cover grayscale opacity-60 group-hover:opacity-90 group-hover:grayscale-0 transition-[opacity,filter] duration-400"
+            className="w-full h-full object-cover opacity-75 group-hover:opacity-100 transition-opacity duration-300"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#090a0f] via-transparent to-black/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0c121e] via-transparent to-black/25" />
 
           {/* Watermark Category Pill & Icon Overlay */}
           <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between pointer-events-none">
-            <span className="px-2 py-0.5 rounded bg-black/75 border border-white/15 font-mono text-[8.5px] text-white/90 backdrop-blur-md truncate max-w-[22ch]">
+            <span className="px-2 py-0.5 rounded bg-black/80 border border-white/15 font-mono text-[8.5px] text-white font-medium truncate max-w-[22ch]">
               {project.category}
             </span>
-            <span className="p-1 rounded-full bg-black/70 border border-white/20 text-white backdrop-blur-md">
+            <span className="p-1 rounded-full bg-black/80 border border-white/20 text-white">
               {getCategoryIcon()}
             </span>
           </div>
@@ -112,7 +112,7 @@ export default function ProjectCard({ project, onSelect }: ProjectCardProps) {
             {project.title}
           </h3>
 
-          <p className="mt-1 font-mono text-[11px] leading-relaxed text-white/60 line-clamp-2">
+          <p className="mt-1 font-mono text-[11px] leading-relaxed text-white/80 font-medium line-clamp-2">
             {project.description}
           </p>
         </div>

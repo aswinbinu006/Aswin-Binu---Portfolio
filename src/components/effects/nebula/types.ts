@@ -22,9 +22,9 @@ export interface TierConfig {
 }
 
 export const TIERS: Record<TierName, TierConfig> = {
-  high: { dpr: 2, overlayDpr: 1.5, amp: 6, octaves: 3, dust: 35, stars: 65, meteors: 2, satellites: 1, paperTraces: 1, clusterPulse: false, isMobile: false },
-  medium: { dpr: 1.5, overlayDpr: 1.25, amp: 5, octaves: 3, dust: 20, stars: 40, meteors: 1, satellites: 1, paperTraces: 1, clusterPulse: false, isMobile: false },
-  low: { dpr: 1, overlayDpr: 0.75, amp: 3, octaves: 1, dust: 10, stars: 18, meteors: 0, satellites: 0, paperTraces: 0, clusterPulse: false, isMobile: true },
+  high: { dpr: 2, overlayDpr: 1.5, amp: 6, octaves: 3, dust: 60, stars: 280, meteors: 2, satellites: 1, paperTraces: 1, clusterPulse: false, isMobile: false },
+  medium: { dpr: 1.5, overlayDpr: 1.25, amp: 5, octaves: 3, dust: 35, stars: 180, meteors: 1, satellites: 1, paperTraces: 1, clusterPulse: false, isMobile: false },
+  low: { dpr: 1, overlayDpr: 0.75, amp: 3, octaves: 1, dust: 20, stars: 100, meteors: 0, satellites: 0, paperTraces: 0, clusterPulse: false, isMobile: true },
 };
 
 export function detectTier(): TierName {
@@ -70,7 +70,7 @@ export interface Dust {
 }
 
 export interface Constellation {
-  pts: { nx: number; ny: number }[];
+  pts: { nx: number; ny: number; layer?: 1 | 2 | 3 }[];
   born: number;
   type?: 'standard' | 'extended' | 'neural' | 'graduation';
   duration?: number;

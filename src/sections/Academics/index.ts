@@ -1,4 +1,5 @@
 export { default as Academics } from "./Academics";
+export { default as AcademicCard } from "./AcademicCard";
 export { default as AcademicWall } from "./AcademicWall";
 export { default as AcademicTrajectory } from "./AcademicTrajectory";
 export { default as SchoolRecordPlate } from "./SchoolRecordPlate";

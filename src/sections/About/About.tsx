@@ -14,7 +14,7 @@ const IDENTITY_ITEMS = [
   {
     icon: "◇",
     label: "AI & ML",
-    spec: "EDGE // RT",
+    spec: "AGENTS // FULL-STACK",
   },
   {
     icon: "⬢",
@@ -24,7 +24,7 @@ const IDENTITY_ITEMS = [
   {
     icon: "▣",
     label: "Builder",
-    spec: "CRITICAL SYS",
+    spec: "PRODUCTION SYS",
   },
 ];
 
@@ -120,8 +120,8 @@ export default function About({ isIntroComplete = true }: AboutProps) {
         ref={containerRef}
         className="relative z-10 w-full max-w-[1500px] mx-auto flex flex-col items-center justify-between gap-12 lg:flex-row lg:items-center lg:gap-16 xl:gap-24"
       >
-        {/* Left Side: Story Layer encased in a sleek light-toned translucent grey glass card */}
-        <div className="relative flex flex-col items-start w-full lg:w-[56%] xl:w-[58%] rounded-2xl border border-white/20 bg-slate-800/25 p-6 sm:p-7 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.25)]">
+        {/* Left Side: Story Layer encased in a sleek solid obsidian glass card */}
+        <div className="relative flex flex-col items-start w-full lg:w-[56%] xl:w-[58%] rounded-2xl border border-white/20 bg-[#0c121e]/90 p-6 sm:p-7 shadow-[0_8px_32px_rgba(0,0,0,0.35)]">
           {/* Section Eyebrow Label */}
           <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.05}>
             <div className="mb-4">
@@ -148,7 +148,7 @@ export default function About({ isIntroComplete = true }: AboutProps) {
                 <HorizontalTextReveal
                   text="and I build them for places where"
                   className="font-mono text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold leading-[1.3] tracking-tight"
-                  wordClassName="text-white/90 drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)]"
+                  wordClassName="text-white/95 drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)]"
                   xOffset={50}
                   skewAngle={-6}
                   delay={0.18}
@@ -186,10 +186,10 @@ export default function About({ isIntroComplete = true }: AboutProps) {
           {/* Body Copy with Word-by-Word Horizontal Text Reveal */}
           <div className="mt-4 max-w-[58ch]">
             <HorizontalTextReveal
-              text="Third-year AI/ML engineering student, focused on applying machine learning to defense and critical-infrastructure problems. Operating out of Nagpur, architecting edge-quantized models, resilient telemetry pipelines, and mission-ready autonomy."
+              text="Third-year AI/ML engineering student, focused on architecting autonomous multi-agent systems, applied machine learning pipelines, and robust full-stack applications. Operating out of Nagpur, leading the IEEE Student Branch and engineering reliable software end-to-end."
               className="font-mono text-xs sm:text-sm leading-relaxed"
               wordClassName="text-white/90 font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]"
-              highlightWords={["defense", "critical-infrastructure", "edge-quantized", "mission-ready"]}
+              highlightWords={["multi-agent", "machine", "learning", "full-stack", "IEEE"]}
               highlightColor="#ffffff"
               xOffset={50}
               skewAngle={-6}
@@ -215,7 +215,7 @@ export default function About({ isIntroComplete = true }: AboutProps) {
               >
                 <div
                   tabIndex={0}
-                  className="group relative flex items-center justify-between gap-3 rounded-lg border border-white/15 bg-white/[0.08] px-3.5 py-2.5 font-mono text-caption text-white backdrop-blur-md transition-all duration-300 hover:border-white/40 hover:bg-white/[0.14] hover:shadow-silver focus-ring shadow-glass"
+                  className="group relative flex items-center justify-between gap-3 rounded-lg border border-white/15 bg-white/[0.08] px-3.5 py-2.5 font-mono text-caption text-white transition-all duration-300 hover:border-white/40 hover:bg-white/[0.14] hover:shadow-silver focus-ring shadow-glass h-full"
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-white text-sm group-hover:scale-110 transition-transform">

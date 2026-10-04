@@ -110,9 +110,11 @@ export default function WarpSpeedCanvas({ isFastMoving }: WarpSpeedCanvasProps) 
           ctx.lineCap = "round";
           ctx.stroke();
         } else {
-          const alpha = (1 - star.z / 1000) * 0.85;
+          const progress = Math.max(0, Math.min(1, 1 - star.z / 1000));
+          const alpha = progress * 0.85;
+          const radius = Math.max(0.1, star.size * progress * dpr);
           ctx.beginPath();
-          ctx.arc(px, py, star.size * (1 - star.z / 1000) * dpr, 0, Math.PI * 2);
+          ctx.arc(px, py, radius, 0, Math.PI * 2);
           ctx.fillStyle = star.color;
           ctx.globalAlpha = alpha;
           ctx.fill();

@@ -75,30 +75,6 @@ export default function CinematicNebula({
   vignette = 0.5,
   control,
 }: CinematicNebulaProps) {
-  // Check device capabilities on mount
-  const [deviceTier, setDeviceTier] = useState(() => getNebulaTier());
-  const [shouldUseMobile, setShouldUseMobile] = useState(false);
-
-  useEffect(() => {
-    setDeviceTier(getNebulaTier());
-    setShouldUseMobile(deviceTier.useWebGL === false);
-
-    // Update on resize
-    const handleResize = () => {
-      const newTier = getNebulaTier();
-      setDeviceTier(newTier);
-      setShouldUseMobile(newTier.useWebGL === false);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Mobile/low-end: render lightweight CSS starfield only
-  if (shouldUseMobile) {
-    return <MobileStarfield />;
-  }
-
   const hostRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLCanvasElement>(null);
   const dimRef = useRef(dim);
@@ -778,144 +754,118 @@ export default function CinematicNebula({
       }
     };
 
-    // ── Interactive Star Constellation System (Exact 1:1 Screen Coordinate Anchor)
-    interface ActiveConstellation {
-      id: number;
-      clickX: number;
-      clickY: number;
-      born: number;
-      dur: number;
-      starIndices: number[];
-      edges: [number, number][];
-    }
-    const constellations: ActiveConstellation[] = [];
-    let nextConstellationId = 0;
+    // ── Click Constellations (Original Natural Polygonal Star-to-Star Chain)
+    const constellations: Constellation[] = [];
 
-    const onPointerDown = (e: MouseEvent | TouchEvent) => {
-      if (stars.length === 0) return;
+    const spawnConstellation = (px: number, py: number) => {
+      if (!stars.length) return;
+      const k = 4 + Math.floor(Math.random() * 2); // 4 to 5 nearby stars
+      const scr = stars
+        .map((s) => ({ s, ...toScreen(s.nx, s.ny, s.layer) }))
+        .filter((o) => o.x > 12 && o.x < cssW - 12 && o.y > 12 && o.y < cssH - 12)
+        .sort((a, b) => (a.x - px) ** 2 + (a.y - py) ** 2 - ((b.x - px) ** 2 + (b.y - py) ** 2));
+
+      const picked: typeof scr = [];
+      for (const o of scr) {
+        if (picked.length >= k) break;
+        // Ensure elegant spatial separation between constellation stars
+        if (picked.every((p) => Math.hypot(p.x - o.x, p.y - o.y) >= 28)) {
+          picked.push(o);
+        }
+      }
+      if (picked.length < 3) return;
+
+      // Connect star-to-star in a celestial path/chain (Star 1 -> Star 2 -> Star 3 -> Star 4 -> Star 5)
+      const chain = [picked.shift()!];
+      while (picked.length) {
+        const tail = chain[chain.length - 1];
+        let bi = 0;
+        let bd = Infinity;
+        picked.forEach((p, i) => {
+          const d = Math.hypot(p.x - tail.x, p.y - tail.y);
+          if (d < bd) {
+            bd = d;
+            bi = i;
+          }
+        });
+        chain.push(picked.splice(bi, 1)[0]);
+      }
+
+      constellations.push({
+        pts: chain.map((o) => ({ nx: o.s.nx, ny: o.s.ny, layer: o.s.layer })),
+        born: wall,
+      });
+      if (constellations.length > 3) constellations.shift();
+    };
+
+    const onPointerDown = (e: MouseEvent | TouchEvent | PointerEvent) => {
+      const ctrl = control ? control.current : { reveal: 1, dissolve: 0 };
+      if (ctrl.reveal < 0.3) return;
+      const t = e.target as Element | null;
+      if (t?.closest?.('a,button,input,textarea,select,summary,[role="button"],[data-no-constellation]')) return;
+
       const clientX = 'touches' in e && e.touches.length > 0 ? e.touches[0].clientX : (e as MouseEvent).clientX;
       const clientY = 'touches' in e && e.touches.length > 0 ? e.touches[0].clientY : (e as MouseEvent).clientY;
       if (typeof clientX !== 'number' || typeof clientY !== 'number') return;
 
-      // Find stars near click in live screen coordinates
-      const distances: { index: number; dist: number; px: number; py: number }[] = [];
-      for (let i = 0; i < stars.length; i++) {
-        const s = stars[i];
-        const p = toScreen(s.nx, s.ny, s.layer);
-        const dist = Math.hypot(p.x - clientX, p.y - clientY);
-        distances.push({ index: i, dist, px: p.x, py: p.y });
-      }
-
-      distances.sort((a, b) => a.dist - b.dist);
-      const maxRange = 260;
-      const filtered = distances.filter((d) => d.dist <= maxRange);
-      const chosen = (filtered.length >= 2 ? filtered : distances).slice(0, 5);
-
-      if (chosen.length === 0) return;
-
-      const starIndices = chosen.map((c) => c.index);
-      const edges: [number, number][] = [];
-      for (let i = 0; i < chosen.length; i++) {
-        for (let j = i + 1; j < chosen.length; j++) {
-          const d = Math.hypot(chosen[i].px - chosen[j].px, chosen[i].py - chosen[j].py);
-          if (d < 220) {
-            edges.push([chosen[i].index, chosen[j].index]);
-          }
-        }
-      }
-
-      if (constellations.length >= 4) {
-        constellations.shift();
-      }
-
-      constellations.push({
-        id: nextConstellationId++,
-        clickX: clientX,
-        clickY: clientY,
-        born: wall,
-        dur: 3.2,
-        starIndices,
-        edges,
-      });
+      spawnConstellation(clientX, clientY);
     };
 
     window.addEventListener('pointerdown', onPointerDown, { passive: true });
 
-    // ── Draw Interactive Constellations
+    // ── Draw Interactive Constellations (Matching original celestial glow aesthetic)
     const drawConstellations = () => {
+      octx.lineCap = 'round';
+      octx.lineJoin = 'round';
       for (let i = constellations.length - 1; i >= 0; i--) {
         const c = constellations[i];
         const age = wall - c.born;
-        const progress = age / c.dur;
-        if (progress >= 1) {
+        if (age >= CONSTELLATION_LIFE) {
           constellations.splice(i, 1);
           continue;
         }
+        const fadeIn = reduced ? 1 : Math.min(1, age / 0.25);
+        const fadeOut = age > CONSTELLATION_LIFE - 0.7 ? (CONSTELLATION_LIFE - age) / 0.7 : 1;
+        const a = fadeIn * fadeOut;
+        const lastPt = c.pts.length - 1;
+        const revealPt = reduced ? lastPt : Math.min(lastPt, (age / 0.55) * lastPt);
+        const P = c.pts.map((p) => toScreen(p.nx, p.ny, p.layer));
 
-        const alphaCurve = Math.sin(progress * Math.PI);
-
-        // 1. Draw glowing connecting lines from Click Point to each Connected Star
-        for (const idx of c.starIndices) {
-          const s = stars[idx];
-          if (!s) continue;
-          const p = toScreen(s.nx, s.ny, s.layer);
-
-          // Outer faint halo line
-          octx.strokeStyle = `rgba(180, 215, 255, ${0.4 * alphaCurve})`;
-          octx.lineWidth = 1.8;
+        const trace = () => {
           octx.beginPath();
-          octx.moveTo(c.clickX, c.clickY);
-          octx.lineTo(p.x, p.y);
-          octx.stroke();
+          octx.moveTo(P[0].x, P[0].y);
+          const full = Math.floor(revealPt);
+          for (let j = 1; j <= full; j++) octx.lineTo(P[j].x, P[j].y);
+          const frac = revealPt - full;
+          if (frac > 0 && full + 1 <= lastPt) {
+            octx.lineTo(P[full].x + (P[full + 1].x - P[full].x) * frac, P[full].y + (P[full + 1].y - P[full].y) * frac);
+          }
+        };
 
-          // Crisp inner white beam
-          octx.strokeStyle = `rgba(255, 255, 255, ${0.75 * alphaCurve})`;
-          octx.lineWidth = 0.9;
-          octx.beginPath();
-          octx.moveTo(c.clickX, c.clickY);
-          octx.lineTo(p.x, p.y);
-          octx.stroke();
-
-          // Star node radiant pulse
-          octx.strokeStyle = `rgba(255, 255, 255, ${0.85 * alphaCurve})`;
-          octx.lineWidth = 1.0;
-          octx.beginPath();
-          octx.arc(p.x, p.y, (3 + s.s * 1.5) * (1 + 0.25 * Math.sin(wall * 5)), 0, Math.PI * 2);
-          octx.stroke();
-
-          octx.fillStyle = `rgba(255, 255, 255, ${0.95 * alphaCurve})`;
-          octx.beginPath();
-          octx.arc(p.x, p.y, 1.8, 0, Math.PI * 2);
-          octx.fill();
-        }
-
-        // 2. Inter-star constellation geometry lines
-        for (const [idxA, idxB] of c.edges) {
-          const sA = stars[idxA];
-          const sB = stars[idxB];
-          if (!sA || !sB) continue;
-          const pA = toScreen(sA.nx, sA.ny, sA.layer);
-          const pB = toScreen(sB.nx, sB.ny, sB.layer);
-
-          octx.strokeStyle = `rgba(95, 168, 255, ${0.35 * alphaCurve})`;
-          octx.lineWidth = 1.0;
-          octx.beginPath();
-          octx.moveTo(pA.x, pA.y);
-          octx.lineTo(pB.x, pB.y);
-          octx.stroke();
-        }
-
-        // 3. Central Click Node Indicator
-        octx.fillStyle = `rgba(255, 255, 255, ${0.9 * alphaCurve})`;
-        octx.beginPath();
-        octx.arc(c.clickX, c.clickY, 2.5, 0, Math.PI * 2);
-        octx.fill();
-
-        octx.strokeStyle = `rgba(95, 168, 255, ${0.55 * alphaCurve})`;
-        octx.lineWidth = 1.2;
-        octx.beginPath();
-        octx.arc(c.clickX, c.clickY, 4 + progress * 14, 0, Math.PI * 2);
+        // Outer starlight glow beam
+        trace();
+        octx.lineWidth = 3.5;
+        octx.strokeStyle = `rgba(255, 255, 255, ${0.22 * a})`;
         octx.stroke();
+
+        // Inner crisp white constellation line
+        trace();
+        octx.lineWidth = 1.2;
+        octx.strokeStyle = `rgba(255, 255, 255, ${0.85 * a})`;
+        octx.stroke();
+
+        // Radiant star node halos and crisp starlight cores (Image 2 design)
+        P.forEach((p, j) => {
+          if (j > revealPt + 0.001) return;
+          octx.globalAlpha = a * 0.95;
+          octx.drawImage(sprites.glow, p.x - 18, p.y - 18, 36, 36);
+          octx.globalAlpha = a;
+          octx.fillStyle = '#ffffff';
+          octx.beginPath();
+          octx.arc(p.x, p.y, 2.0, 0, Math.PI * 2);
+          octx.fill();
+        });
+        octx.globalAlpha = 1;
       }
     };
 
@@ -970,11 +920,11 @@ export default function CinematicNebula({
         u.uCenter.value = [0.5, 0.5 - parallaxY / cssH];
         u.uDim.value = dimRef.current;
         u.uVignette.value = vigRef.current;
-        // Smoothly and progressively dim the nebula to genuine dark cosmos across scroll
-        const photoBrightness = Math.max(0.01, 1.0 - Math.pow(currentDissolve, 0.85) * 0.99);
+        // Keep nebula atmospheric glow and structure visible across entire page including Contact
+        const photoBrightness = Math.max(0.42, 1.0 - Math.pow(currentDissolve, 0.8) * 0.52);
         u.uPhoto.value = photoBrightness;
-        u.uAmp.value = tier.amp * (1.0 - currentDissolve * 0.5);
-        u.uBreath.value = BREATH * (1.0 - currentDissolve * 0.5);
+        u.uAmp.value = tier.amp * (1.0 - currentDissolve * 0.35);
+        u.uBreath.value = BREATH * (1.0 - currentDissolve * 0.35);
         renderer.render({ scene: mesh });
         if (!uni.shown) {
           (renderer.gl.canvas as HTMLCanvasElement).style.opacity = '1';

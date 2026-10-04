@@ -8,15 +8,10 @@ interface SkillCardProps {
   index?: number;
 }
 
-export default function SkillCard({ item, index = 0 }: SkillCardProps) {
+export default function SkillCard({ item }: SkillCardProps) {
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.25, delay: Math.min(index * 0.02, 0.3) }}
-      className="group relative flex items-center gap-3 px-3.5 py-3 rounded-xl border border-white/20 bg-slate-800/25 backdrop-blur-md transition-all duration-200 hover:border-white/40 hover:bg-white/[0.12] hover:shadow-[0_0_20px_rgba(255,255,255,0.08)]"
+    <div
+      className="group relative flex items-center gap-3 px-3.5 py-3 rounded-xl border border-white/20 bg-[#0c121e]/90 transition-all duration-200 hover:border-white/40 hover:bg-[#131d2e] hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] h-full select-none"
       title={`Used in: ${item.usedIn.join(', ')}`}
     >
       {/* Small Tech Logo Box */}
@@ -29,10 +24,10 @@ export default function SkillCard({ item, index = 0 }: SkillCardProps) {
         <span className="truncate font-mono text-xs sm:text-[13px] font-bold tracking-wide text-white transition-colors duration-150 group-hover:text-white">
           {item.name}
         </span>
-        <span className="truncate font-mono text-[10px] tracking-wider uppercase text-white/60">
+        <span className="truncate font-mono text-[10px] tracking-wider uppercase text-white/75 font-medium">
           {item.categoryLabel}
         </span>
       </div>
-    </motion.div>
+    </div>
   );
 }

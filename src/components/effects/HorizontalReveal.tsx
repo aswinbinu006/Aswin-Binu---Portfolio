@@ -36,54 +36,38 @@ export default function HorizontalReveal({
   children,
   className = "",
   xOffset = 60,
-  skewAngle = -6,
   delay = 0,
-  stagger = 0.08,
+  stagger = 0.06,
   index = 0,
-  duration = 0.7,
-  viewMargin = "-40px",
+  duration = 0.6,
   once = false,
   ease = [0.22, 1, 0.36, 1],
 }: HorizontalRevealProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, {
     once,
-    margin: viewMargin as any,
+    margin: "0px 0px -50px 0px",
   });
 
   const totalDelay = delay + index * stagger;
 
   return (
-    <div
-      ref={containerRef}
-      className={`overflow-visible ${className}`}
-      style={{ perspective: "1000px" }}
-    >
+    <div ref={containerRef} className={`overflow-visible ${className}`}>
       <motion.div
         className="w-full h-full"
-        style={{
-          transformOrigin: "center left",
-          transformStyle: "preserve-3d",
-        }}
         initial={{
           opacity: 0,
           x: xOffset,
-          skewX: skewAngle,
-          filter: "blur(6px)",
         }}
         animate={
           isInView
             ? {
                 opacity: 1,
                 x: 0,
-                skewX: 0,
-                filter: "blur(0px)",
               }
             : {
                 opacity: 0,
                 x: xOffset,
-                skewX: skewAngle,
-                filter: "blur(6px)",
               }
         }
         transition={{

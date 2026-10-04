@@ -1,10 +1,15 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { events, type EventItem } from "@/data/events";
 import EventPoster from "./EventPoster";
 import EventDetailModal from "./EventDetailModal";
 import { Label } from "@/components/ui";
 import HorizontalTextReveal from "@/components/effects/HorizontalTextReveal";
 import HorizontalReveal from "@/components/effects/HorizontalReveal";
+import { ChevronDown } from "lucide-react";
+import { ScrollTrigger } from "@/utils/gsap";
+import { scrollTo } from "@/utils/lenis";
+
+const MOBILE_GALLERY_LIMIT = 3;
 
 /**
  * Chapter 5 — Event Archive / Exhibition Gallery
@@ -13,11 +18,21 @@ import HorizontalReveal from "@/components/effects/HorizontalReveal";
  */
 export default function Gallery() {
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [showAllMobile, setShowAllMobile] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  const col1 = [events[0], events[1]]; // Tech Escape, Stranger Tech
-  const col2 = [events[2], events[3], events[4]]; // SITNovate, IEEE Workshops, Blockchain = Money
-  const col3 = [events[5], events[6]]; // Vibe to Reality, Doomsday Protocol
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => {
+      setIsMobile(e.matches);
+      if (!e.matches) setShowAllMobile(false);
+    };
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   const handleOpenEvent = (event: EventItem) => {
     setSelectedEvent(event);
@@ -33,6 +48,35 @@ export default function Gallery() {
       handleOpenEvent(event);
     }
   };
+
+  const handleToggle = () => {
+    if (showAllMobile) {
+      if (sectionRef.current) {
+        scrollTo(sectionRef.current, { offset: -20 });
+      }
+      setShowAllMobile(false);
+      setTimeout(() => {
+        if (typeof window !== "undefined") {
+          ScrollTrigger.refresh();
+        }
+      }, 150);
+    } else {
+      setShowAllMobile(true);
+      setTimeout(() => {
+        if (typeof window !== "undefined") {
+          ScrollTrigger.refresh();
+        }
+      }, 150);
+    }
+  };
+
+  // On desktop, 3 columns:
+  const col1 = [events[0], events[1]]; // Tech Escape, Stranger Tech
+  const col2 = [events[2], events[3], events[4]]; // SITNovate, IEEE Workshops, Blockchain = Money
+  const col3 = [events[5], events[6]]; // Vibe to Reality, Doomsday Protocol
+
+  // On mobile, sequential list:
+  const mobileEvents = isMobile && !showAllMobile ? events.slice(0, MOBILE_GALLERY_LIMIT) : events;
 
   return (
     <section
@@ -78,8 +122,8 @@ export default function Gallery() {
         </HorizontalReveal>
       </div>
 
-      {/* 3-Column Exhibition Poster Grid with Staggered Horizontal Reveal */}
-      <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-4.5">
+      {/* Desktop 3-Column Exhibition Poster Grid (MD and UP) */}
+      <div className="relative z-10 hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-4.5">
         <ScrollColumn
           index={0}
           delay={0.04}
@@ -103,6 +147,49 @@ export default function Gallery() {
           onKeyDown={handleKeyDown}
         />
       </div>
+
+      {/* Mobile Stacked Exhibition Posters List (< MD) */}
+      <div className="relative z-10 flex flex-col gap-4 md:hidden">
+        {mobileEvents.map((event, i) => (
+          <HorizontalReveal
+            key={event.id}
+            index={i}
+            delay={0.04}
+            stagger={0.08}
+            xOffset={70}
+            skewAngle={-5}
+            duration={0.65}
+          >
+            <EventPoster
+              event={event}
+              onClick={() => handleOpenEvent(event)}
+              onKeyDown={(e) => handleKeyDown(event, e)}
+            />
+          </HorizontalReveal>
+        ))}
+      </div>
+
+      {/* Mobile-Only See More Button */}
+      {isMobile && events.length > MOBILE_GALLERY_LIMIT && (
+        <div className="mt-6 flex justify-center md:hidden">
+          <button
+            type="button"
+            onClick={handleToggle}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/25 bg-slate-800/50 hover:bg-slate-700/60 active:scale-95 font-mono text-xs font-bold text-white shadow-glass transition-all cursor-pointer"
+          >
+            <span>
+              {showAllMobile
+                ? "SHOW LESS"
+                : `SEE MORE (${events.length - MOBILE_GALLERY_LIMIT} MORE EVENTS)`}
+            </span>
+            <ChevronDown
+              className={`size-3.5 text-white/80 transition-transform duration-300 ${
+                showAllMobile ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+        </div>
+      )}
 
       {/* Expanded Exhibition Detail Modal */}
       <EventDetailModal

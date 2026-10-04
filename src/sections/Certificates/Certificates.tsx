@@ -1,35 +1,64 @@
-import React, { useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useRef, useEffect } from "react";
+import { AnimatePresence } from "framer-motion";
 import { certificates, type CertificateItem } from "@/data/certificates";
 import CertificateCard from "./CertificateCard";
 import CertificateDetailModal from "./CertificateDetailModal";
 import { Label } from "@/components/ui";
 import HorizontalTextReveal from "@/components/effects/HorizontalTextReveal";
 import HorizontalReveal from "@/components/effects/HorizontalReveal";
+import { ChevronDown } from "lucide-react";
+import { ScrollTrigger } from "@/utils/gsap";
+import { scrollTo } from "@/utils/lenis";
 
-type CategoryFilter = "all" | "ai-ml" | "cloud" | "software" | "honors";
-
-const CATEGORIES: { key: CategoryFilter; label: string }[] = [
-  { key: "all", label: "ALL CREDENTIALS" },
-  { key: "ai-ml", label: "AI & ML" },
-  { key: "cloud", label: "CLOUD & SYSTEMS" },
-  { key: "software", label: "SOFTWARE" },
-  { key: "honors", label: "HONORS & BADGES" },
-];
+const MOBILE_CERTIFICATES_LIMIT = 3;
 
 /**
  * Chapter 5 — Certifications & Badges
- * Cosmic obsidian glass aesthetic with category filter and credential inspection.
+ * Cosmic obsidian glass aesthetic with clean grid and credential inspection modal.
  */
 export default function Certificates() {
-  const [activeCategory, setActiveCategory] = useState<CategoryFilter>("all");
   const [selectedCert, setSelectedCert] = useState<CertificateItem | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [showAllMobile, setShowAllMobile] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
-  const filteredCertificates =
-    activeCategory === "all"
-      ? certificates
-      : certificates.filter((c) => c.category === activeCategory);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => {
+      setIsMobile(e.matches);
+      if (!e.matches) setShowAllMobile(false);
+    };
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  const displayedCertificates =
+    isMobile && !showAllMobile
+      ? certificates.slice(0, MOBILE_CERTIFICATES_LIMIT)
+      : certificates;
+
+  const handleToggle = () => {
+    if (showAllMobile) {
+      if (sectionRef.current) {
+        scrollTo(sectionRef.current, { offset: -20 });
+      }
+      setShowAllMobile(false);
+      setTimeout(() => {
+        if (typeof window !== "undefined") {
+          ScrollTrigger.refresh();
+        }
+      }, 150);
+    } else {
+      setShowAllMobile(true);
+      setTimeout(() => {
+        if (typeof window !== "undefined") {
+          ScrollTrigger.refresh();
+        }
+      }, 150);
+    }
+  };
 
   return (
     <section
@@ -76,62 +105,57 @@ export default function Certificates() {
           </HorizontalReveal>
         </div>
 
-        <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.25}>
-          <div className="flex items-center gap-2 font-mono text-caption text-white/90 px-3.5 py-2 rounded-xl border border-white/20 bg-slate-800/25 backdrop-blur-md shadow-glass">
+        <HorizontalReveal xOffset={40} delay={0.25}>
+          <div className="flex items-center gap-2 font-mono text-caption text-white/90 px-3.5 py-2 rounded-xl border border-white/20 bg-[#0c121e]/90 shadow-glass">
             <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
             <span className="tracking-wider uppercase font-bold text-xs">{certificates.length} VERIFIED CREDENTIALS</span>
           </div>
         </HorizontalReveal>
       </div>
 
-      {/* Category Filter Navigation Bar */}
-      <div className="mb-6 flex flex-wrap gap-2.5 border-b border-white/10 pb-4 font-mono text-caption">
-        {CATEGORIES.map((cat) => {
-          const count =
-            cat.key === "all"
-              ? certificates.length
-              : certificates.filter((c) => c.category === cat.key).length;
-          const isActive = activeCategory === cat.key;
-          return (
-            <button
-              key={cat.key}
-              type="button"
-              onClick={() => setActiveCategory(cat.key)}
-              className={`px-3.5 py-1.5 rounded-lg border text-xs sm:text-sm font-semibold tracking-wider transition-all cursor-pointer ${
-                isActive
-                  ? "border-white/40 bg-white/15 text-white font-bold shadow-[0_0_15px_rgba(255,255,255,0.15)]"
-                  : "border-white/15 bg-white/[0.05] text-white/70 hover:border-white/30 hover:bg-white/[0.1] hover:text-white"
-              }`}
-            >
-              {cat.label} <span className="opacity-60 ml-1">({count})</span>
-            </button>
-          );
-        })}
-      </div>
-
       {/* Responsive Grid Across Layout */}
-      <motion.div
-        layout
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5"
-      >
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
         <AnimatePresence mode="popLayout">
-          {filteredCertificates.map((cert) => (
-            <motion.div
+          {displayedCertificates.map((cert, idx) => (
+            <HorizontalReveal
               key={cert.id}
-              layout
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.96 }}
-              transition={{ duration: 0.25 }}
+              index={idx}
+              xOffset={60}
+              skewAngle={-5}
+              stagger={0.06}
+              delay={0.1}
+              className="h-full"
             >
               <CertificateCard
                 item={cert}
                 onClick={() => setSelectedCert(cert)}
               />
-            </motion.div>
+            </HorizontalReveal>
           ))}
         </AnimatePresence>
-      </motion.div>
+      </div>
+
+      {/* Mobile-Only See More Button */}
+      {isMobile && certificates.length > MOBILE_CERTIFICATES_LIMIT && (
+        <div className="mt-6 flex justify-center md:hidden">
+          <button
+            type="button"
+            onClick={handleToggle}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/25 bg-slate-800/50 hover:bg-slate-700/60 active:scale-95 font-mono text-xs font-bold text-white shadow-glass transition-all cursor-pointer"
+          >
+            <span>
+              {showAllMobile
+                ? "SHOW LESS"
+                : `SEE MORE (${certificates.length - MOBILE_CERTIFICATES_LIMIT} MORE)`}
+            </span>
+            <ChevronDown
+              className={`size-3.5 text-white/80 transition-transform duration-300 ${
+                showAllMobile ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+        </div>
+      )}
 
       {/* Inspection Modal */}
       <CertificateDetailModal

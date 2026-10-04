@@ -87,26 +87,19 @@ export function useIntroAnimation({ onComplete }: UseIntroAnimationProps = {}) {
     );
   }, [onComplete]);
 
-  // Click, Touch & Keyboard interactions (Escape, Space, Enter, or any tap/click)
+  // Dedicated keyboard interaction (Escape, Space, Enter)
   useEffect(() => {
-    const handleKeyDown = () => {
-      finishIntro();
-    };
-
-    const handleInteraction = () => {
-      finishIntro();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" || e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        finishIntro();
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("click", handleInteraction);
-    window.addEventListener("touchstart", handleInteraction, { passive: true });
-    window.addEventListener("pointerdown", handleInteraction, { passive: true });
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("click", handleInteraction);
-      window.removeEventListener("touchstart", handleInteraction);
-      window.removeEventListener("pointerdown", handleInteraction);
     };
   }, [finishIntro]);
 

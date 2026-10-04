@@ -83,15 +83,20 @@ export function scrollTo(
   target: string | number | HTMLElement,
   options?: { offset?: number; immediate?: boolean; duration?: number }
 ) {
+  const offset = options?.offset ?? 0;
   if (lenisInstance) {
     lenisInstance.scrollTo(target, options);
   } else if (typeof target === 'string') {
     const el = document.querySelector(target);
-    el?.scrollIntoView({ behavior: 'smooth' });
+    if (el) {
+      const top = el.getBoundingClientRect().top + window.scrollY + offset;
+      window.scrollTo({ top, behavior: options?.immediate ? 'auto' : 'smooth' });
+    }
   } else if (typeof target === 'number') {
-    window.scrollTo({ top: target, behavior: 'smooth' });
+    window.scrollTo({ top: target + offset, behavior: options?.immediate ? 'auto' : 'smooth' });
   } else if (target instanceof HTMLElement) {
-    target.scrollIntoView({ behavior: 'smooth' });
+    const top = target.getBoundingClientRect().top + window.scrollY + offset;
+    window.scrollTo({ top, behavior: options?.immediate ? 'auto' : 'smooth' });
   }
 }
 

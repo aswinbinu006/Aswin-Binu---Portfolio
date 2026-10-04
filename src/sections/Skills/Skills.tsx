@@ -1,13 +1,54 @@
-import React, { useRef } from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef, useState, useEffect } from 'react';
 import { skillsData } from '@/data/skills';
 import SkillCard from './SkillCard';
 import { Label } from '@/components/ui';
 import HorizontalTextReveal from '@/components/effects/HorizontalTextReveal';
 import HorizontalReveal from '@/components/effects/HorizontalReveal';
+import { ChevronDown } from 'lucide-react';
+import { ScrollTrigger } from '@/utils/gsap';
+import { scrollTo } from '@/utils/lenis';
+
+const MOBILE_SKILLS_LIMIT = 12;
 
 export default function Skills() {
   const sectionRef = useRef<HTMLElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [showAllMobile, setShowAllMobile] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(max-width: 767px)');
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => {
+      setIsMobile(e.matches);
+      if (!e.matches) setShowAllMobile(false);
+    };
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  const displayedSkills = isMobile && !showAllMobile ? skillsData.slice(0, MOBILE_SKILLS_LIMIT) : skillsData;
+
+  const handleToggle = () => {
+    if (showAllMobile) {
+      if (sectionRef.current) {
+        scrollTo(sectionRef.current, { offset: -20 });
+      }
+      setShowAllMobile(false);
+      setTimeout(() => {
+        if (typeof window !== 'undefined') {
+          ScrollTrigger.refresh();
+        }
+      }, 150);
+    } else {
+      setShowAllMobile(true);
+      setTimeout(() => {
+        if (typeof window !== 'undefined') {
+          ScrollTrigger.refresh();
+        }
+      }, 150);
+    }
+  };
 
   return (
     <section
@@ -56,8 +97,8 @@ export default function Skills() {
         </div>
 
         {/* Global Technology Counter */}
-        <HorizontalReveal xOffset={40} skewAngle={-4} delay={0.25}>
-          <div className="flex items-center gap-2 font-mono text-caption text-white/90 px-3.5 py-2 rounded-xl border border-white/20 bg-slate-800/25 backdrop-blur-md shadow-glass">
+        <HorizontalReveal xOffset={40} delay={0.25}>
+          <div className="flex items-center gap-2 font-mono text-caption text-white/90 px-3.5 py-2 rounded-xl border border-white/20 bg-[#0c121e]/90 shadow-glass">
             <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
             <span className="tracking-wider uppercase font-bold text-xs">
               {skillsData.length} TECHNOLOGIES // PROJECT-VERIFIED
@@ -67,13 +108,49 @@ export default function Skills() {
       </div>
 
       {/* ── MINIMALIST SMALL BOX GRID (ALL DIRECT) ── */}
-      <motion.div
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4"
-      >
-        {skillsData.map((item, idx) => (
-          <SkillCard key={item.id} item={item} index={idx} />
-        ))}
-      </motion.div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+        {displayedSkills.map((item, idx) => {
+          const col = idx % 6;
+          const row = Math.floor(idx / 6);
+          const itemDelay = 0.04 + (row % 4) * 0.04 + (col % 3) * 0.025;
+
+          return (
+            <HorizontalReveal
+              key={item.id}
+              xOffset={70}
+              skewAngle={-6}
+              delay={itemDelay}
+              stagger={0}
+              duration={0.55}
+              className="h-full"
+            >
+              <SkillCard item={item} />
+            </HorizontalReveal>
+          );
+        })}
+      </div>
+
+      {/* Mobile-Only See More Toggle Button (Hidden on Tablet / Laptop / Desktop) */}
+      {isMobile && skillsData.length > MOBILE_SKILLS_LIMIT && (
+        <div className="mt-6 flex justify-center md:hidden">
+          <button
+            type="button"
+            onClick={handleToggle}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/25 bg-slate-800/50 hover:bg-slate-700/60 active:scale-95 font-mono text-xs font-bold text-white shadow-glass transition-all cursor-pointer"
+          >
+            <span>
+              {showAllMobile
+                ? 'SHOW LESS'
+                : `SEE MORE (${skillsData.length - MOBILE_SKILLS_LIMIT} MORE TECHNOLOGIES)`}
+            </span>
+            <ChevronDown
+              className={`size-3.5 text-white/80 transition-transform duration-300 ${
+                showAllMobile ? 'rotate-180' : ''
+              }`}
+            />
+          </button>
+        </div>
+      )}
     </section>
   );
 }
