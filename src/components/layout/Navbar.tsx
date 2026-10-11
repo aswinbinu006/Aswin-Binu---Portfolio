@@ -148,48 +148,36 @@ export const Navbar: React.FC<NavbarProps> = ({ activeId }) => {
         <div
           id="mobile-nav-panel"
           ref={menuPanelRef}
-          className="lg:hidden fixed inset-x-0 top-20 bottom-0 bg-ivory border-b border-gold-border z-40 overflow-y-auto px-6 py-6 flex flex-col justify-between animate-fadeIn"
+          className="lg:hidden fixed inset-x-0 top-20 bottom-0 bg-[#E8E0D2] border-b border-gold-border z-50 overflow-y-auto px-6 py-6 flex flex-col justify-between shadow-2xl animate-fadeIn"
         >
           <div>
-            <div className="flex items-center justify-between pb-4 mb-4 border-b border-gold-border/40">
-              <img
-                src="/logo.webp"
-                alt="Aswin Binu logo"
-                className="w-12 h-auto object-contain select-none"
-              />
-              <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-gold-text font-semibold">
-                Menu
-              </span>
-            </div>
-            <nav className="flex flex-col space-y-1.5" aria-label="Mobile Navigation">
-            {navLinks.map((link) => {
-              const isActive = activeId === link.id;
-              return (
-                <a
-                  key={link.id}
-                  href={`#${link.id}`}
-                  onClick={handleNavClick}
-                  aria-current={isActive ? 'true' : undefined}
-                  className={cn(
-                    'flex items-center justify-between py-3.5 px-4 text-lg font-medium rounded-lg transition-colors border-l-2',
-                    isActive
-                      ? 'border-gold text-navy bg-warm/50 font-semibold'
-                      : 'border-transparent text-midnight/80 hover:text-navy hover:bg-warm/30'
-                  )}
-                >
-                  <span>{link.label}</span>
-                  {isActive && (
-                    <span className="text-xs font-mono uppercase tracking-wider text-gold-text">
-                      Active
-                    </span>
-                  )}
-                </a>
-              );
-            })}
+            <nav className="flex flex-col space-y-2 pt-2" aria-label="Mobile Navigation">
+              {navLinks.map((link) => {
+                const isActive = activeId === link.id;
+                return (
+                  <a
+                    key={link.id}
+                    href={`#${link.id}`}
+                    onClick={handleNavClick}
+                    aria-current={isActive ? 'true' : undefined}
+                    className={cn(
+                      'flex items-center justify-between py-3.5 px-4 text-base sm:text-lg font-medium rounded-xl transition-all',
+                      isActive
+                        ? 'border-l-4 border-gold text-navy bg-warm/60 font-semibold pl-4'
+                        : 'border-l-4 border-transparent text-midnight/80 hover:text-navy hover:bg-warm/30'
+                    )}
+                  >
+                    <span>{link.label}</span>
+                    {isActive && (
+                      <span className="w-2 h-2 rounded-full bg-gold" aria-hidden="true" />
+                    )}
+                  </a>
+                );
+              })}
             </nav>
           </div>
 
-          <div className="pt-6 border-t border-gold-border/40 mt-6">
+          <div className="pt-6 border-t border-gold-border/40 mt-6 pb-2">
             <Button
               variant="primary"
               href="#contact"
