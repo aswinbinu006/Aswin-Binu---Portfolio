@@ -24,8 +24,50 @@ export interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ activeId }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [navVisible, setNavVisible] = useState(true);
+  const lastScrollY = useRef(0);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const menuPanelRef = useRef<HTMLDivElement>(null);
+
+  // Smart hide on scroll down, reveal on scroll up
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (ticking) return;
+      window.requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
+
+        // Keep visible if mobile menu is open
+        if (mobileMenuOpen) {
+          setNavVisible(true);
+          lastScrollY.current = currentScrollY;
+          ticking = false;
+          return;
+        }
+
+        // Near top: always visible
+        if (currentScrollY <= 60) {
+          setNavVisible(true);
+        }
+        // Scrolling downwards past top: hide navbar so it doesn't lock over content
+        else if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+          setNavVisible(false);
+        }
+        // Scrolling upwards (backward): reveal navbar instantly for quick navigation
+        else if (currentScrollY < lastScrollY.current) {
+          setNavVisible(true);
+        }
+
+        lastScrollY.current = currentScrollY;
+        ticking = false;
+      });
+      ticking = true;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [mobileMenuOpen]);
 
   // Close mobile menu on Escape
   useEffect(() => {
@@ -53,7 +95,12 @@ export const Navbar: React.FC<NavbarProps> = ({ activeId }) => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-ivory/95 backdrop-blur-md border-b border-gold-border transition-colors animate-fadeIn shadow-[0_1px_3px_rgba(10,20,69,0.04)]">
+    <header
+      className={cn(
+        'sticky top-0 z-50 w-full bg-ivory/95 backdrop-blur-md border-b border-gold-border shadow-[0_1px_3px_rgba(10,20,69,0.04)] transition-transform duration-300 ease-in-out',
+        navVisible ? 'translate-y-0' : '-translate-y-full'
+      )}
+    >
       {/* Skip link for keyboard accessibility */}
       <a
         href="#main-content"
