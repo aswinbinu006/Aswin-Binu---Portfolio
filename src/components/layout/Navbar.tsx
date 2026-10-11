@@ -148,9 +148,20 @@ export const Navbar: React.FC<NavbarProps> = ({ activeId }) => {
         <div
           id="mobile-nav-panel"
           ref={menuPanelRef}
-          className="lg:hidden fixed inset-x-0 top-20 bottom-0 bg-ivory border-b border-gold-border z-40 overflow-y-auto px-6 py-8 flex flex-col justify-between animate-fadeIn"
+          className="lg:hidden fixed inset-x-0 top-20 bottom-0 bg-ivory border-b border-gold-border z-40 overflow-y-auto px-6 py-6 flex flex-col justify-between animate-fadeIn"
         >
-          <nav className="flex flex-col space-y-2" aria-label="Mobile Navigation">
+          <div>
+            <div className="flex items-center justify-between pb-4 mb-4 border-b border-gold-border/40">
+              <img
+                src="/logo.webp"
+                alt="Aswin Binu logo"
+                className="w-12 h-auto object-contain select-none"
+              />
+              <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-gold-text font-semibold">
+                Menu
+              </span>
+            </div>
+            <nav className="flex flex-col space-y-1.5" aria-label="Mobile Navigation">
             {navLinks.map((link) => {
               const isActive = activeId === link.id;
               return (
@@ -175,7 +186,8 @@ export const Navbar: React.FC<NavbarProps> = ({ activeId }) => {
                 </a>
               );
             })}
-          </nav>
+            </nav>
+          </div>
 
           <div className="pt-6 border-t border-gold-border/40 mt-6">
             <Button

@@ -13,7 +13,7 @@ export const siteConfig: SiteConfig = {
   focusFact: "Machine Learning · Full Stack Development · Product Building",
   locationFact: "Nagpur, India",
   email: "aswinbinu006@gmail.com",
-  linkedinUrl: "https://linkedin.com/in/aswin-binu",
+  linkedinUrl: "https://www.linkedin.com/in/aswin-binu-587978320",
   githubUrl: "https://github.com/aswinbinu006",
   resumeUrl: "#resume",
   location: "Nagpur, Maharashtra, India",

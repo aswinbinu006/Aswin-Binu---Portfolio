@@ -17,7 +17,7 @@ export const Contact: React.FC = () => {
   const emailAddress = siteConfig.email || 'aswinbinu006@gmail.com';
   const githubHandle = 'aswinbinu006';
   const githubUrl = siteConfig.githubUrl || 'https://github.com/aswinbinu006';
-  const linkedinUrl = siteConfig.linkedinUrl || 'https://linkedin.com/in/aswin-binu';
+  const linkedinUrl = siteConfig.linkedinUrl || 'https://www.linkedin.com/in/aswin-binu-587978320';
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(emailAddress);
@@ -301,7 +301,7 @@ export const Contact: React.FC = () => {
                       LINKEDIN
                     </div>
                     <div className="text-sm sm:text-base font-medium text-ivory group-hover:text-gold-light transition-colors">
-                      linkedin.com/in/aswin-binu
+                      linkedin.com/in/aswin-binu-587978320
                     </div>
                   </div>
                 </div>

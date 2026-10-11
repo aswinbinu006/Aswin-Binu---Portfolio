@@ -53,7 +53,7 @@ Log created: 2026-10-11.
 | U-04 | Canonical domain; keep or drop analytics. | SEO, TRD |
 | U-05 | Destination of "View all projects": links to GitHub repositories (A-18). | — |
 | U-06 | Resume location and filename: `/resume.pdf` or anchor `#resume` (A-18). | — |
-| U-07 | ~~Contact URLs~~ — RESOLVED: aswinbinu006@gmail.com, linkedin.com/in/aswin-binu, github.com/aswinbinu006 (Owner explicit instruction). | — |
+| U-07 | ~~Contact URLs~~ — RESOLVED: aswinbinu006@gmail.com, linkedin.com/in/aswin-binu-587978320, github.com/aswinbinu006 (Owner explicit instruction). | — |
 | U-08 | ~~Location line~~ — RESOLVED: "Nagpur, Maharashtra, India" (A-18). | — |
 | U-09 | ~~Certificate list~~ — RESOLVED: 4 verified certificates (Google ML Engineer, AWS Cloud Practitioner, Coursera Deep Learning, Meta FE) (A-18). | — |
 | U-10 | ~~Academic data~~ — RESOLVED: 10th 93.2%, 12th 94.6%, B.Tech 7.62 CGPA, detailed semester breakdowns (A-18). | — |
