@@ -7,22 +7,24 @@ import { Footer } from './components/layout/Footer';
 import { Hero } from './sections/Hero';
 import { About } from './sections/About';
 import { Projects } from './sections/Projects';
+import { Internships } from './sections/Internships';
 import { Skills } from './sections/Skills';
 import { CredentialsActivity } from './sections/CredentialsActivity';
 import { Academics } from './sections/Academics';
 import { Contact } from './sections/Contact';
 import { siteConfig } from './data/site';
-import { Project, Certificate, EventItem, SchoolRecord } from './data/types';
+import { Project, Certificate, EventItem, SchoolRecord, Internship } from './data/types';
 import { schoolRecords, universityRecord } from './data/academics';
 
 // Modals
 import { ProjectModal } from './components/modals/ProjectModal';
+import { InternshipModal } from './components/modals/InternshipModal';
 import { CertificateModal } from './components/modals/CertificateModal';
 import { EventModal } from './components/modals/EventModal';
 import { SchoolRecordModal } from './components/modals/SchoolRecordModal';
 import { UniversityRecordModal } from './components/modals/UniversityRecordModal';
 
-const sectionIds = ['home', 'about', 'projects', 'skills', 'credentials', 'academics', 'contact'];
+const sectionIds = ['home', 'about', 'projects', 'internships', 'skills', 'credentials', 'academics', 'contact'];
 
 export const App: React.FC = () => {
   const activeSection = useActiveSection(sectionIds, 'home');
@@ -32,6 +34,7 @@ export const App: React.FC = () => {
 
   // Modal State
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [selectedInternship, setSelectedInternship] = useState<Internship | null>(null);
   const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
   const [selectedSchoolRecord, setSelectedSchoolRecord] = useState<SchoolRecord | null>(null);
@@ -53,11 +56,12 @@ export const App: React.FC = () => {
       {/* Shared Navigation */}
       <Navbar activeId={activeSection} />
 
-      {/* Main Content with 7 Sections */}
+      {/* Main Content with 8 Sections */}
       <main id="main-content" className="flex-1">
         <Hero />
         <About onOpenProject={setSelectedProject} />
         <Projects onOpenProject={setSelectedProject} />
+        <Internships onOpenInternship={setSelectedInternship} />
         <Skills />
         <CredentialsActivity
           onOpenCertificate={setSelectedCertificate}
@@ -75,6 +79,12 @@ export const App: React.FC = () => {
         project={selectedProject}
         isOpen={Boolean(selectedProject)}
         onClose={() => setSelectedProject(null)}
+      />
+
+      <InternshipModal
+        internship={selectedInternship}
+        isOpen={Boolean(selectedInternship)}
+        onClose={() => setSelectedInternship(null)}
       />
 
       <CertificateModal

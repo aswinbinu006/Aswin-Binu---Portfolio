@@ -121,6 +121,26 @@ export interface UniversityRecord {
   verification: Verification;
 }
 
+export interface Internship {
+  id: string;
+  role: string;
+  company: string;
+  period: string;
+  duration: string;
+  workMode: 'Remote' | 'Hybrid' | 'On-site';
+  location?: string;
+  teamSize?: string;
+  isCurrent?: boolean;
+  shortDescription: string;
+  bullets: string[];
+  technologies: string[];
+  outcome: string;
+  certificateUrl?: string;
+  companyWebsiteUrl?: string;
+  logo?: ImageAsset;
+  verification: Verification;
+}
+
 export interface SiteConfig {
   name: string;
   role: string;
