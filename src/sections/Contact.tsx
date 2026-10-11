@@ -20,8 +20,9 @@ export const Contact: React.FC = () => {
   const githubUrl = siteConfig.githubUrl || 'https://github.com/aswinbinu006';
   const linkedinUrl = siteConfig.linkedinUrl || 'https://www.linkedin.com/in/aswin-binu-587978320';
 
-  // Read Web3Forms access key dynamically from environment variable (never hardcoded in source)
-  const web3FormsAccessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+  // Read Web3Forms access key from environment variable with reliable fallback
+  const web3FormsAccessKey =
+    import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || '1deada78-38bd-466d-a548-3e01fd66f2ff';
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(emailAddress);
@@ -29,12 +30,12 @@ export const Contact: React.FC = () => {
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const triggerMailtoFallback = () => {
-    const subjectEncoded = encodeURIComponent(formData.subject || `Portfolio Inquiry from ${formData.name}`);
-    const bodyEncoded = encodeURIComponent(
-      `Hi Aswin,\n\n${formData.message}\n\nBest regards,\n${formData.name} (${formData.email})`
-    );
-    window.location.href = `mailto:${emailAddress}?subject=${subjectEncoded}&body=${bodyEncoded}`;
+  const getGmailComposeUrl = (subject?: string, body?: string) => {
+    const base = 'https://mail.google.com/mail/?view=cm&fs=1';
+    const toParam = `&to=${encodeURIComponent(emailAddress)}`;
+    const suParam = subject ? `&su=${encodeURIComponent(subject)}` : '';
+    const bodyParam = body ? `&body=${encodeURIComponent(body)}` : '';
+    return `${base}${toParam}${suParam}${bodyParam}`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -49,37 +50,31 @@ export const Contact: React.FC = () => {
     setErrorMessage('');
 
     try {
-      if (web3FormsAccessKey) {
-        // Submit directly to Web3Forms API in the background using the environment variable
-        const formPayload = new FormData();
-        formPayload.append('access_key', web3FormsAccessKey);
-        formPayload.append('name', formData.name.trim());
-        formPayload.append('email', formData.email.trim());
-        formPayload.append('subject', formData.subject.trim() || `Portfolio Inquiry from ${formData.name.trim()}`);
-        formPayload.append('message', formData.message.trim());
-        formPayload.append('from_name', `${formData.name.trim()} via Portfolio`);
+      // Submit directly to Web3Forms API in the background
+      const formPayload = new FormData();
+      formPayload.append('access_key', web3FormsAccessKey);
+      formPayload.append('name', formData.name.trim());
+      formPayload.append('email', formData.email.trim());
+      formPayload.append('subject', formData.subject.trim() || `Portfolio Inquiry from ${formData.name.trim()}`);
+      formPayload.append('message', formData.message.trim());
+      formPayload.append('from_name', `${formData.name.trim()} via Portfolio`);
 
-        const response = await fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          body: formPayload,
-        });
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formPayload,
+      });
 
-        const data = await response.json();
-        if (data.success) {
-          setStatus('success');
-        } else {
-          // Graceful fallback to user's mail client if API returns non-success
-          triggerMailtoFallback();
-          setStatus('success');
-        }
-      } else {
-        // Graceful fallback to mailto draft if environment variable is not configured
-        triggerMailtoFallback();
+      const data = await response.json();
+      if (data.success) {
         setStatus('success');
+      } else {
+        setErrorMessage(data.message || 'Failed to send message. Please try again or open Gmail directly.');
+        setStatus('error');
       }
-    } catch {
-      triggerMailtoFallback();
-      setStatus('success');
+    } catch (err) {
+      console.error('Submission error:', err);
+      setErrorMessage('Network connection error. Please try again or compose directly in Gmail.');
+      setStatus('error');
     }
   };
 
@@ -138,18 +133,29 @@ export const Contact: React.FC = () => {
                       Message Delivered!
                     </h4>
                     <p className="text-sm text-ivory/80 max-w-md mx-auto leading-relaxed">
-                      Thank you for contacting me! Your message has been sent directly to my inbox and I will respond to <span className="text-gold font-medium">{formData.email}</span> within 24 hours.
+                      Thank you for contacting me! Your message has been sent directly to my inbox via Web3Forms and I will respond to <span className="text-gold font-medium">{formData.email}</span> within 24 hours.
                     </p>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setFormData({ name: '', email: '', subject: '', message: '' });
-                        setStatus('idle');
-                      }}
-                      className="mt-4 px-6 py-2.5 rounded-full border border-gold/50 text-gold hover:bg-gold/10 transition-colors text-sm font-medium"
-                    >
-                      Send Another Message
-                    </button>
+                    <div className="flex flex-wrap justify-center gap-3 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormData({ name: '', email: '', subject: '', message: '' });
+                          setStatus('idle');
+                        }}
+                        className="px-6 py-2.5 rounded-full border border-gold/50 text-gold hover:bg-gold/10 transition-colors text-sm font-medium"
+                      >
+                        Send Another Message
+                      </button>
+                      <a
+                        href={getGmailComposeUrl()}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-6 py-2.5 rounded-full bg-gold/15 border border-gold/40 text-gold hover:bg-gold/25 transition-colors text-sm font-medium inline-flex items-center gap-2"
+                      >
+                        <Mail className="w-4 h-4" />
+                        <span>Open in Gmail Web</span>
+                      </a>
+                    </div>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-4">
@@ -219,9 +225,18 @@ export const Contact: React.FC = () => {
                     </div>
 
                     {status === 'error' && (
-                      <p className="text-xs text-rose-300 font-mono">
-                        {errorMessage || 'Please fill in all required fields (Name, Email, Message).'}
-                      </p>
+                      <div className="p-3.5 rounded-xl bg-rose-950/40 border border-rose-500/40 text-xs text-rose-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        <span>{errorMessage || 'Please fill in all required fields (Name, Email, Message).'}</span>
+                        <a
+                          href={getGmailComposeUrl(formData.subject, formData.message)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-3 py-1.5 rounded-lg bg-gold/20 hover:bg-gold/30 text-gold font-medium shrink-0 flex items-center gap-1.5 transition-colors"
+                        >
+                          <Mail className="w-3.5 h-3.5" />
+                          <span>Compose in Gmail</span>
+                        </a>
+                      </div>
                     )}
 
                     {/* Action Row */}
@@ -257,7 +272,7 @@ export const Contact: React.FC = () => {
 
           {/* Right Column: Direct Channels (Email with 1-click copy, GitHub, LinkedIn, Availability) */}
           <div className="lg:col-span-5 space-y-4">
-            {/* 1. Direct Email Card with 1-Click Copy */}
+            {/* 1. Direct Email Card with 1-Click Copy and Gmail Web link */}
             <Reveal direction="up" delay={100} duration={500}>
               <div className="p-6 rounded-2xl bg-[#0D1847]/70 border border-gold/30 hover:border-gold transition-all duration-300 flex items-center justify-between gap-4 group">
                 <div className="flex items-center gap-4 min-w-0">
@@ -266,12 +281,14 @@ export const Contact: React.FC = () => {
                   </div>
                   <div className="min-w-0">
                     <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-gold font-semibold mb-0.5">
-                      DIRECT EMAIL
+                      DIRECT EMAIL (GMAIL)
                     </div>
                     <a
-                      href={`mailto:${emailAddress}`}
+                      href={getGmailComposeUrl()}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="text-sm sm:text-base font-medium text-ivory hover:text-gold-light transition-colors truncate block"
-                      title={emailAddress}
+                      title="Open in Gmail Web"
                     >
                       {emailAddress}
                     </a>

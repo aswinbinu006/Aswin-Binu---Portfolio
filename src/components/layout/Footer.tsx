@@ -26,8 +26,11 @@ export const Footer: React.FC<FooterProps> = ({ name, location = "Nagpur, Mahara
           </div>
           <div className="flex flex-wrap items-center gap-6 text-ivory/80">
             <a
-              href="mailto:aswinbinu006@gmail.com"
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=aswinbinu006@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-2 hover:text-gold transition-colors"
+              title="Open in Gmail Web"
             >
               <Mail className="w-4 h-4 text-gold stroke-[1.75]" />
               <span>aswinbinu006@gmail.com</span>

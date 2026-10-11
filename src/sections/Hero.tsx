@@ -104,8 +104,10 @@ export const Hero: React.FC = () => {
               )}
               {hasEmail && (
                 <a
-                  href={`mailto:${siteConfig.email}`}
-                  aria-label="Email"
+                  href={`https://mail.google.com/mail/?view=cm&fs=1&to=${siteConfig.email}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Email (via Gmail)"
                   className="w-10 h-10 rounded-full border border-gold-border/60 flex items-center justify-center text-midnight hover:text-navy hover:border-gold hover:bg-warm/50 transition-all duration-200"
                 >
                   <Mail className="w-5 h-5 stroke-[1.75]" />
