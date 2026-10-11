@@ -1,0 +1,24 @@
+:root {
+  --color-ivory: #E8E0D2;
+  --color-warm: #E6D5BD;
+  --color-card: #F3EDE1;
+  --color-navy: #0E1D61;
+  --color-midnight: #070F38;
+  --color-gold: #B89A54;
+  --color-gold-text: #775C1B;
+  --color-green: #2E7D5B;
+  --color-border: rgba(184, 154, 84, 0.35);
+
+  --font-heading: "Playfair Display", Georgia, serif;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-sheet: 20px;
+
+  --shadow-card: 0 1px 2px rgb(7 15 56 / 0.06);
+  --shadow-card-hover: 0 4px 12px rgb(7 15 56 / 0.08);
+  --shadow-modal: 0 12px 40px rgb(7 15 56 / 0.25);
+}

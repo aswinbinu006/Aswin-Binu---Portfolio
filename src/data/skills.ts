@@ -1,0 +1,88 @@
+import { SkillGroup } from './types';
+
+export const skillGroups: SkillGroup[] = [
+  {
+    id: "programming-languages",
+    title: "Programming Languages",
+    description: "Languages I use to build, experiment and solve problems.",
+    iconType: "code",
+    items: ["Python", "C++", "JavaScript", "TypeScript", "Java"],
+    tools: [
+      { name: "Python", icon: "python" },
+      { name: "C++", icon: "cpp" },
+      { name: "JavaScript", icon: "javascript" },
+      { name: "TypeScript", icon: "typescript" },
+      { name: "Java", icon: "java" },
+    ],
+  },
+  {
+    id: "machine-learning-ai",
+    title: "Machine Learning & AI",
+    description: "Libraries and frameworks for building intelligent systems.",
+    iconType: "brain",
+    items: ["Scikit-learn", "TensorFlow", "Keras", "XGBoost", "OpenAI"],
+    tools: [
+      { name: "Scikit-learn", icon: "scikit-learn" },
+      { name: "TensorFlow", icon: "tensorflow" },
+      { name: "Keras", icon: "keras" },
+      { name: "XGBoost", icon: "xgboost" },
+      { name: "OpenAI", icon: "openai" },
+    ],
+  },
+  {
+    id: "web-development",
+    title: "Web Development",
+    description: "Technologies for building modern web applications.",
+    iconType: "monitor",
+    items: ["React", "Next.js", "Tailwind CSS", "HTML", "CSS"],
+    tools: [
+      { name: "React", icon: "react" },
+      { name: "Next.js", icon: "nextjs" },
+      { name: "Tailwind CSS", icon: "tailwindcss" },
+      { name: "HTML", icon: "html5" },
+      { name: "CSS", icon: "css3" },
+    ],
+  },
+  {
+    id: "data-visualization",
+    title: "Data & Visualization",
+    description: "Tools for data analysis, exploration and visualization.",
+    iconType: "chart",
+    items: ["NumPy", "Pandas", "Matplotlib", "Seaborn", "Recharts"],
+    tools: [
+      { name: "NumPy", icon: "numpy" },
+      { name: "Pandas", icon: "pandas" },
+      { name: "Matplotlib", icon: "matplotlib" },
+      { name: "Seaborn", icon: "seaborn" },
+      { name: "Recharts", icon: "recharts" },
+    ],
+  },
+  {
+    id: "databases-cloud",
+    title: "Databases & Cloud",
+    description: "Databases and cloud platforms I work with.",
+    iconType: "database",
+    items: ["PostgreSQL", "Firebase", "Supabase", "Google Cloud", "Vercel"],
+    tools: [
+      { name: "PostgreSQL", icon: "postgresql" },
+      { name: "Firebase", icon: "firebase" },
+      { name: "Supabase", icon: "supabase" },
+      { name: "Google Cloud", icon: "googlecloud" },
+      { name: "Vercel", icon: "vercel" },
+    ],
+  },
+  {
+    id: "tools-others",
+    title: "Tools & Others",
+    description: "Development tools and platforms I use daily.",
+    iconType: "settings",
+    items: ["Git", "GitHub", "VS Code", "Docker", "Figma"],
+    tools: [
+      { name: "Git", icon: "git" },
+      { name: "GitHub", icon: "github" },
+      { name: "VS Code", icon: "vscode" },
+      { name: "Docker", icon: "docker" },
+      { name: "Figma", icon: "figma" },
+    ],
+  },
+];

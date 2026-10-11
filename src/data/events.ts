@@ -1,0 +1,91 @@
+import { EventItem } from './types';
+
+export const events: EventItem[] = [
+  {
+    id: "tech-escape",
+    title: "Tech Escape 3.0",
+    meta: "Aug 2026 | IEEE Student Branch",
+    description: "A multi-round technical and treasure hunt event combining online challenges and on-campus tasks.",
+    tags: ["Technical", "Treasure Hunt"],
+    badge: "Organizing Team",
+    poster: {
+      src: "/assets/event-techescape.png",
+      alt: "Tech Escape 3.0 Banner",
+    },
+    verification: "verified",
+  },
+  {
+    id: "stranger-tech",
+    title: "Stranger Tech 1.0",
+    meta: "Feb 2026 | Enthusia 5.0, SIT Nagpur",
+    subtitle: "Enthusia 5.0 · 4th Semester",
+    role: "Event Manager",
+    teamSize: "3 Members",
+    participants: "112+ Students",
+    tags: ["Competitive Programming", "Team Event", "Technical"],
+    badge: "Core Organizing Team",
+    description: "Stranger Tech 1.0 was a flagship technical event under Enthusia 5.0, featuring a multi-round challenge inspired by the world of Stranger Things. The event tested problem solving, logic and teamwork through coding, debugging and game-based rounds, bringing together students from across the institute.",
+    poster: {
+      src: "/assets/stranger-poster.png",
+      alt: "Stranger Tech 1.0 Main Poster",
+    },
+    photos: [
+      { src: "/assets/stranger-thumb1.png", alt: "Stranger Tech 1.0 Auditorium" },
+      { src: "/assets/stranger-thumb2.png", alt: "Stranger Tech 1.0 Hackers" },
+      { src: "/assets/stranger-thumb3.png", alt: "Stranger Tech 1.0 Trophies" },
+    ],
+    verification: "verified",
+  },
+  {
+    id: "sitnovate",
+    title: "SITNovate 2.0",
+    meta: "Feb 2026 | SIT Nagpur",
+    description: "A 24-hour national hackathon to build innovative solutions for real-world problems.",
+    tags: ["Hackathon", "Innovation"],
+    badge: "Organizing Team",
+    poster: {
+      src: "/assets/event-sitnovate.png",
+      alt: "SITNovate 2.0 Banner",
+    },
+    verification: "verified",
+  },
+  {
+    id: "ieee-workshops",
+    title: "IEEE Technical Workshops",
+    meta: "2025 – 2026 | IEEE Student Branch",
+    description: "A series of hands-on technical workshops on emerging technologies and industry tools.",
+    tags: ["Workshops", "Skill Development"],
+    badge: "Organizing Team",
+    poster: {
+      src: "/assets/event-ieeeworkshops.png",
+      alt: "IEEE Technical Workshops Banner",
+    },
+    verification: "verified",
+  },
+  {
+    id: "blockchain-money",
+    title: "Blockchain = Money",
+    meta: "2025 | IEEE Student Branch",
+    description: "An introductory workshop on blockchain technology, cryptocurrency and real-world applications.",
+    tags: ["Blockchain", "Web3"],
+    badge: "Organizing Team",
+    poster: {
+      src: "/assets/event-blockchain.png",
+      alt: "Blockchain = Money Banner",
+    },
+    verification: "verified",
+  },
+  {
+    id: "cyber-security-hackathon",
+    title: "Cyber Security Hackathon",
+    meta: "2025 | IEEE Student Branch",
+    description: "A hackathon focused on cybersecurity challenges and building practical solutions.",
+    tags: ["Cyber Security", "Hackathon"],
+    badge: "Organizing Team",
+    poster: {
+      src: "/assets/event-cybersecurity.png",
+      alt: "Cyber Security Hackathon Banner",
+    },
+    verification: "verified",
+  },
+];
