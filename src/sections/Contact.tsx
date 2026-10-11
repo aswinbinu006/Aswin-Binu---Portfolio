@@ -16,7 +16,6 @@ export const Contact: React.FC = () => {
   const [copied, setCopied] = useState(false);
 
   const emailAddress = siteConfig.email || 'aswinbinu006@gmail.com';
-  const githubHandle = 'aswinbinu006';
   const githubUrl = siteConfig.githubUrl || 'https://github.com/aswinbinu006';
   const linkedinUrl = siteConfig.linkedinUrl || 'https://www.linkedin.com/in/aswin-binu-587978320';
 
@@ -136,7 +135,7 @@ export const Contact: React.FC = () => {
                       Message Delivered!
                     </h4>
                     <p className="text-sm text-ivory/80 max-w-md mx-auto leading-relaxed">
-                      Thank you for contacting me! Your message has been sent directly to my inbox and I will respond to <span className="text-gold font-medium">{formData.email}</span> within 24 hours.
+                      Thank you for contacting me! Your message has been sent directly to Aswin Binu and He will respond to <span className="text-gold font-medium">{formData.email}</span> within 24 hours.
                     </p>
                     <div className="pt-2 flex justify-center">
                       <button
@@ -296,13 +295,13 @@ export const Contact: React.FC = () => {
               </div>
             </Reveal>
 
-            {/* 2. GitHub Card with Profile ID */}
+            {/* 2. GitHub Action Button Card */}
             <Reveal direction="up" delay={150} duration={500}>
               <a
                 href={githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-6 rounded-2xl bg-[#0D1847]/70 border border-gold/30 hover:border-gold hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-between gap-4 group block"
+                className="p-5 sm:p-6 rounded-2xl bg-[#0D1847]/70 border border-gold/30 hover:border-gold hover:bg-[#0D1847] hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-between gap-4 group block"
               >
                 <div className="flex items-center gap-4 min-w-0">
                   <div className="w-12 h-12 rounded-xl bg-midnight border border-gold/40 flex items-center justify-center text-gold shrink-0 group-hover:scale-105 transition-transform">
@@ -310,26 +309,27 @@ export const Contact: React.FC = () => {
                   </div>
                   <div className="min-w-0">
                     <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-gold font-semibold mb-0.5">
-                      GITHUB PROFILE
+                      GITHUB
                     </div>
-                    <div className="text-sm sm:text-base font-medium text-ivory group-hover:text-gold-light transition-colors">
-                      github.com/{githubHandle}
+                    <div className="text-sm sm:text-base font-semibold text-ivory group-hover:text-gold-light transition-colors">
+                      View GitHub Profile
                     </div>
                   </div>
                 </div>
-                <span className="text-xs font-mono text-gold group-hover:translate-x-1 transition-transform">
-                  →
-                </span>
+                <div className="px-4 py-2 rounded-xl bg-gold/15 border border-gold/30 text-gold text-xs font-semibold uppercase tracking-wider group-hover:bg-gold group-hover:text-midnight transition-all flex items-center gap-1.5 shrink-0">
+                  <span>Open</span>
+                  <span className="text-sm">→</span>
+                </div>
               </a>
             </Reveal>
 
-            {/* 3. LinkedIn Card */}
+            {/* 3. LinkedIn Action Button Card */}
             <Reveal direction="up" delay={200} duration={500}>
               <a
                 href={linkedinUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-6 rounded-2xl bg-[#0D1847]/70 border border-gold/30 hover:border-gold hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-between gap-4 group block"
+                className="p-5 sm:p-6 rounded-2xl bg-[#0D1847]/70 border border-gold/30 hover:border-gold hover:bg-[#0D1847] hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-between gap-4 group block"
               >
                 <div className="flex items-center gap-4 min-w-0">
                   <div className="w-12 h-12 rounded-xl bg-midnight border border-gold/40 flex items-center justify-center text-gold shrink-0 group-hover:scale-105 transition-transform">
@@ -339,14 +339,15 @@ export const Contact: React.FC = () => {
                     <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-gold font-semibold mb-0.5">
                       LINKEDIN
                     </div>
-                    <div className="text-sm sm:text-base font-medium text-ivory group-hover:text-gold-light transition-colors">
-                      linkedin.com/in/aswin-binu-587978320
+                    <div className="text-sm sm:text-base font-semibold text-ivory group-hover:text-gold-light transition-colors">
+                      Connect on LinkedIn
                     </div>
                   </div>
                 </div>
-                <span className="text-xs font-mono text-gold group-hover:translate-x-1 transition-transform">
-                  →
-                </span>
+                <div className="px-4 py-2 rounded-xl bg-gold/15 border border-gold/30 text-gold text-xs font-semibold uppercase tracking-wider group-hover:bg-gold group-hover:text-midnight transition-all flex items-center gap-1.5 shrink-0">
+                  <span>Connect</span>
+                  <span className="text-sm">→</span>
+                </div>
               </a>
             </Reveal>
 

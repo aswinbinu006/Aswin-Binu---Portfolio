@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useScrollLock } from '../../hooks/useScrollLock';
@@ -25,85 +25,51 @@ export const Modal: React.FC<ModalProps> = ({
   children,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
-  const previousFocusRef = useRef<HTMLElement | null>(null);
-  const [isRendered, setIsRendered] = useState(isOpen);
-  const [isClosing, setIsClosing] = useState(false);
 
-  useScrollLock(isOpen || isClosing);
-
-  // Sync rendered state with isOpen prop
-  useEffect(() => {
-    if (isOpen) {
-      setIsRendered(true);
-      setIsClosing(false);
-    } else if (isRendered && !isClosing) {
-      setIsClosing(true);
-      const timer = setTimeout(() => {
-        setIsRendered(false);
-        setIsClosing(false);
-      }, 200);
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen, isRendered, isClosing]);
-
-  // Graceful animated close handler
-  const handleAnimatedClose = useCallback(() => {
-    if (isClosing) return;
-    setIsClosing(true);
-    setTimeout(() => {
-      onClose();
-      setIsRendered(false);
-      setIsClosing(false);
-    }, 200);
-  }, [isClosing, onClose]);
+  useScrollLock(isOpen);
 
   // Focus management & Escape key handling
   useEffect(() => {
-    if (isRendered && !isClosing) {
-      previousFocusRef.current = document.activeElement as HTMLElement;
-      const closeBtn = modalRef.current?.querySelector<HTMLButtonElement>('[data-modal-close]');
-      closeBtn?.focus();
+    if (!isOpen) return;
 
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-          e.preventDefault();
-          handleAnimatedClose();
-          return;
-        }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onClose();
+        return;
+      }
 
-        // Trap focus inside modal
-        if (e.key === 'Tab' && modalRef.current) {
-          const focusable = modalRef.current.querySelectorAll<HTMLElement>(
-            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-          );
-          if (focusable.length === 0) return;
+      // Trap focus inside modal
+      if (e.key === 'Tab' && modalRef.current) {
+        const focusable = modalRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
 
-          const first = focusable[0];
-          const last = focusable[focusable.length - 1];
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
 
-          if (e.shiftKey) {
-            if (document.activeElement === first) {
-              e.preventDefault();
-              last.focus();
-            }
-          } else {
-            if (document.activeElement === last) {
-              e.preventDefault();
-              first.focus();
-            }
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
           }
         }
-      };
+      }
+    };
 
-      window.addEventListener('keydown', handleKeyDown);
-      return () => {
-        window.removeEventListener('keydown', handleKeyDown);
-        previousFocusRef.current?.focus();
-      };
-    }
-  }, [isRendered, isClosing, handleAnimatedClose]);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
-  if (!isRendered) return null;
+  if (!isOpen) return null;
 
   const maxWidthClasses = {
     sm: 'md:max-w-md',
@@ -124,24 +90,22 @@ export const Modal: React.FC<ModalProps> = ({
       aria-modal="true"
       aria-labelledby="modal-title"
     >
-      {/* Flat translucent Midnight backdrop with smooth bidirectional fade */}
+      {/* Flat translucent Midnight backdrop */}
       <div
-        className={cn(
-          'fixed inset-0 bg-midnight/60 transition-opacity',
-          isClosing ? 'animate-fadeOut' : 'animate-fadeIn'
-        )}
-        onClick={handleAnimatedClose}
+        className="fixed inset-0 bg-midnight/60 transition-opacity animate-fadeIn"
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
         aria-hidden="true"
       />
 
-      {/* Modal / Bottom Sheet Panel with smooth bidirectional entrance/exit */}
+      {/* Modal / Bottom Sheet Panel */}
       <div
         ref={modalRef}
+        onClick={(e) => e.stopPropagation()}
         className={cn(
-          'relative w-full z-10 bg-card border border-gold-border rounded-t-[24px] md:rounded-3xl shadow-modal flex flex-col max-h-[96dvh] md:max-h-[94dvh] overflow-hidden',
-          isClosing
-            ? 'animate-sheetExit md:animate-modalExit'
-            : 'animate-sheetEnter md:animate-modalEnter',
+          'relative w-full z-10 bg-card border border-gold-border rounded-t-[24px] md:rounded-3xl shadow-modal flex flex-col max-h-[96dvh] md:max-h-[94dvh] overflow-hidden animate-sheetEnter md:animate-modalEnter',
           maxWidthClasses[maxWidth]
         )}
       >
@@ -166,9 +130,12 @@ export const Modal: React.FC<ModalProps> = ({
             <button
               type="button"
               data-modal-close
-              onClick={handleAnimatedClose}
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose();
+              }}
               aria-label="Close dialog"
-              className="inline-flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg text-midnight/80 hover:text-navy hover:bg-warm/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy active:scale-95"
+              className="inline-flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg text-midnight/80 hover:text-navy hover:bg-warm/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy active:scale-95 cursor-pointer"
             >
               <X className="w-5 h-5 stroke-[1.5]" />
             </button>
@@ -177,9 +144,12 @@ export const Modal: React.FC<ModalProps> = ({
           <button
             type="button"
             data-modal-close
-            onClick={handleAnimatedClose}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
             aria-label="Close dialog"
-            className="absolute top-3 right-3 sm:top-4 sm:right-4 md:top-5 md:right-5 z-20 inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full text-midnight/70 hover:text-navy hover:bg-warm/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy active:scale-95"
+            className="absolute top-3 right-3 sm:top-4 sm:right-4 md:top-5 md:right-5 z-20 inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full text-midnight/70 hover:text-navy hover:bg-warm/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy active:scale-95 cursor-pointer"
           >
             <X className="w-5 h-5 stroke-[1.75]" />
           </button>

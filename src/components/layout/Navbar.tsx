@@ -53,7 +53,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeId }) => {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-ivory/95 backdrop-blur-sm border-b border-gold-border transition-colors animate-fadeIn">
+    <header className="sticky top-0 z-50 w-full bg-ivory/95 backdrop-blur-md border-b border-gold-border transition-colors animate-fadeIn shadow-[0_1px_3px_rgba(10,20,69,0.04)]">
       {/* Skip link for keyboard accessibility */}
       <a
         href="#main-content"
