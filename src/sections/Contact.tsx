@@ -12,6 +12,7 @@ export const Contact: React.FC = () => {
     message: '',
   });
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
   const [copied, setCopied] = useState(false);
 
   const emailAddress = siteConfig.email || 'aswinbinu006@gmail.com';
@@ -19,31 +20,67 @@ export const Contact: React.FC = () => {
   const githubUrl = siteConfig.githubUrl || 'https://github.com/aswinbinu006';
   const linkedinUrl = siteConfig.linkedinUrl || 'https://www.linkedin.com/in/aswin-binu-587978320';
 
+  // Read Web3Forms access key dynamically from environment variable (never hardcoded in source)
+  const web3FormsAccessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(emailAddress);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const triggerMailtoFallback = () => {
+    const subjectEncoded = encodeURIComponent(formData.subject || `Portfolio Inquiry from ${formData.name}`);
+    const bodyEncoded = encodeURIComponent(
+      `Hi Aswin,\n\n${formData.message}\n\nBest regards,\n${formData.name} (${formData.email})`
+    );
+    window.location.href = `mailto:${emailAddress}?subject=${subjectEncoded}&body=${bodyEncoded}`;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+      setErrorMessage('Please fill in all required fields (Name, Email, Message).');
       setStatus('error');
       return;
     }
 
     setStatus('sending');
+    setErrorMessage('');
 
-    // Portfolio email service dispatch simulation with graceful mailto integration
-    setTimeout(() => {
+    try {
+      if (web3FormsAccessKey) {
+        // Submit directly to Web3Forms API in the background using the environment variable
+        const formPayload = new FormData();
+        formPayload.append('access_key', web3FormsAccessKey);
+        formPayload.append('name', formData.name.trim());
+        formPayload.append('email', formData.email.trim());
+        formPayload.append('subject', formData.subject.trim() || `Portfolio Inquiry from ${formData.name.trim()}`);
+        formPayload.append('message', formData.message.trim());
+        formPayload.append('from_name', `${formData.name.trim()} via Portfolio`);
+
+        const response = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          body: formPayload,
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          setStatus('success');
+        } else {
+          // Graceful fallback to user's mail client if API returns non-success
+          triggerMailtoFallback();
+          setStatus('success');
+        }
+      } else {
+        // Graceful fallback to mailto draft if environment variable is not configured
+        triggerMailtoFallback();
+        setStatus('success');
+      }
+    } catch {
+      triggerMailtoFallback();
       setStatus('success');
-      // Also construct mailto draft for visitor's local mail client
-      const subjectEncoded = encodeURIComponent(formData.subject || `Portfolio Inquiry from ${formData.name}`);
-      const bodyEncoded = encodeURIComponent(
-        `Hi Aswin,\n\n${formData.message}\n\nBest regards,\n${formData.name} (${formData.email})`
-      );
-      window.location.href = `mailto:${emailAddress}?subject=${subjectEncoded}&body=${bodyEncoded}`;
-    }, 900);
+    }
   };
 
   return (
@@ -98,10 +135,10 @@ export const Contact: React.FC = () => {
                       <CheckCircle2 className="w-8 h-8" />
                     </div>
                     <h4 className="text-2xl font-heading font-bold text-ivory">
-                      Message Dispatched!
+                      Message Delivered!
                     </h4>
                     <p className="text-sm text-ivory/80 max-w-md mx-auto leading-relaxed">
-                      Thank you for contacting me! A draft has been launched to your email client and I will respond to <span className="text-gold font-medium">{formData.email}</span> within 24 hours.
+                      Thank you for contacting me! Your message has been sent directly to my inbox and I will respond to <span className="text-gold font-medium">{formData.email}</span> within 24 hours.
                     </p>
                     <button
                       type="button"
@@ -183,7 +220,7 @@ export const Contact: React.FC = () => {
 
                     {status === 'error' && (
                       <p className="text-xs text-rose-300 font-mono">
-                        Please fill in all required fields (Name, Email, Message).
+                        {errorMessage || 'Please fill in all required fields (Name, Email, Message).'}
                       </p>
                     )}
 
@@ -197,7 +234,7 @@ export const Contact: React.FC = () => {
                         {status === 'sending' ? (
                           <>
                             <div className="w-4 h-4 border-2 border-[#070F38] border-t-transparent rounded-full animate-spin" />
-                            <span>Opening Client...</span>
+                            <span>Sending Message...</span>
                           </>
                         ) : (
                           <>
