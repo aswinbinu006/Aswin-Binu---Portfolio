@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { useActiveSection } from './hooks/useActiveSection';
+import { useReferralTracking } from './lib/analytics';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { Hero } from './sections/Hero';
@@ -25,6 +27,9 @@ const sectionIds = ['home', 'about', 'projects', 'skills', 'credentials', 'acade
 export const App: React.FC = () => {
   const activeSection = useActiveSection(sectionIds, 'home');
 
+  // Track inbound social media & referral traffic to Vercel Analytics
+  useReferralTracking();
+
   // Modal State
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
@@ -42,6 +47,9 @@ export const App: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-ivory text-midnight">
+      {/* Vercel Analytics Provider */}
+      <Analytics />
+
       {/* Shared Navigation */}
       <Navbar activeId={activeSection} />
 
