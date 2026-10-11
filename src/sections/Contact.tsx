@@ -71,12 +71,12 @@ export const Contact: React.FC = () => {
       if (data.success) {
         setStatus('success');
       } else {
-        setErrorMessage(data.message || 'Failed to send message. Please try again or open Gmail directly.');
+        setErrorMessage(data.message || 'Failed to send message. Please try again.');
         setStatus('error');
       }
     } catch (err) {
       console.error('Submission error:', err);
-      setErrorMessage('Network connection error. Please try again or compose directly in Gmail.');
+      setErrorMessage('Network connection error. Please try again.');
       setStatus('error');
     }
   };
@@ -136,28 +136,19 @@ export const Contact: React.FC = () => {
                       Message Delivered!
                     </h4>
                     <p className="text-sm text-ivory/80 max-w-md mx-auto leading-relaxed">
-                      Thank you for contacting me! Your message has been sent directly to my inbox via Web3Forms and I will respond to <span className="text-gold font-medium">{formData.email}</span> within 24 hours.
+                      Thank you for contacting me! Your message has been sent directly to my inbox and I will respond to <span className="text-gold font-medium">{formData.email}</span> within 24 hours.
                     </p>
-                    <div className="flex flex-wrap justify-center gap-3 pt-2">
+                    <div className="pt-2 flex justify-center">
                       <button
                         type="button"
                         onClick={() => {
                           setFormData({ name: '', email: '', subject: '', message: '' });
                           setStatus('idle');
                         }}
-                        className="px-6 py-2.5 rounded-full border border-gold/50 text-gold hover:bg-gold/10 transition-colors text-sm font-medium"
+                        className="px-6 py-2.5 rounded-full border border-gold/50 text-gold hover:bg-gold/10 transition-colors text-sm font-medium cursor-pointer"
                       >
                         Send Another Message
                       </button>
-                      <a
-                        href={getGmailComposeUrl()}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-6 py-2.5 rounded-full bg-gold/15 border border-gold/40 text-gold hover:bg-gold/25 transition-colors text-sm font-medium inline-flex items-center gap-2"
-                      >
-                        <Mail className="w-4 h-4" />
-                        <span>Open in Gmail Web</span>
-                      </a>
                     </div>
                   </div>
                 ) : (
@@ -228,18 +219,9 @@ export const Contact: React.FC = () => {
                     </div>
 
                     {status === 'error' && (
-                      <div className="p-3.5 rounded-xl bg-rose-950/40 border border-rose-500/40 text-xs text-rose-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                        <span>{errorMessage || 'Please fill in all required fields (Name, Email, Message).'}</span>
-                        <a
-                          href={getGmailComposeUrl(formData.subject, formData.message)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-3 py-1.5 rounded-lg bg-gold/20 hover:bg-gold/30 text-gold font-medium shrink-0 flex items-center gap-1.5 transition-colors"
-                        >
-                          <Mail className="w-3.5 h-3.5" />
-                          <span>Compose in Gmail</span>
-                        </a>
-                      </div>
+                      <p className="text-xs text-rose-300 font-mono">
+                        {errorMessage || 'Please fill in all required fields (Name, Email, Message).'}
+                      </p>
                     )}
 
                     {/* Action Row */}
@@ -275,7 +257,7 @@ export const Contact: React.FC = () => {
 
           {/* Right Column: Direct Channels (Email with 1-click copy, GitHub, LinkedIn, Availability) */}
           <div className="lg:col-span-5 space-y-4">
-            {/* 1. Direct Email Card with 1-Click Copy and Gmail Web link */}
+            {/* 1. Direct Email Card with 1-Click Copy */}
             <Reveal direction="up" delay={100} duration={500}>
               <div className="p-6 rounded-2xl bg-[#0D1847]/70 border border-gold/30 hover:border-gold transition-all duration-300 flex items-center justify-between gap-4 group">
                 <div className="flex items-center gap-4 min-w-0">
@@ -284,14 +266,14 @@ export const Contact: React.FC = () => {
                   </div>
                   <div className="min-w-0">
                     <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-gold font-semibold mb-0.5">
-                      DIRECT EMAIL (GMAIL)
+                      DIRECT EMAIL
                     </div>
                     <a
                       href={getGmailComposeUrl()}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm sm:text-base font-medium text-ivory hover:text-gold-light transition-colors truncate block"
-                      title="Open in Gmail Web"
+                      title={emailAddress}
                     >
                       {emailAddress}
                     </a>
