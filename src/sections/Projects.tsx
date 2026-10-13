@@ -62,6 +62,17 @@ export const Projects: React.FC<ProjectsProps> = ({ onOpenProject }) => {
                         {project.title}
                       </div>
                     )}
+                    {project.featured && (
+                      <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-wider font-bold bg-gold text-navy shadow-sm">
+                        Main Project
+                      </span>
+                    )}
+                    {project.liveUrl && (
+                      <span className="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono tracking-wider font-medium bg-midnight/85 text-ivory backdrop-blur-xs border border-white/20 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        Live Demo
+                      </span>
+                    )}
                   </div>
 
                   {/* Title */}

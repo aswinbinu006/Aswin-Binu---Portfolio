@@ -11,7 +11,7 @@ export interface AboutProps {
 }
 
 export const About: React.FC<AboutProps> = ({ onOpenProject }) => {
-  const featuredProject = projects.find((p) => p.id === 'learnpath-ai') || projects[0];
+  const featuredProject = projects.find((p) => p.featured) || projects[0];
 
   return (
     <section id="about" className="py-16 sm:py-20 md:py-24 border-t border-gold-border/30">

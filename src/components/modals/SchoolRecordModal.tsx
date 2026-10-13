@@ -98,9 +98,9 @@ export const SchoolRecordModal: React.FC<SchoolRecordModalProps> = ({
                 <span className="text-3xl font-heading font-bold text-navy">
                   {record.overallScore}
                 </span>
-                {is12th && (
+                {record.detailedScore && (
                   <span className="text-sm font-mono text-midnight/70">
-                    (472 / 500)
+                    ({record.detailedScore})
                   </span>
                 )}
               </div>
