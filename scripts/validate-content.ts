@@ -103,8 +103,8 @@ certificates.forEach((c: Certificate) => {
     error(`${prefix} verification is "placeholder"`);
   }
 
-  if (!c.credentialUrl || c.credentialUrl.includes('credential.net') || c.credentialUrl.includes('verify') === false) {
-    error(`${prefix} credentialUrl is placeholder or generic — must be real verification URL`);
+  if (!c.credentialUrl || c.credentialUrl.includes('credential.net') || c.credentialUrl === '#') {
+    error(`${prefix} credentialUrl is placeholder or generic — must be real verification URL or document link`);
   } else {
     ok(`${prefix} credentialUrl: ${c.credentialUrl}`);
   }

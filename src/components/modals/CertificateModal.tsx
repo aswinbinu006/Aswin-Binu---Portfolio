@@ -26,10 +26,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
     }
   };
 
-  const imageSrc =
-    certificate.id === 'google-ml-engineer'
-      ? '/assets/cert-google-full.png'
-      : certificate.image?.src;
+  const imageSrc = certificate.fullImage?.src || certificate.image?.src;
 
   return (
     <Modal

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Building2, Calendar, Clock, MapPin, Users, Briefcase, FileText, Link2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { Building2, Calendar, Clock, MapPin, Users, Briefcase, FileText, Link2, Award, ExternalLink } from 'lucide-react';
 import { Internship } from '../../data/types';
 import { Modal } from '../ui/Modal';
 import { isValidUrl } from '../../lib/url';
@@ -15,10 +15,15 @@ export const InternshipModal: React.FC<InternshipModalProps> = ({
   isOpen,
   onClose,
 }) => {
+  const [activeDoc, setActiveDoc] = useState<'cert' | 'lor'>('cert');
+
   if (!internship) return null;
 
   const hasCertificate = Boolean(internship.certificateUrl && isValidUrl(internship.certificateUrl));
+  const hasLOR = Boolean(internship.letterOfRecommendationUrl && isValidUrl(internship.letterOfRecommendationUrl));
   const hasWebsite = Boolean(internship.companyWebsiteUrl && isValidUrl(internship.companyWebsiteUrl));
+
+  const hasDocuments = Boolean(internship.certificateImage || internship.letterOfRecommendationImage);
 
   return (
     <Modal
@@ -27,13 +32,13 @@ export const InternshipModal: React.FC<InternshipModalProps> = ({
       title=""
       hideDefaultHeader={true}
       maxWidth="3xl"
-      contentClassName="p-5 sm:p-6 md:p-8 overflow-y-auto"
+      contentClassName="p-5 sm:p-6 md:p-8 overflow-y-auto max-h-[90vh]"
     >
-      <div className="flex flex-col space-y-5">
+      <div className="flex flex-col space-y-6">
         {/* A. Internship Header */}
         <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-5 pr-8">
           {/* Logo Placeholder or Verified Image */}
-          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-[#dbe0e6]/70 border border-gold-border/40 flex flex-col items-center justify-center p-2.5 text-center shrink-0">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-[#dbe0e6]/70 border border-gold-border/40 flex flex-col items-center justify-center p-2.5 text-center shrink-0 shadow-xs">
             {internship.logo ? (
               <img
                 src={internship.logo.src}
@@ -52,10 +57,15 @@ export const InternshipModal: React.FC<InternshipModalProps> = ({
 
           {/* Role & Company Details */}
           <div className="flex-1 min-w-0">
-            {internship.isCurrent && (
+            {internship.isCurrent ? (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 border border-emerald-300/80 mb-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 Current
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-warm/70 text-navy border border-gold-border/60 mb-2">
+                <Award className="w-3.5 h-3.5 text-gold-text" />
+                Verified Completion &amp; Recommendation
               </span>
             )}
             <h3
@@ -121,17 +131,100 @@ export const InternshipModal: React.FC<InternshipModalProps> = ({
               <Users className="w-4 h-4 text-gold-text mt-0.5 shrink-0" />
               <div>
                 <span className="block text-[10px] font-mono uppercase tracking-wider text-gold-text font-semibold">
-                  TEAM SIZE
+                  TEAM / ID
                 </span>
                 <span className="text-xs sm:text-sm font-medium text-midnight">
-                  {internship.teamSize || '4 members'}
+                  {internship.teamSize || 'AI/ML Team'}
                 </span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* C. What I Worked On */}
+        {/* C. Verified Documents Showcase (Certificate & Letter of Recommendation) */}
+        {hasDocuments && (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="text-xs font-mono uppercase tracking-[0.18em] text-gold-text font-semibold">
+                VERIFIED CREDENTIALS &amp; DOCUMENTS
+              </div>
+              <div className="inline-flex items-center p-0.5 rounded-full bg-warm/60 border border-gold-border/50 text-xs font-medium">
+                {internship.certificateImage && (
+                  <button
+                    type="button"
+                    onClick={() => setActiveDoc('cert')}
+                    className={`px-3 py-1 rounded-full transition-all ${
+                      activeDoc === 'cert'
+                        ? 'bg-midnight text-ivory shadow-xs'
+                        : 'text-midnight/70 hover:text-navy'
+                    }`}
+                  >
+                    Certificate of Internship
+                  </button>
+                )}
+                {internship.letterOfRecommendationImage && (
+                  <button
+                    type="button"
+                    onClick={() => setActiveDoc('lor')}
+                    className={`px-3 py-1 rounded-full transition-all ${
+                      activeDoc === 'lor'
+                        ? 'bg-midnight text-ivory shadow-xs'
+                        : 'text-midnight/70 hover:text-navy'
+                    }`}
+                  >
+                    Letter of Recommendation
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="relative rounded-2xl overflow-hidden border border-gold-border/60 bg-warm/30 shadow-sm max-h-[360px] flex items-center justify-center">
+              {activeDoc === 'cert' && internship.certificateImage && (
+                <div className="relative group w-full flex justify-center">
+                  <img
+                    src={internship.certificateImage.src}
+                    alt={internship.certificateImage.alt}
+                    className="max-h-[350px] w-auto object-contain py-2"
+                  />
+                  {hasCertificate && (
+                    <a
+                      href={internship.certificateUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="absolute inset-0 bg-midnight/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-ivory font-medium text-sm gap-2 backdrop-blur-[2px]"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      <span>Open Full Certificate PDF</span>
+                    </a>
+                  )}
+                </div>
+              )}
+
+              {activeDoc === 'lor' && internship.letterOfRecommendationImage && (
+                <div className="relative group w-full flex justify-center">
+                  <img
+                    src={internship.letterOfRecommendationImage.src}
+                    alt={internship.letterOfRecommendationImage.alt}
+                    className="max-h-[350px] w-auto object-contain py-2"
+                  />
+                  {hasLOR && (
+                    <a
+                      href={internship.letterOfRecommendationUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="absolute inset-0 bg-midnight/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-ivory font-medium text-sm gap-2 backdrop-blur-[2px]"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      <span>Open Full Letter of Recommendation PDF</span>
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* D. What I Worked On */}
         <div>
           <div className="text-xs font-mono uppercase tracking-[0.18em] text-gold-text font-semibold mb-3">
             WHAT I WORKED ON
@@ -149,7 +242,7 @@ export const InternshipModal: React.FC<InternshipModalProps> = ({
           </ul>
         </div>
 
-        {/* D. Tech Used */}
+        {/* E. Tech Used */}
         <div>
           <div className="text-xs font-mono uppercase tracking-[0.18em] text-gold-text font-semibold mb-2.5">
             TECH USED
@@ -166,7 +259,7 @@ export const InternshipModal: React.FC<InternshipModalProps> = ({
           </div>
         </div>
 
-        {/* E. Outcome */}
+        {/* F. Outcome */}
         <div>
           <div className="text-xs font-mono uppercase tracking-[0.18em] text-gold-text font-semibold mb-1.5">
             OUTCOME
@@ -176,33 +269,36 @@ export const InternshipModal: React.FC<InternshipModalProps> = ({
           </p>
         </div>
 
-        {/* F. Action Buttons */}
+        {/* G. Action Buttons */}
         <div className="border-t border-gold-border/40 pt-4 mt-2">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {/* View Certificate */}
             {hasCertificate ? (
               <a
                 href={internship.certificateUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-navy hover:bg-[#071242] text-ivory font-medium text-sm sm:text-base shadow-sm transition-all active:scale-[0.98]"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-navy hover:bg-[#071242] text-ivory font-medium text-xs sm:text-sm shadow-sm transition-all active:scale-[0.98]"
               >
                 <FileText className="w-4 h-4 stroke-[1.75]" />
-                <span>View certificate</span>
-                <span className="text-base">→</span>
+                <span>Certificate PDF</span>
+                <span className="text-sm">→</span>
               </a>
-            ) : (
-              <button
-                type="button"
-                disabled
-                title="Certificate will be linked upon verification"
-                className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-navy/80 text-ivory/70 font-medium text-sm sm:text-base opacity-75 cursor-not-allowed"
+            ) : null}
+
+            {/* Letter of Recommendation */}
+            {hasLOR ? (
+              <a
+                href={internship.letterOfRecommendationUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-midnight hover:bg-navy text-ivory font-medium text-xs sm:text-sm shadow-sm transition-all active:scale-[0.98]"
               >
-                <FileText className="w-4 h-4 stroke-[1.75]" />
-                <span>View certificate</span>
-                <span className="text-base">→</span>
-              </button>
-            )}
+                <Award className="w-4 h-4 stroke-[1.75]" />
+                <span>Recommendation Letter</span>
+                <span className="text-sm">→</span>
+              </a>
+            ) : null}
 
             {/* Company Website */}
             {hasWebsite ? (
@@ -210,24 +306,13 @@ export const InternshipModal: React.FC<InternshipModalProps> = ({
                 href={internship.companyWebsiteUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-gold/70 hover:bg-warm/50 text-navy font-medium text-sm sm:text-base transition-all active:scale-[0.98]"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-gold/70 hover:bg-warm/50 text-navy font-medium text-xs sm:text-sm transition-all active:scale-[0.98]"
               >
                 <Link2 className="w-4 h-4 stroke-[1.75]" />
-                <span>Company website</span>
-                <span className="text-base">→</span>
+                <span>Company Website</span>
+                <span className="text-sm">→</span>
               </a>
-            ) : (
-              <button
-                type="button"
-                disabled
-                title="Company website link will be added upon verification"
-                className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-gold/40 text-navy/60 font-medium text-sm sm:text-base opacity-75 cursor-not-allowed"
-              >
-                <Link2 className="w-4 h-4 stroke-[1.75]" />
-                <span>Company website</span>
-                <span className="text-base">→</span>
-              </button>
-            )}
+            ) : null}
           </div>
         </div>
       </div>

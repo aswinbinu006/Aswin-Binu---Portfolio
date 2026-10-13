@@ -14,6 +14,9 @@ export function isValidUrl(url: string | undefined | null): boolean {
   ) {
     return false;
   }
+  if (trimmed.startsWith('/')) {
+    return true;
+  }
   try {
     const parsed = new URL(trimmed);
     return parsed.protocol === 'http:' || parsed.protocol === 'https:' || parsed.protocol === 'mailto:';

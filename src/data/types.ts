@@ -136,6 +136,9 @@ export interface Internship {
   technologies: string[];
   outcome: string;
   certificateUrl?: string;
+  letterOfRecommendationUrl?: string;
+  certificateImage?: ImageAsset;
+  letterOfRecommendationImage?: ImageAsset;
   companyWebsiteUrl?: string;
   logo?: ImageAsset;
   verification: Verification;
