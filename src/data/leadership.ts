@@ -7,7 +7,7 @@ export const leadershipRoles: LeadershipRole[] = [
     organization: "CSI Student Chapter, SIT Nagpur",
     period: "Jan 2025 – Present",
     description: "Organizing technical events, managing teams and logistics, and building industry connects for student engagement.",
-    logo: "/assets/csi-logo.png",
+    logo: "/assets/csi-logo.svg",
     verification: "verified",
   },
   {
@@ -16,7 +16,7 @@ export const leadershipRoles: LeadershipRole[] = [
     organization: "IEEE Student Branch, SIT Nagpur",
     period: "Aug 2025 – Present",
     description: "Leading the student branch, planning technical initiatives, coordinating with faculty and industry, and driving membership growth.",
-    logo: "/assets/ieee-logo.png",
+    logo: "/assets/ieee-logo.svg",
     verification: "verified",
   },
 ];

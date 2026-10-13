@@ -15,6 +15,6 @@ export const siteConfig: SiteConfig = {
   email: "aswinbinu006@gmail.com",
   linkedinUrl: "https://www.linkedin.com/in/aswin-binu-587978320",
   githubUrl: "https://github.com/aswinbinu006",
-  resumeUrl: "#resume",
+  resumeUrl: "/documents/aswin-binu-resume.pdf",
   location: "Nagpur, Maharashtra, India",
 };

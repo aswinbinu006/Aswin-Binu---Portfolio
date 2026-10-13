@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="csiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#003366"/>
+      <stop offset="100%" stop-color="#002244"/>
+    </linearGradient>
+    <linearGradient id="csiGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDB813"/>
+      <stop offset="100%" stop-color="#D99B00"/>
+    </linearGradient>
+  </defs>
+  <!-- Background Circle -->
+  <circle cx="200" cy="200" r="190" fill="url(#csiGrad)" />
+  <circle cx="200" cy="200" r="175" fill="none" stroke="url(#csiGold)" stroke-width="6" />
+
+  <!-- Outer Cogwheel Teeth -->
+  <g fill="url(#csiGold)">
+    <circle cx="200" cy="200" r="105" fill="none" stroke="url(#csiGold)" stroke-width="14" stroke-dasharray="16, 12" />
+  </g>
+
+  <!-- Globe / Network Grid -->
+  <circle cx="200" cy="180" r="60" fill="#002244" stroke="#FFFFFF" stroke-width="4" />
+  <ellipse cx="200" cy="180" rx="30" ry="60" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.8" />
+  <ellipse cx="200" cy="180" rx="55" ry="25" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.8" />
+  <line x1="200" y1="120" x2="200" y2="240" stroke="#FFFFFF" stroke-width="3" />
+  <line x1="140" y1="180" x2="260" y2="180" stroke="#FFFFFF" stroke-width="3" />
+
+  <!-- CSI Bold Letters -->
+  <text x="200" y="295" text-anchor="middle" fill="#FFFFFF" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="54" letter-spacing="3">CSI</text>
+  <text x="200" y="325" text-anchor="middle" fill="url(#csiGold)" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="13" letter-spacing="1">COMPUTER SOCIETY OF INDIA</text>
+</svg>

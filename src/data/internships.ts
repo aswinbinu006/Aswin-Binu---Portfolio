@@ -34,6 +34,10 @@ export const internships: Internship[] = [
       alt: 'Maincrafts Technology Letter of Recommendation - Aswin Binu',
     },
     companyWebsiteUrl: 'https://maincrafts.com',
+    logo: {
+      src: '/assets/maincrafts-logo.png',
+      alt: 'Maincrafts Technology Logo',
+    },
     verification: 'verified',
   },
 ];

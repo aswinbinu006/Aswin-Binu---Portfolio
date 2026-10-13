@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
-import { FileText, Linkedin, Github, Mail, Play } from 'lucide-react';
+import React from 'react';
+import { FileText, Linkedin, Github, Mail } from 'lucide-react';
 import { siteConfig } from '../data/site';
 import { Container } from '../components/layout/Container';
 import { Chip } from '../components/ui/Chip';
 import { isValidUrl } from '../lib/url';
-import { VideoModal } from '../components/modals/VideoModal';
 
 export const Hero: React.FC = () => {
-  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const hasResume = isValidUrl(siteConfig.resumeUrl) || siteConfig.resumeUrl === '#resume';
   const hasLinkedIn = isValidUrl(siteConfig.linkedinUrl);
   const hasGithub = isValidUrl(siteConfig.githubUrl);
@@ -60,7 +58,7 @@ export const Hero: React.FC = () => {
 
             {/* 5. Primary and Secondary Action Buttons */}
             <div
-              className="flex flex-wrap items-center gap-3.5 pt-1 animate-fadeUp"
+              className="flex flex-wrap items-center gap-4 pt-1 animate-fadeUp"
               style={{ animationDelay: '540ms' }}
             >
               <a
@@ -71,20 +69,9 @@ export const Hero: React.FC = () => {
                 <span className="text-lg leading-none">→</span>
               </a>
 
-              <button
-                type="button"
-                onClick={() => setIsVideoModalOpen(true)}
-                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-gold/15 hover:bg-gold/25 border border-gold/70 text-navy transition-all duration-200 text-base font-medium active:scale-[0.98] shadow-xs"
-              >
-                <div className="w-5 h-5 rounded-full bg-gold text-navy flex items-center justify-center">
-                  <Play className="w-2.5 h-2.5 fill-current ml-0.5" />
-                </div>
-                <span>Watch Intro</span>
-              </button>
-
               <a
                 href={hasResume ? siteConfig.resumeUrl : "#contact"}
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-midnight/60 hover:border-navy text-midnight hover:text-navy hover:bg-warm/40 transition-all duration-200 text-base font-medium active:scale-[0.98]"
+                className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full border border-midnight/60 hover:border-navy text-midnight hover:text-navy hover:bg-warm/40 transition-all duration-200 text-base font-medium active:scale-[0.98]"
               >
                 <FileText className="w-4 h-4 stroke-[1.75]" />
                 <span>Download Resume</span>
@@ -129,7 +116,7 @@ export const Hero: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Column: Portrait Framed with 4 Gold Corner Brackets + Intro Video Trigger */}
+          {/* Right Column: Portrait Framed with 4 Gold Corner Brackets */}
           <div className="lg:col-span-5 flex justify-center lg:justify-end">
             <div className="relative p-3 sm:p-4 w-full max-w-[360px] sm:max-w-[420px] lg:max-w-[470px]">
               {/* 4 Gold Framing Corner Brackets */}
@@ -151,33 +138,10 @@ export const Hero: React.FC = () => {
                     loading="eager"
                   />
                 </picture>
-
-                {/* Subtle Gradient & Play Intro Floating Overlay */}
-                <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-midnight/80 via-midnight/30 to-transparent flex items-center justify-between">
-                  <div className="text-ivory">
-                    <div className="text-xs font-mono uppercase tracking-wider text-gold-light">Aswin Binu</div>
-                    <div className="text-[11px] text-ivory/80">AI &amp; ML Engineer</div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setIsVideoModalOpen(true)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gold text-navy text-xs font-semibold shadow-md hover:bg-gold-light transition-all active:scale-95 cursor-pointer"
-                    aria-label="Play intro video"
-                  >
-                    <Play className="w-3 h-3 fill-current" />
-                    <span>Watch Intro</span>
-                  </button>
-                </div>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Intro Video Modal */}
-        <VideoModal
-          isOpen={isVideoModalOpen}
-          onClose={() => setIsVideoModalOpen(false)}
-        />
 
         {/* 7. Scroll Indicator */}
         <div className="hidden sm:flex flex-col items-center justify-center pt-10 lg:pt-14 animate-fadeIn">
