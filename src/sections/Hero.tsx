@@ -70,11 +70,13 @@ export const Hero: React.FC = () => {
               </a>
 
               <a
-                href={hasResume ? siteConfig.resumeUrl : "#contact"}
+                href={hasResume ? (siteConfig.resumeUrl || "/resume.pdf") : "#contact"}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full border border-midnight/60 hover:border-navy text-midnight hover:text-navy hover:bg-warm/40 transition-all duration-200 text-base font-medium active:scale-[0.98]"
               >
                 <FileText className="w-4 h-4 stroke-[1.75]" />
-                <span>Download Resume</span>
+                <span>View Resume</span>
               </a>
             </div>
 

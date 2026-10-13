@@ -109,14 +109,14 @@ export const About: React.FC<AboutProps> = ({ onOpenProject }) => {
                   </div>
                 </div>
 
-                {/* Rich Dark UI Dashboard Preview */}
-                <div className="relative rounded-xl overflow-hidden shadow-md border border-midnight/30 mb-5 bg-[#0a1128]">
+                {/* CareerPilot UI Dashboard Preview */}
+                <div className="relative rounded-xl overflow-hidden shadow-md border border-midnight/30 mb-5 bg-[#0a1128] aspect-[16/10]">
                   <img
-                    src="/assets/learnpath-featured.png"
-                    alt="LearnPath AI Featured Preview"
+                    src={featuredProject.cardImage?.src || "/assets/careerpilot-live.png"}
+                    alt={featuredProject.cardImage?.alt || `${featuredProject.title} Live Platform Showcase`}
                     width={650}
                     height={420}
-                    className="w-full h-auto object-cover select-none transform hover:scale-[1.01] transition-transform duration-300"
+                    className="w-full h-full object-cover select-none transform hover:scale-[1.01] transition-transform duration-300"
                     loading="lazy"
                   />
                 </div>

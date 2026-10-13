@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ExternalLink } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/Button';
+import { siteConfig } from '../../data/site';
 
 export interface NavLink {
   id: string;
@@ -163,10 +164,19 @@ export const Navbar: React.FC<NavbarProps> = ({ activeId }) => {
         </nav>
 
         {/* Desktop CTA */}
-        <div className="hidden lg:block">
+        <div className="hidden lg:flex items-center gap-3">
+          <a
+            href={siteConfig.resumeUrl || "/resume.pdf"}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-gold/70 text-navy font-medium text-sm hover:border-gold hover:bg-warm/60 transition-all duration-200"
+          >
+            <span>Resume</span>
+            <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+          </a>
           <a
             href="#contact"
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-gold/70 text-navy font-medium text-sm hover:border-gold hover:bg-warm/60 transition-all duration-200"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-midnight hover:bg-navy text-ivory font-medium text-sm transition-all duration-200"
           >
             <span>Let's Connect</span>
             <span className="text-base leading-none">→</span>
@@ -225,7 +235,16 @@ export const Navbar: React.FC<NavbarProps> = ({ activeId }) => {
             </nav>
           </div>
 
-          <div className="pt-6 border-t border-gold-border/40 mt-6 pb-2">
+          <div className="pt-6 border-t border-gold-border/40 mt-6 pb-2 space-y-3">
+            <a
+              href={siteConfig.resumeUrl || "/resume.pdf"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-midnight/60 text-midnight font-medium text-base hover:bg-warm/40 transition-colors"
+            >
+              <span>Open Resume (PDF)</span>
+              <ExternalLink className="w-4 h-4" />
+            </a>
             <Button
               variant="primary"
               href="#contact"
